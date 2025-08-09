@@ -98,7 +98,6 @@
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>5.12.2</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
@@ -106,7 +105,6 @@
                 <version>3.24.2</version>
                 <scope>test</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -226,113 +224,17 @@
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <executions>
-                            <!-- Prepare agent for unit tests -->
                             <execution>
-                                <id>pre-unit-test</id>
+                                <id>prepare-agent</id>
                                 <goals>
                                     <goal>prepare-agent</goal>
                                 </goals>
-                                <configuration>
-                                    <destFile>${project.build.directory}/jacoco-ut.exec</destFile>
-                                </configuration>
                             </execution>
-
-                            <!-- Prepare agent for integration tests -->
                             <execution>
-                                <id>pre-integration-test</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                                <configuration>
-                                    <destFile>${project.build.directory}/jacoco-it.exec</destFile>
-                                </configuration>
-                            </execution>
-
-                            <!-- Generate unit test report -->
-                            <execution>
-                                <id>post-unit-test</id>
+                                <id>report</id>
                                 <phase>test</phase>
                                 <goals>
                                     <goal>report</goal>
-                                </goals>
-                                <configuration>
-                                    <dataFile>${project.build.directory}/jacoco-ut.exec</dataFile>
-                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-                                </configuration>
-                            </execution>
-
-                            <!-- Generate integration test report -->
-                            <execution>
-                                <id>post-integration-test</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                                <configuration>
-                                    <dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
-                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-                                </configuration>
-                            </execution>
-
-                            <!-- Merge unit and integration test reports -->
-                            <execution>
-                                <id>merge-results</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>merge</goal>
-                                </goals>
-                                <configuration>
-                                    <fileSets>
-                                        <fileSet>
-                                            <directory>${project.build.directory}</directory>
-                                            <includes>
-                                                <include>*.exec</include>
-                                            </includes>
-                                        </fileSet>
-                                    </fileSets>
-                                    <destFile>${project.build.directory}/jacoco-aggregate.exec</destFile>
-                                </configuration>
-                            </execution>
-
-                            <!-- Generate merged report -->
-                            <execution>
-                                <id>post-merge-report</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                                <configuration>
-                                    <dataFile>${project.build.directory}/jacoco-aggregate.exec</dataFile>
-                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <!-- Surefire configuration -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <!-- JaCoCo agent for unit tests -->
-                            <argLine>@{argLine}</argLine>
-                        </configuration>
-                    </plugin>
-
-                    <!-- Failsafe configuration -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <configuration>
-                            <!-- JaCoCo agent for integration tests -->
-                            <argLine>@{argLine}</argLine>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
                                 </goals>
                             </execution>
                         </executions>
