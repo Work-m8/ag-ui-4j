@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    "packages/core": {
+      "package-name": "core",
+      "release-type": "maven",
+      "component": "core",
+      "include-component-in-tag": true,
+      "tag-separator": "/v",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "changelog-sections": [
+        {"type": "feat", "section": "Features"},
+        {"type": "fix", "section": "Bug Fixes"},
+        {"type": "perf", "section": "Performance Improvements"},
+        {"type": "revert", "section": "Reverts"},
+        {"type": "docs", "section": "Documentation"},
+        {"type": "style", "section": "Styles", "hidden": true},
+        {"type": "chore", "section": "Miscellaneous Chores", "hidden": true},
+        {"type": "refactor", "section": "Code Refactoring", "hidden": true},
+        {"type": "test", "section": "Tests", "hidden": true},
+        {"type": "build", "section": "Build System", "hidden": true},
+        {"type": "ci", "section": "Continuous Integration", "hidden": true}
+      ],
+      "extra-files": [
+        {
+          "type": "xml",
+          "path": "packages/core/pom.xml",
+          "xpath": "/project/version"
+        }
+      ]
+    },
+  },
+  "bootstrap-sha": "a1b2c3d4e5f6",
+  "always-link-local": false,
+  "separate-pull-requests": true,
+  "group-pull-request-title-pattern": "chore: release ${component} ${version}",
+  "release-search-depth": 400,
+  "commit-search-depth": 500
+}

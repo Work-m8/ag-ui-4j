@@ -1,0 +1,90 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      releases-created: ${{ steps.release.outputs.releases_created }}
+      paths-released: ${{ steps.release.outputs.paths_released }}
+      packages-core--release_created: ${{ steps.release.outputs['packages/core--release_created'] }}
+      packages-core--tag_name: ${{ steps.release.outputs['packages/core--tag_name'] }}
+      packages-core--version: ${{ steps.release.outputs['packages/core--version'] }}
+    steps:
+      - name: Run release-please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: .github/release-please-config.json
+          manifest-file: .github/.release-please-manifest.json
+
+  # Build and publish core module when released
+  publish-core:
+    needs: release-please
+    if: needs.release-please.outputs.packages-core--release_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+
+      - name: Update core module version
+        run: |
+          cd packages/core
+          mvn versions:set -DnewVersion=${{ needs.release-please.outputs.packages-core--version }}
+          mvn versions:commit
+
+      - name: Build and test core module
+        run: |
+          mvn clean test -pl packages/core -am
+
+      - name: Package core module
+        run: |
+          mvn package -pl packages/core -am -DskipTests
+
+      - name: Create release assets
+        run: |
+          mkdir -p release-assets/core
+          cp packages/core/target/*.jar release-assets/core/
+          cp packages/core/pom.xml release-assets/core/core-pom.xml
+          
+          # Generate module-specific release notes
+          echo "# Core Module Release ${{ needs.release-please.outputs.packages-core--version }}" > release-assets/core/README.md
+          echo "" >> release-assets/core/README.md
+          echo "Built from commit: ${{ github.sha }}" >> release-assets/core/README.md
+          echo "Release date: $(date)" >> release-assets/core/README.md
+
+      - name: Upload assets to release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.release-please.outputs.packages-core--tag_name }}
+          files: |
+            release-assets/core/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Publish to GitHub Packages
+      - name: Publish to GitHub Packages
+        run: |
+          mvn deploy -pl packages/core -am -DskipTests -s .github/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
