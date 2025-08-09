@@ -1,0 +1,29 @@
+name: 📚 Documentation
+description: Request documentation improvements or additions
+title: "[DOCS] "
+labels: ["documentation", "triage"]
+
+body:
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      options:
+        - "API Documentation"
+        - "User Guide"
+        - "Integration Guide"
+        - "Contributing Guide"
+        - "Architecture Documentation"
+        - "Examples/Tutorials"
+        - "README Updates"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What documentation needs to be created or improved?
+    validations:
+      required: true

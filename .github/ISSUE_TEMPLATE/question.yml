@@ -1,0 +1,39 @@
+name: ❓ Question
+description: Ask a question about the project
+title: "[QUESTION] "
+labels: ["question", "triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check our documentation and existing issues before asking a question.
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Related Module
+      options:
+        - "General"
+        - "packages/core"
+        - "packages/client"
+        - "packages/http" 
+        - "packages/spring-http"
+        - "utils/json"
+        - "integrations/spring-ai"
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any additional context that might help us answer your question

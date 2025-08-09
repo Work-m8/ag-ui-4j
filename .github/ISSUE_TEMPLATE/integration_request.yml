@@ -1,0 +1,268 @@
+name: 🔌 Integration Request
+description: Request a new integration for the project
+title: "[INTEGRATION] "
+labels: ["enhancement", "integration", "triage"]
+projects: ["Work-m8/1"]
+assignees:
+  - Work-m8
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to request a new integration! Please fill out the form below to help us understand your integration needs.
+        
+        **Before submitting**, please:
+        - Check if a similar integration already exists
+        - Review our [integration guidelines](https://github.com/Work-m8/ag-ui-4j/blob/main/docs/INTEGRATION_GUIDELINES.md)
+        - Consider if this integration fits our project scope
+
+  - type: input
+    id: integration_name
+    attributes:
+      label: Integration Name
+      description: What is the name of the integration you're requesting?
+      placeholder: e.g., "Slack Bot Integration", "PostgreSQL Connector", "AWS S3 Client"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: java_version
+    attributes:
+      label: Java Version Requirement
+      description: What Java version should this integration support?
+      options:
+        - "Java 17 (LTS) - Recommended"
+        - "Java 21 (LTS) - Latest"
+        - "Java 11 (LTS) - Legacy"
+        - "Java 8 (Legacy) - Not recommended"
+        - "Multiple versions (specify in description)"
+        - "No specific requirement"
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    id: integration_url
+    attributes:
+      label: Integration URL/Documentation
+      description: Provide a link to the service, API, or documentation for this integration
+      placeholder: https://api.example.com/docs or https://github.com/vendor/library
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please provide a detailed description of the integration request.
+        
+        Include:
+        - What problem does this integration solve?
+        - How would it be used in the project?
+        - What features should be included?
+        - Any specific requirements or constraints?
+      placeholder: |
+        This integration would allow our application to...
+        
+        **Use Cases:**
+        - Use case 1
+        - Use case 2
+        
+        **Key Features:**
+        - Feature 1
+        - Feature 2
+        
+        **Requirements:**
+        - Requirement 1
+        - Requirement 2
+      render: markdown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: llm
+    attributes:
+      label: LLM/AI Integration (Optional)
+      description: Is this integration related to Large Language Models or AI services?
+      options:
+        - "Not applicable"
+        - "OpenAI GPT"
+        - "Anthropic Claude"
+        - "Google Gemini"
+        - "Azure OpenAI"
+        - "Hugging Face"
+        - "AWS Bedrock"
+        - "Cohere"
+        - "Other LLM (specify in description)"
+        - "General AI/ML service"
+      default: 0
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: integration_type
+    attributes:
+      label: Integration Type
+      description: What type of integration is this? (Select all that apply)
+      options:
+        - label: REST API Client
+          required: false
+        - label: Database Connector
+          required: false
+        - label: Message Queue/Broker
+          required: false
+        - label: Cloud Service Integration
+          required: false
+        - label: Authentication Provider
+          required: false
+        - label: Monitoring/Observability
+          required: false
+        - label: AI/ML Service
+          required: false
+        - label: Third-party Library Wrapper
+          required: false
+        - label: Protocol Implementation
+          required: false
+        - label: Other (specify in description)
+          required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority Level
+      description: How urgent is this integration request?
+      options:
+        - "Low - Nice to have"
+        - "Medium - Would be helpful"
+        - "High - Important for project goals"
+        - "Critical - Blocking development"
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical_considerations
+    attributes:
+      label: Technical Considerations
+      description: |
+        Any technical details we should consider?
+        
+        Include:
+        - Dependencies or libraries needed
+        - Security considerations
+        - Performance requirements
+        - Configuration needs
+        - Testing requirements
+      placeholder: |
+        **Dependencies:**
+        - Library X version Y.Z
+        
+        **Security:**
+        - API key authentication required
+        - SSL/TLS requirements
+        
+        **Performance:**
+        - Expected request volume
+        - Latency requirements
+        
+        **Configuration:**
+        - Environment variables needed
+        - Configuration properties
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: example_usage
+    attributes:
+      label: Example Usage
+      description: Provide an example of how this integration would be used in code
+      placeholder: |
+        ```java
+        // Example usage
+        IntegrationClient client = new IntegrationClient(config);
+        Result result = client.performAction(request);
+        ```
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: module_placement
+    attributes:
+      label: Suggested Module Placement
+      description: Which module(s) should this integration belong to?
+      options:
+        - label: "packages/core - Core functionality"
+          required: false
+        - label: "packages/client - Client libraries"
+          required: false
+        - label: "packages/http - HTTP utilities"
+          required: false
+        - label: "packages/spring-http - Spring HTTP integrations"
+          required: false
+        - label: "utils/json - JSON utilities"
+          required: false
+        - label: "integrations/spring-ai - Spring AI integrations"
+          required: false
+        - label: "New module (specify in technical considerations)"
+          required: false
+
+  - type: checkboxes
+    id: implementation_help
+    attributes:
+      label: Implementation Assistance
+      description: Can you help with the implementation?
+      options:
+        - label: "I can provide implementation details/specifications"
+          required: false
+        - label: "I can help with testing"
+          required: false
+        - label: "I can contribute code"
+          required: false
+        - label: "I can provide documentation"
+          required: false
+        - label: "I need help with implementation"
+          required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: |
+        Any other context, screenshots, or information that would be helpful?
+        
+        You can attach files by dragging and dropping them here.
+      placeholder: |
+        **Related Issues/PRs:**
+        - #123
+        
+        **References:**
+        - Documentation link
+        - Similar implementations
+        
+        **Timeline:**
+        - When is this needed?
+        
+        **Business Context:**
+        - Why is this integration important?
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Confirmation
+      description: Please confirm you have reviewed the following
+      options:
+        - label: "I have searched for existing issues to avoid duplicates"
+          required: true
+        - label: "I have reviewed the project documentation and integration guidelines"
+          required: true
+        - label: "This integration aligns with the project's goals and scope"
+          required: true
+        - label: "I understand this is a request and implementation timeline may vary"
+          required: true
