@@ -98,7 +98,6 @@
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>5.12.2</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
@@ -106,7 +105,6 @@
                 <version>3.24.2</version>
                 <scope>test</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -221,6 +219,7 @@
             <id>coverage</id>
             <build>
                 <plugins>
+                    <!-- JaCoCo plugin configuration -->
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
