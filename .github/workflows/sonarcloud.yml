@@ -61,6 +61,6 @@ jobs:
             --batch-mode
 
       - name: Check SonarCloud Quality Gate
-        uses: sonarqube-quality-gate-action@master
+        uses: SonarSource/sonarqube-quality-gate-action@v1.3.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
