@@ -40,7 +40,7 @@ public abstract class BaseEvent {
      * @throws NullPointerException if type is null
      */
     public BaseEvent(@NotNull final EventType type) {
-        Objects.requireNonNull(rawEvent, "type cannot be null");
+        Objects.requireNonNull(type, "type cannot be null");
         this.type = type;
         this.timestamp = Instant.now().toEpochMilli();
     }

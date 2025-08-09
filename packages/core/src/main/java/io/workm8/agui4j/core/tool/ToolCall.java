@@ -2,6 +2,8 @@ package io.workm8.agui4j.core.tool;
 
 import io.workm8.agui4j.core.function.FunctionCall;
 
+import java.util.Objects;
+
 /**
  * Represents an invocation of a tool with its execution details.
  * <p>
@@ -27,4 +29,9 @@ import io.workm8.agui4j.core.function.FunctionCall;
  * @see Tool
  * @see FunctionCall
  */
-public record ToolCall(String id, String type, FunctionCall function) { }
+public record ToolCall(String id, String type, FunctionCall function) {
+    public ToolCall {
+        Objects.requireNonNull(id, "id cannot be null");
+        Objects.requireNonNull(type, "type cannot be null");
+    }
+}

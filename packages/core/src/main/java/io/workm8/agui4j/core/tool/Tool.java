@@ -1,5 +1,7 @@
 package io.workm8.agui4j.core.tool;
 
+import java.util.Objects;
+
 /**
  * Represents a tool that can be invoked within the system.
  * <p>
@@ -23,4 +25,8 @@ package io.workm8.agui4j.core.tool;
  * @author pascalwilbrink
  * @see ToolCall
  */
-public record Tool(String name, String description, Object parameters) { }
+public record Tool(String name, String description, Object parameters) {
+    public Tool {
+        Objects.requireNonNull(name, "name cannot be null");
+    }
+}

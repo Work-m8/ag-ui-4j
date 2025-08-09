@@ -1,5 +1,7 @@
 package io.workm8.agui4j.core.function;
 
+import java.util.Objects;
+
 /**
  * Represents a function call with its name and arguments.
  * <p>
@@ -16,4 +18,7 @@ package io.workm8.agui4j.core.function;
  * @author pascalwilbrink
  */
 public record FunctionCall(String name, String arguments) {
+    public FunctionCall {
+        Objects.requireNonNull(name, "name cannot be null");
+    }
 }
