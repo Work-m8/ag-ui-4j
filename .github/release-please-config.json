@@ -1,19 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "packages": {
-    ".": {
-      "package-name": "ag-ui-4j-parent",
-      "release-type": "maven",
-      "component": "parent",
-      "include-component-in-tag": false,
-      "extra-files": [
-        {
-          "type": "xml",
-          "path": "pom.xml",
-          "xpath": "/project/version"
-        }
-      ]
-    },
     "packages/core": {
       "package-name": "core",
       "release-type": "maven",
@@ -44,7 +31,6 @@
       ]
     }
   },
-  "bootstrap-sha": "a1b2c3d4e5f6",
   "always-link-local": false,
   "separate-pull-requests": true,
   "group-pull-request-title-pattern": "chore: release ${component} ${version}",
