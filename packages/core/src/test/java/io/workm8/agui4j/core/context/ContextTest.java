@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Context")
-public class ContextTest {
+class ContextTest {
 
     @Test()
     void itShouldThrowNullPointerExceptionOnNullDescription() {
