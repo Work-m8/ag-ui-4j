@@ -1,66 +1,36 @@
-name: SonarCloud Analysis with Code Coverage
-
+name: SonarQube
 on:
   push:
-    branches: [ main, master, develop ]
+    branches:
+      - main
   pull_request:
-    branches: [ main, master ]
     types: [opened, synchronize, reopened]
-
 jobs:
-  sonarcloud:
-    name: SonarCloud Analysis
+  build:
+    name: Build and analyze
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for better analysis
-
-      - name: Set up JDK
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'  # Adjust to your Java version
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-
       - name: Cache Maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-
-      - name: Run tests and generate coverage reports
-        run: |
-          mvn clean verify \
-            -Pcoverage \
-            --batch-mode \
-            --errors \
-            --fail-at-end \
-            --show-version
-
-      - name: Run SonarCloud analysis
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed for PR analysis
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Generate this in SonarCloud
-        run: |
-          mvn sonar:sonar \
-            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} \
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
-            --batch-mode
-
-      - name: Check SonarCloud Quality Gate
-        uses: sonarqube-quality-gate-action@master
+      - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Work-m8_ag-ui-4j
