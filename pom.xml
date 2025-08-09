@@ -114,9 +114,10 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
                     <configuration>
-                        <doclint>none</doclint>
-                        <source>${maven.compiler.source}</source>
-                        <quiet>true</quiet>
+                        <source>17</source>
+                        <sourcepath>${basedir}/src/main/java</sourcepath>
+                        <subpackages>io.workm8</subpackages>
+                        <skip>false</skip>
                     </configuration>
                 </plugin>
 

@@ -11,6 +11,13 @@
     <artifactId>core</artifactId>
     <name>AG-UI-4J Core</name>
     <description>AG-UI-4J Core library</description>
+    <dependencies>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
+    </dependencies>
     <version>0.0.1-SNAPSHOT</version>
 
     <build>
@@ -31,14 +38,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <version>3.6.0</version>
+                <configuration>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
+                </configuration>
             </plugin>
         </plugins>
     </build>
