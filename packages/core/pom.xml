@@ -11,7 +11,7 @@
     <artifactId>core</artifactId>
     <name>AG-UI-4J Core</name>
     <description>AG-UI-4J Core library</description>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <build>
         <plugins>
