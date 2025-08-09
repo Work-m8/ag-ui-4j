@@ -1,6 +1,19 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "packages": {
+    ".": {
+      "package-name": "ag-ui-4j-parent",
+      "release-type": "maven",
+      "component": "parent",
+      "include-component-in-tag": false,
+      "extra-files": [
+        {
+          "type": "xml",
+          "path": "pom.xml",
+          "xpath": "/project/version"
+        }
+      ]
+    },
     "packages/core": {
       "package-name": "core",
       "release-type": "maven",
