@@ -1,0 +1,120 @@
+# GitHub Action to build Maven modules, generate Javadocs, and deploy Jekyll site
+name: Deploy Jekyll Site with Javadocs
+
+on:
+  push:
+    branches: [ main, master ]  # Adjust branch names as needed
+  pull_request:
+    branches: [ main, master ]
+  # Allow manual trigger
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for better Jekyll build
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'  # Adjust Java version as needed
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'  # Adjust Ruby version as needed
+          bundler-cache: true
+          working-directory: ./docs
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+
+      - name: Build Maven modules and generate Javadocs
+        run: |
+          # Clean and compile all modules
+          mvn clean compile
+          
+          # Generate Javadocs for all modules
+          mvn javadoc:javadoc
+          
+          # Alternative: Generate site documentation (includes Javadocs)
+          # mvn site
+
+      - name: Prepare Javadocs for Jekyll
+        run: |
+          # Create javadocs directory in Jekyll site
+          mkdir -p docs/javadocs
+          
+          # Copy Javadocs from each module to Jekyll site
+          for module_dir in packages/*/; do
+            if [ -d "$module_dir" ]; then
+              module_name=$(basename "$module_dir")
+              javadoc_path="$module_dir/target/site/apidocs"
+          
+              if [ -d "$javadoc_path" ]; then
+                echo "Copying Javadocs for module: $module_name"
+                mkdir -p "docs/javadocs/$module_name"
+                cp -r "$javadoc_path"/* "docs/javadocs/$module_name/"
+              else
+                echo "Warning: Javadocs not found for module $module_name at $javadoc_path"
+              fi
+            fi
+          done
+          
+          # Create an index page for Javadocs
+          cat > docs/javadocs/index.md << 'EOF'
+          ---
+          layout: default
+          title: API Documentation
+          ---
+          
+          # API Documentation
+          
+          ## Module Documentation
+          
+          {% for module in site.static_files %}
+            {% if module.path contains '/javadocs/' and module.path contains '/index.html' %}
+              {% assign module_name = module.path | split: '/javadocs/' | last | split: '/index.html' | first %}
+              {% if module_name != '' %}
+          - [{{ module_name | capitalize }}]({{ module.path | relative_url }})
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          EOF
+
+      - name: Build Jekyll site
+        run: |
+          cd docs
+          bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        # Only deploy on push to main/master branch, not on PRs
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')

@@ -1,0 +1,97 @@
+title: 'AG-UI-4J Documentation'
+email: pascal.wilbrink@gmail.com
+description: >-
+  AG-UI-4J Documentation
+baseurl: ''
+url: http://localhost:4000
+
+markdown: kramdown
+highlighter: rouge
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-archives
+
+paginate: 5
+paginate_path: "/page:num/"
+
+collections:
+  guides:
+    output: true
+    permalink: /:collection/:name/
+  tutorials:
+    output: true
+    permalink: /:collection/:name/
+  api-docs:
+    output: true
+    permalink: /:collection/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: "guides"
+    values:
+      layout: "page"
+      sidebar: true
+  - scope:
+      path: ""
+      type: "tutorials"
+    values:
+      layout: "page"
+      sidebar: true
+  - scope:
+      path: ""
+      type: "api-docs"
+    values:
+      layout: "page"
+      sidebar: true
+
+# Keep files that shouldn't be processed by Jekyll
+keep_files:
+  - docs/api
+  - javadoc
+
+
+# Include Javadocs in the build
+include:
+  - javadocs
+  - _pages
+
+# Exclude unnecessary files
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - node_modules/
+  - vendor/
+  - src/
+  - "*.jar"
+  - "*.class"
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+# Sass configuration
+sass:
+  style: compressed
+  sass_dir: _sass
+
+# Navigation menu
+navigation:
+  - title: "Home"
+    url: "/"
+  - title: "Guides"
+    url: "/guides/"
+  - title: "Tutorials"
+    url: "/tutorials/"
+  - title: "API Reference"
+    url: "/docs/api/"
+  - title: "Blog"
+    url: "/blog/"
