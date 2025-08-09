@@ -10,21 +10,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ContextTest {
 
     @Test()
-    public void itShouldThrowNullPointerExceptionOnNullDescription() {
+    void itShouldThrowNullPointerExceptionOnNullDescription() {
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> new Context(null, "value"))
             .withMessage("description cannot be null");
     }
 
     @Test()
-    public void itShouldThrowNullPointerExceptionOnNullValue() {
+    void itShouldThrowNullPointerExceptionOnNullValue() {
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> new Context("description", null))
             .withMessage("value cannot be null");
     }
 
     @Test
-    public void itShouldCreateContext() {
+    void itShouldCreateContext() {
         var description = "description";
         var value = "value";
 
