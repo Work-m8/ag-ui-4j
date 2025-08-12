@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 /**
  * @author Pascal Wilbrink
@@ -70,6 +71,8 @@ public class HttpClient extends BaseHttpClient {
 
     private final ObjectMapper objectMapper;
 
+    private final Logger logger = Logger.getLogger(HttpClient.class.getName());
+
     /**
      * Constructs a new HttpClient with the specified endpoint URL.
      * <p>
@@ -88,8 +91,6 @@ public class HttpClient extends BaseHttpClient {
      *           streaming responses in Server-Sent Events format
      */
     public HttpClient(final String url) {
-        super();
-
         this.url = url;
 
         this.client = new OkHttpClient.Builder()
@@ -175,18 +176,7 @@ public class HttpClient extends BaseHttpClient {
                                 !future.isCancelled() &&
                                 !cancellationToken.get()) {
 
-                            if (line.trim().startsWith("data: ")) {
-                                try {
-                                    String jsonData = line.trim().substring(6).trim();
-                                    BaseEvent event = objectMapper.readValue(jsonData, BaseEvent.class);
-
-                                    if (eventHandler != null) {
-                                        eventHandler.accept(event);
-                                    }
-                                } catch (Exception  e) {
-                                    System.err.println("Error parsing event: " + e.getMessage());
-                                }
-                            }
+                            handleEvent(line);
                         }
 
                         if (!future.isCancelled() && !cancellationToken.get()) {
@@ -194,6 +184,21 @@ public class HttpClient extends BaseHttpClient {
                         }
                     } catch (IOException e) {
                         future.completeExceptionally(e);
+                    }
+                }
+
+                private void handleEvent(String line) {
+                    if (line.trim().startsWith("data: ")) {
+                        try {
+                            String jsonData = line.trim().substring(6).trim();
+                            BaseEvent event = objectMapper.readValue(jsonData, BaseEvent.class);
+
+                            if (eventHandler != null) {
+                                eventHandler.accept(event);
+                            }
+                        } catch (Exception  e) {
+                            logger.info("Error parsing event: " + e.getMessage());
+                        }
                     }
                 }
 

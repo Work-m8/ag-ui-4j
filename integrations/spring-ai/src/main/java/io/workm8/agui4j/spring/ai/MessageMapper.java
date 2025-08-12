@@ -66,25 +66,25 @@ public class MessageMapper {
      */
     public org.springframework.ai.chat.messages.AssistantMessage toSpringMessage(final io.workm8.agui4j.core.message.AssistantMessage message) {
         return new org.springframework.ai.chat.messages.AssistantMessage(
-                message.getContent(),
-                Map.of(
-                        "id",
-                        Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
-                        "name",
-                        Objects.nonNull(message.getName()) ? message.getName() : ""
-                ),
-                Objects.isNull(message.getToolCalls())
-                        ? emptyList()
-                        : message.getToolCalls().stream().map(toolCall ->
-                        new AssistantMessage.ToolCall(
-                                Objects.nonNull(toolCall.id())
-                                        ? toolCall.id()
-                                        : UUID.randomUUID().toString(),
-                                toolCall.type(),
-                                toolCall.function().name(),
-                                toolCall.function().arguments()
-                        )
-                ).collect(Collectors.toList())
+            message.getContent(),
+            Map.of(
+                "id",
+                Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
+                "name",
+                Objects.nonNull(message.getName()) ? message.getName() : ""
+            ),
+            Objects.isNull(message.getToolCalls())
+                ? emptyList()
+                : message.getToolCalls().stream().map(toolCall ->
+                    new AssistantMessage.ToolCall(
+                        Objects.nonNull(toolCall.id())
+                            ? toolCall.id()
+                            : UUID.randomUUID().toString(),
+                        toolCall.type(),
+                        toolCall.function().name(),
+                        toolCall.function().arguments()
+                    )
+                ).toList()
         );
     }
 
@@ -105,15 +105,15 @@ public class MessageMapper {
      */
     public org.springframework.ai.chat.messages.SystemMessage toSpringMessage(final io.workm8.agui4j.core.message.SystemMessage message) {
         return SystemMessage.builder()
-                .text(message.getContent())
-                .metadata(
-                        Map.of(
-                                "id",
-                                Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
-                                "name",
-                                Objects.nonNull(message.getName()) ? message.getName() : ""
-                        )
-                ).build();
+            .text(message.getContent())
+            .metadata(
+                Map.of(
+                    "id",
+                    Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
+                    "name",
+                    Objects.nonNull(message.getName()) ? message.getName() : ""
+                )
+            ).build();
     }
 
     /**
@@ -132,15 +132,15 @@ public class MessageMapper {
      */
     public org.springframework.ai.chat.messages.UserMessage toSpringMessage(final io.workm8.agui4j.core.message.DeveloperMessage message) {
         return UserMessage.builder()
-                .text(message.getContent())
-                .metadata(
-                        Map.of(
-                                "id",
-                                Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
-                                "name",
-                                Objects.nonNull(message.getName()) ? message.getName() : ""
-                        )
-                ).build();
+            .text(message.getContent())
+            .metadata(
+                Map.of(
+                    "id",
+                    Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
+                    "name",
+                    Objects.nonNull(message.getName()) ? message.getName() : ""
+                )
+            ).build();
     }
 
     /**
@@ -166,21 +166,21 @@ public class MessageMapper {
      */
     public org.springframework.ai.chat.messages.ToolResponseMessage toSpringMessage(final io.workm8.agui4j.core.message.ToolMessage message) {
         return new ToolResponseMessage(
-                asList(
-                        new ToolResponseMessage.ToolResponse(
-                                message.getToolCallId(),
-                                message.getName(),
-                                Objects.nonNull(message.getError())
-                                        ? message.getError()
-                                        : message.getContent()
-                        )
-                ),
-                Map.of(
-                        "id",
-                        Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
-                        "name",
-                        Objects.nonNull(message.getName()) ? message.getName() : ""
+            asList(
+                new ToolResponseMessage.ToolResponse(
+                    message.getToolCallId(),
+                    message.getName(),
+                    Objects.nonNull(message.getError())
+                        ? message.getError()
+                        : message.getContent()
                 )
+            ),
+            Map.of(
+                "id",
+                Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
+                "name",
+                Objects.nonNull(message.getName()) ? message.getName() : ""
+            )
         );
     }
 
@@ -200,15 +200,15 @@ public class MessageMapper {
      */
     public org.springframework.ai.chat.messages.UserMessage toSpringMessage(final io.workm8.agui4j.core.message.UserMessage message) {
         return UserMessage.builder()
-                .text(message.getContent())
-                .metadata(
-                        Map.of(
-                                "id",
-                                Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
-                                "name",
-                                Objects.nonNull(message.getName()) ? message.getName() : ""
-                        )
-                ).build();
+            .text(message.getContent())
+            .metadata(
+                Map.of(
+                    "id",
+                    Objects.nonNull(message.getId()) ? message.getId() : UUID.randomUUID().toString(),
+                    "name",
+                    Objects.nonNull(message.getName()) ? message.getName() : ""
+                )
+            ).build();
     }
 
     /**
@@ -254,4 +254,5 @@ public class MessageMapper {
             }
         }
     }
+
 }

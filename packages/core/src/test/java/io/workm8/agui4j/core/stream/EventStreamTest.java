@@ -14,8 +14,8 @@ class EventStreamTest {
     @Test
     void shouldCreateSimpleEventStream() {
         EventStream<String> sut = new EventStream<>(
-            (value) -> {},
-            (err) -> {},
+            value -> {},
+            err -> {},
             () -> {}
         );
 
@@ -27,8 +27,8 @@ class EventStreamTest {
         var value = "next";
 
         EventStream<String> sut = new EventStream<>(
-            (v) -> assertThat(v).isEqualTo(value),
-            (err) -> {},
+            v -> assertThat(v).isEqualTo(value),
+            err -> {},
             () -> {}
         );
 
@@ -40,8 +40,8 @@ class EventStreamTest {
         AtomicBoolean onNextCalled = new AtomicBoolean(false);
 
         EventStream<String> sut = new EventStream<>(
-            (v) -> onNextCalled.set(true),
-            (err) -> {},
+            v -> onNextCalled.set(true),
+            err -> {},
             () -> {}
         );
 
@@ -57,8 +57,8 @@ class EventStreamTest {
         AtomicBoolean onNextCalled = new AtomicBoolean(false);
 
         EventStream<String> sut = new EventStream<>(
-            (v) -> onNextCalled.set(true),
-            (err) -> {},
+            v -> onNextCalled.set(true),
+            err -> {},
             () -> {}
         );
 
@@ -74,8 +74,8 @@ class EventStreamTest {
         var error = new AGUIException("Error");
 
         EventStream<String> sut = new EventStream<>(
-            (value) -> {},
-            (err) -> assertThat(err).isEqualTo(error),
+            value -> {},
+            err -> assertThat(err).isEqualTo(error),
             () -> {}
         );
 
@@ -87,8 +87,8 @@ class EventStreamTest {
         AtomicBoolean onErrorCalled = new AtomicBoolean(false);
 
         EventStream<String> sut = new EventStream<>(
-            (v) -> {},
-            (err) -> onErrorCalled.set(true),
+            v -> {},
+            err -> onErrorCalled.set(true),
             () -> {}
         );
 
@@ -105,8 +105,8 @@ class EventStreamTest {
         AtomicBoolean onErrorCalled = new AtomicBoolean(false);
 
         EventStream<String> sut = new EventStream<>(
-            (v) -> {},
-            (err) -> onErrorCalled.set(true),
+            v -> {},
+            err -> onErrorCalled.set(true),
             () -> {}
         );
 
@@ -122,10 +122,8 @@ class EventStreamTest {
         AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
 
         EventStream<String> sut = new EventStream<>(
-            (v) -> {
-            },
-            (err) -> {
-            },
+            v -> { },
+            err -> { },
             () -> onCompleteCalled.set(true)
         );
 
@@ -140,10 +138,8 @@ class EventStreamTest {
         AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
 
         EventStream<String> sut = new EventStream<>(
-            (v) -> {
-            },
-            (err) -> {
-            },
+            v -> { },
+            err -> { },
             () -> onCompleteCalled.set(true)
         );
 

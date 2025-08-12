@@ -31,16 +31,6 @@ import java.util.function.Consumer;
 public abstract class BaseHttpClient {
 
     /**
-     * Constructs a new BaseHttpClient instance.
-     * <p>
-     * Subclasses should perform any necessary initialization in their constructors,
-     * such as configuring HTTP connection pools, setting default headers,
-     * or establishing authentication parameters.
-     */
-    public BaseHttpClient() {
-    }
-
-    /**
      * Executes an agent request and streams events back to the provided handler.
      * <p>
      * This method establishes an HTTP connection to the remote agent service,

@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class AGUIExceptionTest {
 
     @Test
-    void shouldThrowException() throws AGUIException {
+    void shouldThrowException() {
         var ex = new AGUIException("TEST");
 
         assertThatExceptionOfType(AGUIException.class)

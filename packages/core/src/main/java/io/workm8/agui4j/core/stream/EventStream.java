@@ -3,6 +3,7 @@ package io.workm8.agui4j.core.stream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 /**
  * Concrete implementation of {@link IEventStream} that provides thread-safe event stream processing
@@ -38,6 +39,8 @@ public class EventStream<T> implements IEventStream<T> {
     private final AtomicBoolean cancelled = new AtomicBoolean(false);
     private final AtomicBoolean completed = new AtomicBoolean(false);
     private final Object lock = new Object();
+
+    private final Logger logger = Logger.getLogger(EventStream.class.getName());
 
     /**
      * Creates a new EventStream with the specified handlers.
@@ -88,7 +91,6 @@ public class EventStream<T> implements IEventStream<T> {
      * <p>
      * This implementation marks the stream as completed when an error occurs and provides
      * protection against infinite error loops. If the error handler itself throws an exception,
-     * the error is logged to System.err instead of propagating further.
      * </p>
      */
     @Override
@@ -103,8 +105,7 @@ public class EventStream<T> implements IEventStream<T> {
             try {
                 onError.accept(error);
             } catch (Exception e) {
-                // Prevent infinite error loops - just log
-                System.err.println("Error in error handler: " + e.getMessage());
+                logger.severe("Error in error handler: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -128,7 +129,7 @@ public class EventStream<T> implements IEventStream<T> {
             try {
                 onComplete.run();
             } catch (Exception e) {
-                System.err.println("Error in complete handler: " + e.getMessage());
+                logger.severe("Error in complete handler: " + e.getMessage());
                 e.printStackTrace();
             }
         }

@@ -151,11 +151,6 @@ public class HttpAgent extends AbstractAgent {
         private boolean debug = false;
 
         /**
-         * Creates a new Builder instance for configuring an HttpAgent.
-         */
-        public Builder() {}
-
-        /**
          * Sets the unique agent identifier.
          *
          * @param agentId the unique identifier for this agent instance (required)
