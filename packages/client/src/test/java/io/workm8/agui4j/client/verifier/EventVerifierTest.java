@@ -404,4 +404,5 @@ class EventVerifierTest {
                 .isThrownBy(() -> verifier.verifyEvent(event))
                 .withMessage("Cannot send multiple 'RUN_STARTED' events: A 'RUN_STARTED' event was already sent. Each run must have exactly one 'RUN_STARTED' event at the beginning.");
     }
+
 }

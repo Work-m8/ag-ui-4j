@@ -63,7 +63,7 @@ import java.util.logging.Logger;
  * });
  * }</pre>
  */
-public class HttpClient extends BaseHttpClient {
+public class HttpClient implements BaseHttpClient {
 
     private final OkHttpClient client;
 

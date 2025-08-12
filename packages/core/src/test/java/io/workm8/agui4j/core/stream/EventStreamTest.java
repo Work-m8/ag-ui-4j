@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @DisplayName("EventStream")
 class EventStreamTest {
@@ -146,6 +147,50 @@ class EventStreamTest {
         sut.cancel();
         sut.complete();
         assertThat(onCompleteCalled).isFalse();
+    }
+
+    @Test
+    void shouldNotBubbleExceptionWhenOnCompleteThrowsException() {
+        EventStream<String> sut = new EventStream<>(
+            v -> { },
+            err -> { },
+            () -> {
+                throw new RuntimeException("Exception");
+            }
+        );
+
+        assertThatNoException().isThrownBy(sut::complete);
+    }
+
+    @Test
+    void shouldNotBubbleExceptionWhenOnErrorThrowsException() {
+        EventStream<String> sut = new EventStream<>(
+            v -> { },
+            err -> {
+                throw new RuntimeException("Exception");
+            },
+            () -> { }
+        );
+
+        assertThatNoException().isThrownBy(() -> sut.error(new RuntimeException("Runtime exception")));
+    }
+
+    @Test
+    void shouldCallOnErrorWhenOnNextThrowsException() throws InterruptedException {
+        AtomicBoolean onErrorCalled = new AtomicBoolean(false);
+
+        EventStream<String> sut = new EventStream<>(
+            v -> {
+                throw new RuntimeException("Exception");
+            },
+            err -> onErrorCalled.set(true),
+            () -> { }
+        );
+
+        sut.next("Next");
+
+        Thread.sleep(200L);
+        assertThat(onErrorCalled).isTrue();
     }
 
 }

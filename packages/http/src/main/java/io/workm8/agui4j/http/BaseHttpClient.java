@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  *
  * @author Pascal Wilbrink
  */
-public abstract class BaseHttpClient {
+public interface BaseHttpClient {
 
     /**
      * Executes an agent request and streams events back to the provided handler.
@@ -59,10 +59,10 @@ public abstract class BaseHttpClient {
      * @throws IllegalArgumentException if input or eventHandler are null
      * @throws IllegalStateException if the HTTP client is not properly initialized
      */
-    public abstract CompletableFuture<Void> streamEvents(
-            final RunAgentInput input,
-            Consumer<BaseEvent> eventHandler,
-            AtomicBoolean cancellationToken
+    public CompletableFuture<Void> streamEvents(
+        final RunAgentInput input,
+        Consumer<BaseEvent> eventHandler,
+        AtomicBoolean cancellationToken
     );
 
     /**
@@ -87,6 +87,6 @@ public abstract class BaseHttpClient {
      * This method should be idempotent - multiple calls should not cause
      * errors or unexpected behavior.
      */
-    public abstract void close();
+    void close();
 
 }

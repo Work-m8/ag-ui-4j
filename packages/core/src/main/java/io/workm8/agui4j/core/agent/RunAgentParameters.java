@@ -3,7 +3,9 @@ package io.workm8.agui4j.core.agent;
 import io.workm8.agui4j.core.context.Context;
 import io.workm8.agui4j.core.tool.Tool;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Immutable configuration parameters for agent execution using the Builder pattern.
@@ -40,8 +42,8 @@ public class RunAgentParameters {
      */
     private RunAgentParameters(Builder builder) {
         this.runId = builder.runId;
-        this.tools = builder.tools;
-        this.context = builder.context;
+        this.tools = Objects.isNull(builder.tools) ? new ArrayList<>() : builder.tools;
+        this.context = Objects.isNull(builder.context) ? new ArrayList<>() : builder.context;
         this.forwardedProps = builder.forwardedProps;
     }
 
