@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("StateSnapshotEvent")
 class StateSnapshotEventTest {

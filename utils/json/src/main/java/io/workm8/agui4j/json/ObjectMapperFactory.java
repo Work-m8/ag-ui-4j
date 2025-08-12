@@ -46,6 +46,11 @@ import io.workm8.agui4j.json.mixins.StateMixin;
 public class ObjectMapperFactory {
 
     /**
+     * Private constructor
+     */
+    private ObjectMapperFactory() { }
+
+    /**
      * Adds agui4j-specific mixins to the provided ObjectMapper instance.
      * <p>
      * This method configures the ObjectMapper with the necessary mixin classes

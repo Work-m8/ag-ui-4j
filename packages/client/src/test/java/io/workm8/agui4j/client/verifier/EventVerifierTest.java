@@ -10,10 +10,10 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("EventVerifier")
-public class EventVerifierTest {
+class EventVerifierTest {
 
     @Test
-    public void itShouldStartRunEvent() throws AGUIException {
+    void itShouldStartRunEvent() throws AGUIException {
         var event = new RunStartedEvent();
 
         var verifier = new EventVerifier();
@@ -22,7 +22,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void itShouldThrowExceptionWhenFirstEventIsNotStart() {
+    void itShouldThrowExceptionWhenFirstEventIsNotStart() {
         var event = new CustomEvent();
 
         var verifier = new EventVerifier();
@@ -32,7 +32,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void itShouldThrowExceptionWhenEventSentAfterRunFinished() throws AGUIException {
+    void itShouldThrowExceptionWhenEventSentAfterRunFinished() throws AGUIException {
         var start = new RunStartedEvent();
         var finish = new RunFinishedEvent();
         var custom = new CustomEvent();
@@ -47,7 +47,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void itShouldThrowExceptionWhenEventSentAfterRunError() throws AGUIException {
+    void itShouldThrowExceptionWhenEventSentAfterRunError() throws AGUIException {
         var start = new RunStartedEvent();
         var error = new RunErrorEvent();
         var custom = new CustomEvent();
@@ -62,7 +62,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void sendMultipleToolCallStartEvents() throws AGUIException {
+    void sendMultipleToolCallStartEvents() throws AGUIException {
         var start = new RunStartedEvent();
         var toolCallId = UUID.randomUUID().toString();
 
@@ -79,7 +79,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void sendMultipleTextEventStartedEvents() throws AGUIException {
+    void sendMultipleTextEventStartedEvents() throws AGUIException {
         var start = new RunStartedEvent();
         var event = new TextMessageStartEvent();
         var id = UUID.randomUUID().toString();
@@ -94,7 +94,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void sendTextMessageEndWithUnknownMessageIdShouldThrowError() throws AGUIException {
+    void sendTextMessageEndWithUnknownMessageIdShouldThrowError() throws AGUIException {
         var start = new RunStartedEvent();
         var event = new TextMessageEndEvent();
         var id = UUID.randomUUID().toString();
@@ -110,7 +110,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void endingUnknownTextMessageShouldThrowError() throws AGUIException {
+    void endingUnknownTextMessageShouldThrowError() throws AGUIException {
         var start = new RunStartedEvent();
         var firstId = UUID.randomUUID().toString();
         var secondId = UUID.randomUUID().toString();
@@ -133,7 +133,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void sendingMultipleToolCallStartEventsShouldThrowError() throws AGUIException {
+    void sendingMultipleToolCallStartEventsShouldThrowError() throws AGUIException {
         var start = new RunStartedEvent();
         var event = new ToolCallStartEvent();
         var id = UUID.randomUUID().toString();
@@ -151,7 +151,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void toolCallArgsEventShouldThrowErrorOnNoActiveToolCall() throws AGUIException {
+    void toolCallArgsEventShouldThrowErrorOnNoActiveToolCall() throws AGUIException {
         var start = new RunStartedEvent();
         var event = new ToolCallArgsEvent();
         var id = UUID.randomUUID().toString();
@@ -167,7 +167,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void unknownToolCallArgsEventShouldThrowError() throws AGUIException {
+    void unknownToolCallArgsEventShouldThrowError() throws AGUIException {
         var start = new RunStartedEvent();
         var toolStart = new ToolCallStartEvent();
         var event = new ToolCallArgsEvent();
@@ -191,7 +191,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void toolCallEndOnNoActiveToolCallsShouldThrowError() throws AGUIException {
+    void toolCallEndOnNoActiveToolCallsShouldThrowError() throws AGUIException {
         var start = new RunStartedEvent();
         var event = new ToolCallEndEvent();
         var id = UUID.randomUUID().toString();
@@ -207,7 +207,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void unknownToolCallEndEventShouldThrowError() throws AGUIException {
+    void unknownToolCallEndEventShouldThrowError() throws AGUIException {
         var start = new RunStartedEvent();
         var toolStart = new ToolCallStartEvent();
         var event = new ToolCallEndEvent();
@@ -231,7 +231,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void startStepTwiceShouldThrowError() throws AGUIException {
+    void startStepTwiceShouldThrowError() throws AGUIException {
         var start = new RunStartedEvent();
         var event = new StepStartedEvent();
         var stepName = "STEP";
@@ -248,7 +248,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void finishUnknownStepShouldThrowError() throws AGUIException {
+    void finishUnknownStepShouldThrowError() throws AGUIException {
         var start = new RunStartedEvent();
         var event = new StepStartedEvent();
         var finish = new StepFinishedEvent();
@@ -269,7 +269,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void runFinishedEventOnActiveStepsShouldThrowError() throws AGUIException {
+    void runFinishedEventOnActiveStepsShouldThrowError() throws AGUIException {
         var start = new RunStartedEvent();
         var event = new StepStartedEvent();
         var finish = new RunFinishedEvent();
@@ -288,7 +288,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void thinkingTextMessageStartShouldThrowErrorWhenNotStarted() throws AGUIException {
+    void thinkingTextMessageStartShouldThrowErrorWhenNotStarted() throws AGUIException {
         var start = new RunStartedEvent();
 
         var event = new ThinkingTextMessageStartEvent();
@@ -302,7 +302,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void thinkingTextMessageStartShouldThrowErrorWhenAlreadyStarted() throws AGUIException {
+    void thinkingTextMessageStartShouldThrowErrorWhenAlreadyStarted() throws AGUIException {
         var start = new RunStartedEvent();
         var thinkStart = new ThinkingStartEvent();
         var event = new ThinkingTextMessageStartEvent();
@@ -318,7 +318,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void thinkingTextMessageContentShouldThrowErrorWhenNoActiveMessage() throws AGUIException {
+    void thinkingTextMessageContentShouldThrowErrorWhenNoActiveMessage() throws AGUIException {
         var start = new RunStartedEvent();
         var thinkStart = new ThinkingStartEvent();
         var contentEvent = new ThinkingTextMessageContentEvent();
@@ -334,7 +334,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void thinkingTextMessageEndShouldThrowErrorWhenNoActiveMessage() throws AGUIException {
+    void thinkingTextMessageEndShouldThrowErrorWhenNoActiveMessage() throws AGUIException {
         var start = new RunStartedEvent();
         var thinkStart = new ThinkingStartEvent();
         var messageEnd = new ThinkingTextMessageEndEvent();
@@ -350,7 +350,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void thinkingStartShouldThrowErrorWhenAlreadyStarted() throws AGUIException {
+    void thinkingStartShouldThrowErrorWhenAlreadyStarted() throws AGUIException {
         var start = new RunStartedEvent();
         var thinkStart1 = new ThinkingStartEvent();
         var thinkStart2 = new ThinkingStartEvent();
@@ -366,7 +366,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void thinkingEndShouldThrowErrorWhenNoActiveThinkingStep() throws AGUIException {
+    void thinkingEndShouldThrowErrorWhenNoActiveThinkingStep() throws AGUIException {
         var start = new RunStartedEvent();
         var thinkEnd = new ThinkingEndEvent();
 
@@ -380,7 +380,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void thinkingTextMessageStartShouldThrowErrorWhenNoActiveThinkingStep() throws AGUIException {
+    void thinkingTextMessageStartShouldThrowErrorWhenNoActiveThinkingStep() throws AGUIException {
         var start = new RunStartedEvent();
         var messageStart = new ThinkingTextMessageStartEvent();
 
@@ -394,7 +394,7 @@ public class EventVerifierTest {
     }
 
     @Test
-    public void itShouldThrowExceptionOnRunTwice() throws AGUIException {
+    void itShouldThrowExceptionOnRunTwice() throws AGUIException {
         var event = new RunStartedEvent();
 
         var verifier = new EventVerifier();
@@ -404,4 +404,5 @@ public class EventVerifierTest {
                 .isThrownBy(() -> verifier.verifyEvent(event))
                 .withMessage("Cannot send multiple 'RUN_STARTED' events: A 'RUN_STARTED' event was already sent. Each run must have exactly one 'RUN_STARTED' event at the beginning.");
     }
+
 }

@@ -63,17 +63,21 @@ public class HttpAgent extends AbstractAgent {
      * @param debug           whether to enable debug logging
      */
     private HttpAgent(
-            final String agentId,
-            final String description,
-            final String threadId,
-            final BaseHttpClient httpClient,
-            final List<BaseMessage> initialMessages,
-            final State state,
-            final boolean debug
+        final String agentId,
+        final String description,
+        final String threadId,
+        final BaseHttpClient httpClient,
+        final List<BaseMessage> initialMessages,
+        final State state,
+        final boolean debug
     ) {
         super(agentId, description, threadId, initialMessages, state, debug);
 
         this.httpClient = httpClient;
+    }
+
+    public List<BaseMessage> getMessages() {
+        return this.messages;
     }
 
     /**
@@ -149,11 +153,6 @@ public class HttpAgent extends AbstractAgent {
         private List<BaseMessage> messages = new ArrayList<>();
         private State state = new State();
         private boolean debug = false;
-
-        /**
-         * Creates a new Builder instance for configuring an HttpAgent.
-         */
-        public Builder() {}
 
         /**
          * Sets the unique agent identifier.

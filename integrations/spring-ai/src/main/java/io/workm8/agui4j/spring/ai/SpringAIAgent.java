@@ -241,102 +241,100 @@ public class SpringAIAgent implements Agent {
         this.emitEvent(messageStartEvent, subscriber);
 
         List<ToolCallback> toolCallbacks = input.tools()
-                .stream()
-                .map((tool) -> new ToolCallback() {
-                    @Override
-                    public ToolDefinition getToolDefinition() {
-                        return new ToolDefinition() {
-                            @Override
-                            public String name() {
-                                return tool.name();
+            .stream()
+            .map((tool) -> new ToolCallback() {
+                @Override
+                public ToolDefinition getToolDefinition() {
+                    return new ToolDefinition() {
+                        @Override
+                        public String name() {
+                            return tool.name();
+                        }
+
+                        @Override
+                        public String description() {
+                            return tool.description();
+                        }
+
+                        @Override
+                        public String inputSchema() {
+                            try {
+                                return objectMapper.writeValueAsString(tool.parameters());
+                            } catch (JsonProcessingException e) {
+                                return "";
                             }
+                        }
+                    };
+                }
 
-                            @Override
-                            public String description() {
-                                return tool.description();
-                            }
+                @Override
+                public String call(String toolInput) {
+                    var toolCallId = UUID.randomUUID().toString();
 
-                            @Override
-                            public String inputSchema() {
-                                try {
-                                    return objectMapper.writeValueAsString(tool.parameters());
-                                } catch (JsonProcessingException e) {
-                                    return "";
-                                }
-                            }
-                        };
-                    }
+                    var toolCallStartEvent = new ToolCallStartEvent();
+                    toolCallStartEvent.setParentMessageId(messageId);
+                    toolCallStartEvent.setToolCallName(tool.name());
+                    toolCallStartEvent.setToolCallId(toolCallId);
 
-                    @Override
-                    public String call(String toolInput) {
-                        var toolCallId = UUID.randomUUID().toString();
+                    deferredToolCallEvents.add(toolCallStartEvent);
 
-                        var toolCallStartEvent = new ToolCallStartEvent();
-                        toolCallStartEvent.setParentMessageId(messageId);
-                        toolCallStartEvent.setToolCallName(tool.name());
-                        toolCallStartEvent.setToolCallId(toolCallId);
+                    var toolCallArgsEvent = new ToolCallArgsEvent();
+                    toolCallArgsEvent.setDelta(toolInput);
+                    toolCallArgsEvent.setToolCallId(toolCallId);
 
-                        deferredToolCallEvents.add(toolCallStartEvent);
+                    deferredToolCallEvents.add(toolCallArgsEvent);
 
-                        var toolCallArgsEvent = new ToolCallArgsEvent();
-                        toolCallArgsEvent.setDelta(toolInput);
-                        toolCallArgsEvent.setToolCallId(toolCallId);
+                    var toolCallEndEvent = new ToolCallEndEvent();
+                    toolCallEndEvent.setToolCallId(toolCallId);
 
-                        deferredToolCallEvents.add(toolCallArgsEvent);
+                    deferredToolCallEvents.add(toolCallEndEvent);
 
-                        var toolCallEndEvent = new ToolCallEndEvent();
-                        toolCallEndEvent.setToolCallId(toolCallId);
-
-                        deferredToolCallEvents.add(toolCallEndEvent);
-
-                        return "";
-                    }
-                }).collect(toList());
+                    return "";
+                }
+            }).collect(toList());
 
 
         this.chatClient.prompt(
-                        Prompt
-                                .builder()
-                                .messages(messages.toArray(new AbstractMessage[0]))
-                                .build()
-                )
-                .toolCallbacks(toolCallbacks)
-                .stream()
-                .chatResponse()
-                .subscribe(
-                        (evt) -> {
-                            if (StringUtils.hasText(evt.getResult().getOutput().getText())) {
-                                var messageContentEvent = new TextMessageContentEvent();
-                                messageContentEvent.setMessageId(messageId);
-                                messageContentEvent.setDelta(evt.getResult().getOutput().getText());
-                                this.emitEvent(messageContentEvent, subscriber);
-                            }
-                        },
-                        (err) -> {
-                            var runErrorEvent = new RunErrorEvent();
-                            runErrorEvent.setError(err.getMessage());
+            Prompt
+                .builder()
+                .messages(messages.toArray(new AbstractMessage[0]))
+                .build()
+            )
+            .toolCallbacks(toolCallbacks)
+            .stream()
+            .chatResponse()
+            .subscribe(
+                evt -> {
+                    if (StringUtils.hasText(evt.getResult().getOutput().getText())) {
+                        var messageContentEvent = new TextMessageContentEvent();
+                        messageContentEvent.setMessageId(messageId);
+                        messageContentEvent.setDelta(evt.getResult().getOutput().getText());
+                        this.emitEvent(messageContentEvent, subscriber);
+                    }
+                },
+                err -> {
+                    var runErrorEvent = new RunErrorEvent();
+                    runErrorEvent.setError(err.getMessage());
 
-                            this.emitEvent(runErrorEvent, subscriber);
-                        },
-                        () -> {
-                            var messageEndEvent = new TextMessageEndEvent();
-                            messageEndEvent.setMessageId(messageId);
-                            this.emitEvent(messageEndEvent, subscriber);
+                    this.emitEvent(runErrorEvent, subscriber);
+                },
+                () -> {
+                    var messageEndEvent = new TextMessageEndEvent();
+                    messageEndEvent.setMessageId(messageId);
+                    this.emitEvent(messageEndEvent, subscriber);
 
-                            deferredToolCallEvents.forEach(deferredToolCallEvent -> {
-                                this.emitEvent(deferredToolCallEvent, subscriber);
-                            });
+                    deferredToolCallEvents.forEach(deferredToolCallEvent ->
+                        this.emitEvent(deferredToolCallEvent, subscriber)
+                    );
 
-                            var runFinishedEvent = new RunFinishedEvent();
-                            runFinishedEvent.setThreadId(input.threadId());
-                            runFinishedEvent.setRunId(input.runId());
-                            this.emitEvent(runFinishedEvent, subscriber);
+                    var runFinishedEvent = new RunFinishedEvent();
+                    runFinishedEvent.setThreadId(input.threadId());
+                    runFinishedEvent.setRunId(input.runId());
+                    this.emitEvent(runFinishedEvent, subscriber);
 
-                            subscriber.onRunFinalized(new AgentSubscriberParams(this.messages, state, this, input));
-                        }
-                );
-
-
+                    subscriber.onRunFinalized(new AgentSubscriberParams(this.messages, state, this, input));
+                }
+            );
     }
 
     /**

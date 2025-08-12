@@ -28,17 +28,7 @@ import java.util.function.Consumer;
  *
  * @author Pascal Wilbrink
  */
-public abstract class BaseHttpClient {
-
-    /**
-     * Constructs a new BaseHttpClient instance.
-     * <p>
-     * Subclasses should perform any necessary initialization in their constructors,
-     * such as configuring HTTP connection pools, setting default headers,
-     * or establishing authentication parameters.
-     */
-    public BaseHttpClient() {
-    }
+public interface BaseHttpClient {
 
     /**
      * Executes an agent request and streams events back to the provided handler.
@@ -69,10 +59,10 @@ public abstract class BaseHttpClient {
      * @throws IllegalArgumentException if input or eventHandler are null
      * @throws IllegalStateException if the HTTP client is not properly initialized
      */
-    public abstract CompletableFuture<Void> streamEvents(
-            final RunAgentInput input,
-            Consumer<BaseEvent> eventHandler,
-            AtomicBoolean cancellationToken
+    public CompletableFuture<Void> streamEvents(
+        final RunAgentInput input,
+        Consumer<BaseEvent> eventHandler,
+        AtomicBoolean cancellationToken
     );
 
     /**
@@ -97,6 +87,6 @@ public abstract class BaseHttpClient {
      * This method should be idempotent - multiple calls should not cause
      * errors or unexpected behavior.
      */
-    public abstract void close();
+    void close();
 
 }

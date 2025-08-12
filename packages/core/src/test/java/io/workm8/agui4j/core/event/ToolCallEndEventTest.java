@@ -6,9 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("ToolCallEndEvent")
 class ToolCallEndEventTest {
@@ -25,5 +25,15 @@ class ToolCallEndEventTest {
         var event = new ToolCallEndEvent();
 
         assertThat(event.getTimestamp()).isCloseTo(Instant.now().toEpochMilli(), Offset.offset(1000L));
+    }
+
+    @Test
+    void shouldSetTool() {
+        var id = UUID.randomUUID().toString();
+
+        var event = new ToolCallEndEvent();
+        event.setToolCallId(id);
+
+        assertThat(event.getToolCallId()).isEqualTo(id);
     }
 }

@@ -65,12 +65,12 @@ public abstract class AbstractAgent implements Agent {
      * @param debug           whether to enable debug logging and output
      */
     public AbstractAgent(
-            String agentId,
-            String description,
-            String threadId,
-            List<BaseMessage> initialMessages,
-            State state,
-            boolean debug
+        String agentId,
+        String description,
+        String threadId,
+        List<BaseMessage> initialMessages,
+        State state,
+        boolean debug
     ) {
         this.agentId = agentId;
         this.description = Optional.ofNullable(description).orElse("");
@@ -134,9 +134,9 @@ public abstract class AbstractAgent implements Agent {
         AtomicReference<IEventStream<BaseEvent>> streamRef = new AtomicReference<>();
 
         IEventStream<BaseEvent> stream = new EventStream<>(
-                event -> handleEvent(event, subscribers, streamRef),
-                error -> handleError(error, subscribers, future),
-                () -> handleComplete(subscribers, input, future)
+            event -> handleEvent(event, subscribers, streamRef),
+            error -> handleError(error, subscribers, future),
+            () -> handleComplete(subscribers, input, future)
         );
 
         streamRef.set(stream);
@@ -192,9 +192,9 @@ public abstract class AbstractAgent implements Agent {
      * @param future      the CompletableFuture to complete
      */
     protected void handleComplete(
-            List<AgentSubscriber> subscribers,
-            RunAgentInput input,
-            CompletableFuture<Void> future
+        List<AgentSubscriber> subscribers,
+        RunAgentInput input,
+        CompletableFuture<Void> future
     ) {
         AgentSubscriberParams params = new AgentSubscriberParams(messages, state, this, input);
         subscribers.forEach(subscriber -> {
@@ -218,9 +218,9 @@ public abstract class AbstractAgent implements Agent {
      * @param future      the CompletableFuture to complete exceptionally
      */
     protected void handleError(
-            Throwable error,
-            List<AgentSubscriber> subscribers,
-            CompletableFuture<Void> future
+        Throwable error,
+        List<AgentSubscriber> subscribers,
+        CompletableFuture<Void> future
     ) {
         subscribers.forEach(subscriber -> {
             try {
@@ -465,13 +465,13 @@ public abstract class AbstractAgent implements Agent {
      */
     protected RunAgentInput prepareRunAgentInput(RunAgentParameters parameters) {
         return new RunAgentInput(
-                this.threadId,
-                Optional.ofNullable(parameters.getRunId()).orElse(UUID.randomUUID().toString()),
-                this.state,
-                this.messages,
-                Optional.ofNullable(parameters.getTools()).orElse(Collections.emptyList()),
-                Optional.ofNullable(parameters.getContext()).orElse(Collections.emptyList()),
-                parameters.getForwardedProps()
+            this.threadId,
+            Optional.ofNullable(parameters.getRunId()).orElse(UUID.randomUUID().toString()),
+            this.state,
+            this.messages,
+            Optional.ofNullable(parameters.getTools()).orElse(Collections.emptyList()),
+            Optional.ofNullable(parameters.getContext()).orElse(Collections.emptyList()),
+            parameters.getForwardedProps()
         );
     }
 

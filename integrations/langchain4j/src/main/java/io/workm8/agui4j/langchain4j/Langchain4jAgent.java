@@ -239,11 +239,11 @@ public class Langchain4jAgent implements Agent {
                         assistantMessage.setName("assistant");
                         assistantMessage.setToolCalls(new ArrayList<>());
 
-                        final List<BaseMessage> messages = input.messages();
+                        final List<BaseMessage> inputMessages = input.messages();
 
-                        messages.add(assistantMessage);
+                        inputMessages.add(assistantMessage);
 
-                        subscriber.onRunFinalized(new AgentSubscriberParams(messages, state, agent, input));
+                        subscriber.onRunFinalized(new AgentSubscriberParams(inputMessages, state, agent, input));
                     }
 
                     @Override
