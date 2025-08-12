@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that represents a snapshot of messages at a specific point in time.
  * <p>
  * This event is typically used to capture and transmit the current state of
@@ -20,7 +22,6 @@ import java.util.List;
  * actual messages.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see BaseMessage
  * @see EventType#MESSAGES_SNAPSHOT

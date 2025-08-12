@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * A concrete implementation of BaseEvent for custom user-defined events.
  * <p>
  * This event type is intended for application-specific events that don't
@@ -15,7 +17,6 @@ import io.workm8.agui4j.core.type.EventType;
  * event information.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#CUSTOM
  */

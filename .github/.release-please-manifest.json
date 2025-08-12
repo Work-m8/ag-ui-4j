@@ -1,3 +1,10 @@
 {
-  "packages/core": "0.0.0"
+  "packages/core": "0.0.0",
+  "packages/client": "0.0.0",
+  "packages/http": "0.0.0",
+  "packages/server": "0.0.0",
+  "integrations/langchain4j": "0.0.0",
+  "integrations/spring-ai": "0.0.0",
+  "clients/ok-http": "0.0.0",
+  "utils/json": "0.0.0"
 }

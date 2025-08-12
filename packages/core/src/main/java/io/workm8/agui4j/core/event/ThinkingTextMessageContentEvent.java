@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that represents text content generated during a thinking or reasoning phase.
  * <p>
  * This event is fired when a system or AI component produces text output as part
@@ -16,7 +18,6 @@ import io.workm8.agui4j.core.type.EventType;
  * {@link BaseEvent#setRawEvent(Object)} method.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#THINKING_TEXT_MESSAGE_CONTENT
  * @see ThinkingStartEvent

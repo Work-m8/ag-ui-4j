@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- * @author pascalwilbrink
+ * @author Pascal Wilbrink
  *
  * Abstract base class for all events that the AG-UI protocol can emit.
  * <p>

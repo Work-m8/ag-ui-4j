@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.function;
 import java.util.Objects;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * Represents a function call with its name and arguments.
  * <p>
  * This record provides an immutable data structure for storing information
@@ -15,7 +17,6 @@ import java.util.Objects;
  * @param arguments the arguments for the function call, typically in JSON
  *                  or serialized format. Cannot be null.
  *
- * @author pascalwilbrink
  */
 public record FunctionCall(String name, String arguments) {
     public FunctionCall {

@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
- * @author pascalwilbrink
+ * @author Pascal Wilbrink
  *
  * Represents a context entry containing a description and associated value.
  *

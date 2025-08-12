@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that signals the beginning of thinking text message content generation.
  * <p>
  * This event is fired when a system or AI component begins generating text
@@ -15,7 +17,6 @@ import io.workm8.agui4j.core.type.EventType;
  * and establishes the context for the thinking text stream that will follow.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#THINKING_TEXT_MESSAGE_START
  * @see ThinkingTextMessageEndEvent

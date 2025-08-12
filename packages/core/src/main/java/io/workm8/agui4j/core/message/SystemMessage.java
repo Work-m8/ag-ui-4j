@@ -1,6 +1,8 @@
 package io.workm8.agui4j.core.message;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * A message representing communication from the system itself.
  * <p>
  * This message type is used for communications that originate from the system,
@@ -15,7 +17,6 @@ package io.workm8.agui4j.core.message;
  * be processed by other system components.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseMessage
  */
 public class SystemMessage extends BaseMessage {

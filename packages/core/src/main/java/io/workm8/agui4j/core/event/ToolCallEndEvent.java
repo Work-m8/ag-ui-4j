@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that signals the completion of a tool call.
  * <p>
  * This event is fired when a tool call has finished executing, marking the
@@ -15,7 +17,6 @@ import io.workm8.agui4j.core.type.EventType;
  * and identifies the completed tool call through its unique identifier.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TOOL_CALL_END
  * @see ToolCallStartEvent

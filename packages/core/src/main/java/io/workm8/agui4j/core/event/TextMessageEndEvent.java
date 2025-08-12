@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that signals the completion of a text message stream.
  * <p>
  * This event is fired when a text message has finished streaming and no more
@@ -15,7 +17,6 @@ import io.workm8.agui4j.core.type.EventType;
  * and identifies the completed message through its unique identifier.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TEXT_MESSAGE_END
  * @see TextMessageStartEvent

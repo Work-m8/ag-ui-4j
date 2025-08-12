@@ -9,9 +9,10 @@
     </parent>
 
     <artifactId>core</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
     <name>AG-UI-4J Core</name>
     <description>AG-UI-4J Core library</description>
-    <version>0.0.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -45,7 +46,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>

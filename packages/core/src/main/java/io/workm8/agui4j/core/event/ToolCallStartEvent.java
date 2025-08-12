@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that signals the initiation of a tool call.
  * <p>
  * This event is fired when a tool call begins execution, marking the start
@@ -15,7 +17,6 @@ import io.workm8.agui4j.core.type.EventType;
  * and establishes the context for the tool call execution that will follow.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TOOL_CALL_START
  * @see ToolCallEndEvent

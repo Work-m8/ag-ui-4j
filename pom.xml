@@ -11,6 +11,15 @@
 
     <modules>
         <module>packages/core</module>
+        <module>packages/client</module>
+        <module>utils/json</module>
+        <module>packages/http</module>
+        <module>clients/ok-http</module>
+        <module>integrations/spring-ai</module>
+        <module>integrations/langchain4j</module>
+        <module>examples/spring-ai-example</module>
+        <module>packages/server</module>
+        <module>examples/langchain4j-example</module>
     </modules>
 
     <properties>
@@ -41,6 +50,7 @@
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <versions-maven-plugin.version>2.16.0</versions-maven-plugin.version>
     </properties>
+
 
     <url>https://github.com/work-m8/ag-ui-4j</url>
 

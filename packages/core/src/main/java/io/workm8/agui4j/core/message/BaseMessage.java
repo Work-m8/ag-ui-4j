@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.message;
 import java.util.UUID;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * Abstract base class for all message types in the system.
  * <p>
  * This class provides common functionality for messages including unique
@@ -16,7 +18,6 @@ import java.util.UUID;
  * whether between users, AI assistants, or system components.
  * </p>
  *
- * @author pascalwilbrink
  */
 public abstract class BaseMessage {
 

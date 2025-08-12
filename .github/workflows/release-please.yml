@@ -19,6 +19,9 @@ jobs:
       packages-core--release_created: ${{ steps.release.outputs['packages/core--release_created'] }}
       packages-core--tag_name: ${{ steps.release.outputs['packages/core--tag_name'] }}
       packages-core--version: ${{ steps.release.outputs['packages/core--version'] }}
+      packages-client--release_created: ${{ steps.release.outputs['packages/client--release_created'] }}
+      packages-client--tag_name: ${{ steps.release.outputs['packages/client--tag_name'] }}
+      packages-client--version: ${{ steps.release.outputs['packages/client--version'] }}
     steps:
       - name: Run release-please
         id: release
@@ -87,5 +90,68 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           mvn deploy -pl packages/core -am -DskipTests -s .github/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Build and publish client module when released
+  publish-client:
+    needs: release-please
+    if: needs.release-please.outputs.packages-client--release_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+
+      - name: Update client module version
+        run: |
+          cd packages/client
+          mvn versions:set -DnewVersion=${{ needs.release-please.outputs.packages-client--version }}
+          mvn versions:commit
+
+      - name: Build and test client module
+        run: |
+          mvn clean test -pl packages/client -am
+
+      - name: Package client module
+        run: |
+          mvn package -pl packages/client -am -DskipTests
+
+      - name: Create release assets
+        run: |
+          mkdir -p release-assets/client
+          cp packages/client/target/*.jar release-assets/client/
+          cp packages/client/pom.xml release-assets/client/client-pom.xml
+          
+          # Generate module-specific release notes
+          echo "# Client Module Release ${{ needs.release-please.outputs.packages-client--version }}" > release-assets/client/README.md
+          echo "" >> release-assets/client/README.md
+          echo "Built from commit: ${{ github.sha }}" >> release-assets/client/README.md
+          echo "Release date: $(date)" >> release-assets/client/README.md
+
+      - name: Upload assets to release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.release-please.outputs.packages-client--tag_name }}
+          files: |
+            release-assets/client/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Publish to GitHub Packages
+      - name: Publish to GitHub Packages
+        run: |
+          mvn deploy -pl packages/client -am -DskipTests -s .github/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

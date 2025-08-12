@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that represents content updates for a text message.
  * <p>
  * This event is used to deliver incremental content updates for text messages,
@@ -15,7 +17,6 @@ import io.workm8.agui4j.core.type.EventType;
  * and provides fields to identify the target message and deliver the content delta.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TEXT_MESSAGE_CONTENT
  * @see TextMessageChunkEvent

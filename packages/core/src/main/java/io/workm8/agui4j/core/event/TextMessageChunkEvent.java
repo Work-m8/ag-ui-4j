@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that represents a partial chunk of a text message being streamed.
  * <p>
  * This event is typically used in streaming scenarios where text messages
@@ -16,7 +18,6 @@ import io.workm8.agui4j.core.type.EventType;
  * incremental text content (delta).
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TEXT_MESSAGE_CHUNK
  */

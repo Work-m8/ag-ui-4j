@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event for handling unprocessed or low-level system events.
  * <p>
  * This event type is designed to wrap raw, unfiltered event data that
@@ -16,7 +18,6 @@ import io.workm8.agui4j.core.type.EventType;
  * pipeline.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#RAW
  */

@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that represents a chunk of data in a streaming tool call.
  * <p>
  * This event is fired when tool call information is being delivered incrementally
@@ -17,7 +19,6 @@ import io.workm8.agui4j.core.type.EventType;
  * information for correlation and debugging purposes.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TOOL_CALL_CHUNK
  * @see ToolCallArgsEvent

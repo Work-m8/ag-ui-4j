@@ -3,6 +3,8 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * An event that represents the initiation of a specific step within a process or workflow.
  * <p>
  * This event is fired when an individual step in a larger execution sequence
@@ -14,7 +16,6 @@ import io.workm8.agui4j.core.type.EventType;
  * captures the name of the step being initiated for identification purposes.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#STEP_STARTED
  * @see StepFinishedEvent

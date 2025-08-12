@@ -1,6 +1,8 @@
 package io.workm8.agui4j.core.message;
 
 /**
+ * @author Pascal Wilbrink
+ *
  * A message representing communication from a developer or system administrator.
  * <p>
  * This message type is used for communications that originate from developers,
@@ -14,7 +16,6 @@ package io.workm8.agui4j.core.message;
  * for technical audiences or system processing.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseMessage
  */
 public class DeveloperMessage extends BaseMessage {
