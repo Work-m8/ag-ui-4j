@@ -19,8 +19,6 @@ import java.util.concurrent.CompletableFuture;
 import static java.util.stream.Collectors.toList;
 
 /**
- * @author Pascal Wilbrink
- *
  * Agent implementation that integrates with Spring AI's ChatClient for AI conversations.
  * <p>
  * SpringAIAgent provides a bridge between the agui4j agent framework and Spring AI's
@@ -60,6 +58,8 @@ import static java.util.stream.Collectors.toList;
  * agent.setState(new State());
  * agent.runAgent(parameters, subscriber);
  * }</pre>
+ *
+ * @author Pascal Wilbrink
  */
 public class SpringAIAgent implements Agent {
 

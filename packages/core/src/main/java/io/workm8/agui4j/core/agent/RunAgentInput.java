@@ -8,8 +8,6 @@ import io.workm8.agui4j.core.tool.Tool;
 import java.util.List;
 
 /**
- * @author Pascal Wilbrink
- *
  * Immutable input parameters for agent execution containing all necessary context and configuration.
  * <p>
  * This record encapsulates all the information required to initiate and configure an agent run,
@@ -35,6 +33,8 @@ import java.util.List;
  * @param forwardedProps arbitrary properties forwarded from the calling context, allowing
  *                      for flexible extension and custom configuration without modifying
  *                      the core input structure
+ *
+ * @author Pascal Wilbrink
  */
 public record RunAgentInput(
     String threadId,

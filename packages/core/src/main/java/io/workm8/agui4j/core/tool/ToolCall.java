@@ -5,8 +5,6 @@ import io.workm8.agui4j.core.function.FunctionCall;
 import java.util.Objects;
 
 /**
- * @author Pascal Wilbrink
- *
  * Represents an invocation of a tool with its execution details.
  * <p>
  * This record provides an immutable data structure for storing information
@@ -29,6 +27,8 @@ import java.util.Objects;
  *
  * @see Tool
  * @see FunctionCall
+ *
+ * @author Pascal Wilbrink
  */
 public record ToolCall(String id, String type, FunctionCall function) {
     public ToolCall {

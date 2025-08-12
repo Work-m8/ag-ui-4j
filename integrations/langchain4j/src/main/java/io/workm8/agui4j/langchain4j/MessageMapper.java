@@ -4,8 +4,6 @@ import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.data.message.TextContent;
 
 /**
- * @author Pascal Wilbrink
- *
  * Utility class for converting agui4j message formats to LangChain4j message formats.
  * <p>
  * MessageMapper provides bidirectional conversion between the agui4j message hierarchy
@@ -31,6 +29,8 @@ import dev.langchain4j.data.message.TextContent;
  * <p>
  * This class is stateless and thread-safe, making it suitable for use in
  * concurrent environments and as a singleton or utility class.
+ *
+ * @author Pascal Wilbrink
  */
 public class MessageMapper {
 

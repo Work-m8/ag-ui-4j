@@ -1,8 +1,6 @@
 package io.workm8.agui4j.core.type;
 
 /**
- * @author Pascal Wilbrink
- *
  * Enumeration of all supported event types in the AGUI system.
  * <p>
  * This enum defines the complete set of event types that can occur within
@@ -25,6 +23,8 @@ package io.workm8.agui4j.core.type;
  * </ul>
  *
  * @see io.workm8.agui4j.core.event.BaseEvent
+ *
+ * @author Pascal Wilbrink
  */
 public enum EventType {
     /** Signals the start of a text message stream */

@@ -5,8 +5,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
- * @author Pascal Wilbrink
- *
  * Concrete implementation of {@link IEventStream} that provides thread-safe event stream processing
  * with customizable handlers for data, errors, and completion.
  * <p>
@@ -30,6 +28,8 @@ import java.util.function.Consumer;
  * }</pre>
  *
  * @param <T> the type of items processed by this stream
+ *
+ * @author Pascal Wilbrink
  */
 public class EventStream<T> implements IEventStream<T> {
     private final Consumer<T> onNext;

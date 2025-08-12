@@ -11,8 +11,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 /**
- * @author Pascal Wilbrink
- *
  * Utility class for converting agui4j message formats to Spring AI message formats.
  * <p>
  * MessageMapper provides comprehensive conversion between the agui4j message hierarchy
@@ -41,6 +39,8 @@ import static java.util.Collections.emptyList;
  * <p>
  * This class is stateless and thread-safe, making it suitable for use in
  * concurrent environments and as a singleton or utility class.
+ *
+ * @author Pascal Wilbrink
  */
 public class MessageMapper {
 

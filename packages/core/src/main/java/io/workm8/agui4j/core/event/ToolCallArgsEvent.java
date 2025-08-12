@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that represents incremental arguments being provided to a tool call.
  * <p>
  * This event is fired when arguments for a tool call are being streamed or
@@ -22,6 +20,8 @@ import io.workm8.agui4j.core.type.EventType;
  * @see EventType#TOOL_CALL_ARGS
  * @see ToolCallStartEvent
  * @see ToolCallEndEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ToolCallArgsEvent extends BaseEvent {
 

@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that represents an error that occurred during a run or execution.
  * <p>
  * This event is fired when an error occurs during the execution of a process,
@@ -18,6 +16,8 @@ import io.workm8.agui4j.core.type.EventType;
  *
  * @see BaseEvent
  * @see EventType#RUN_ERROR
+ *
+ * @author Pascal Wilbrink
  */
 public class RunErrorEvent extends BaseEvent {
 

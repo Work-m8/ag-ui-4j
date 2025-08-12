@@ -8,8 +8,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
- * @author Pascal Wilbrink
- *
  * Abstract base class for HTTP clients that facilitate agent communication with remote services.
  * <p>
  * This class provides the fundamental contract for HTTP-based agent execution, including
@@ -27,6 +25,8 @@ import java.util.function.Consumer;
  * <li>Connection management and cleanup</li>
  * <li>Error handling and retry logic</li>
  * </ul>
+ *
+ * @author Pascal Wilbrink
  */
 public abstract class BaseHttpClient {
 

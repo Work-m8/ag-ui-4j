@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that represents a change or delta in the application state.
  * <p>
  * This event is fired when there are incremental changes to the system state
@@ -19,6 +17,8 @@ import io.workm8.agui4j.core.type.EventType;
  *
  * @see BaseEvent
  * @see EventType#STATE_DELTA
+ *
+ * @author Pascal Wilbrink
  */
 public class StateDeltaEvent extends BaseEvent {
 

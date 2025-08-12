@@ -18,8 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Pascal Wilbrink
- *
  * Abstract base implementation of the Agent interface providing common functionality
  * for agent execution, event handling, and subscriber management.
  * <p>
@@ -40,6 +38,8 @@ import java.util.logging.Logger;
  * <p>
  * Many methods are marked as protected to allow subclasses to customize event handling,
  * message processing, and other aspects of the agent execution lifecycle.
+ *
+ * @author Pascal Wilbrink
  */
 public abstract class AbstractAgent implements Agent {
     private static final Logger logger = Logger.getLogger(AbstractAgent.class.getName());

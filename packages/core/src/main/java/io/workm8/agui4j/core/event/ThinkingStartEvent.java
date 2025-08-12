@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that signals the beginning of a thinking or processing phase.
  * <p>
  * This event is fired when a system or AI component begins its internal
@@ -21,6 +19,8 @@ import io.workm8.agui4j.core.type.EventType;
  * @see BaseEvent
  * @see EventType#THINKING_START
  * @see ThinkingEndEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ThinkingStartEvent extends BaseEvent {
 

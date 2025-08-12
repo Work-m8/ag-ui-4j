@@ -1,8 +1,6 @@
 package io.workm8.agui4j.core.exception;
 
 /**
- * @author Pascal Wilbrink
- *
  * A custom exception class for AGUI-specific errors and exceptional conditions.
  * <p>
  * This exception serves as the base exception type for all AGUI-related errors
@@ -16,6 +14,8 @@ package io.workm8.agui4j.core.exception;
  * </p>
  *
  * @see Exception
+ *
+ * @author Pascal Wilbrink
  */
 public class AGUIException extends Exception {
 

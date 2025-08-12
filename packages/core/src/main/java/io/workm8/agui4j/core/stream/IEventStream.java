@@ -1,8 +1,6 @@
 package io.workm8.agui4j.core.stream;
 
 /**
- * @author Pascal Wilbrink
- *
  * Interface for handling reactive event streams with support for data emission, error handling, and completion.
  * <p>
  * This interface follows the reactive streams pattern, allowing consumers to handle a stream of events
@@ -24,6 +22,8 @@ package io.workm8.agui4j.core.stream;
  * }</pre>
  *
  * @param <T> the type of items emitted by this stream
+ *
+ * @author Pascal Wilbrink
  */
 public interface IEventStream<T> {
 

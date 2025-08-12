@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Pascal Wilbrink
- *
  * Factory class for creating and managing chat messages during streaming operations.
  * <p>
  * This factory supports building messages incrementally by receiving chunks of content
@@ -17,6 +15,7 @@ import java.util.Map;
  * It also provides specialized operations for assistant and tool messages.
  * </p>
  *
+ * @author Pascal Wilbrink
  */
 public class MessageFactory {
 

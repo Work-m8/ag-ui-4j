@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Pascal Wilbrink
- *
  * A state container for storing and managing key-value pairs.
  * <p>
  * This class provides a simple state management mechanism using a map-based
@@ -19,6 +17,7 @@ import java.util.Map;
  * map implementations.
  * </p>
  *
+ * @author Pascal Wilbrink
  */
 public class State {
 

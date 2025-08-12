@@ -6,8 +6,6 @@ import io.workm8.agui4j.core.message.*;
 
 
 /**
- * @author Pascal Wilbrink
- *
  * Jackson mixin interface for configuring JSON serialization of BaseMessage and its subclasses.
  * <p>
  * MessageMixin provides Jackson annotations to enable proper polymorphic serialization and
@@ -58,6 +56,8 @@ import io.workm8.agui4j.core.message.*;
  * The role-based discrimination is particularly useful for conversation persistence,
  * API communication, and maintaining conversation context across different components
  * of the agui4j framework.
+ *
+ * @author Pascal Wilbrink
  */
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

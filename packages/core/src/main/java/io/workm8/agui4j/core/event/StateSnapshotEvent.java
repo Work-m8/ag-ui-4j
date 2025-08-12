@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that represents a complete snapshot of the application state.
  * <p>
  * This event is fired when a full capture of the current system state is
@@ -21,6 +19,8 @@ import io.workm8.agui4j.core.type.EventType;
  * @see BaseEvent
  * @see EventType#STATE_SNAPSHOT
  * @see StateDeltaEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class StateSnapshotEvent extends BaseEvent {
 

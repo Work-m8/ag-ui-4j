@@ -8,8 +8,6 @@ import io.workm8.agui4j.core.event.BaseEvent;
 import io.workm8.agui4j.core.stream.EventStream;
 
 /**
- * @author Pascal Wilbrink
- *
  * Utility class that bridges agent execution with reactive event streaming.
  * <p>
  * AgentStreamer provides a convenient way to convert agent execution from the
@@ -45,6 +43,8 @@ import io.workm8.agui4j.core.stream.EventStream;
  *     () -> handleComplete()
  * );
  * }</pre>
+ *
+ * @author Pascal Wilbrink
  */
 public class AgentStreamer {
 

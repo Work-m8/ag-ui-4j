@@ -6,8 +6,6 @@ import io.workm8.agui4j.core.tool.Tool;
 import java.util.List;
 
 /**
- * @author Pascal Wilbrink
- *
  * Immutable configuration parameters for agent execution using the Builder pattern.
  * <p>
  * RunAgentParameters provides a flexible way to configure agent execution through a fluent
@@ -26,6 +24,8 @@ import java.util.List;
  *     .context(executionContext)
  *     .build();
  * }</pre>
+ *
+ * @author Pascal Wilbrink
  */
 public class RunAgentParameters {
     private final String runId;

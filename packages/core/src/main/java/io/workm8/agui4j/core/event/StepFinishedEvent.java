@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that represents the completion of a specific step within a process or workflow.
  * <p>
  * This event is fired when an individual step in a larger execution sequence
@@ -20,6 +18,8 @@ import io.workm8.agui4j.core.type.EventType;
  * @see BaseEvent
  * @see EventType#STEP_FINISHED
  * @see StepStartedEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class StepFinishedEvent extends BaseEvent {
 

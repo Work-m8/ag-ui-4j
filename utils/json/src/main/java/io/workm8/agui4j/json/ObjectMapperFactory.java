@@ -9,8 +9,6 @@ import io.workm8.agui4j.json.mixins.MessageMixin;
 import io.workm8.agui4j.json.mixins.StateMixin;
 
 /**
- * @author Pascal Wilbrink
- *
  * Factory class for configuring Jackson ObjectMapper instances with agui4j-specific mixins.
  * <p>
  * ObjectMapperFactory provides utility methods for enhancing Jackson ObjectMapper instances
@@ -42,6 +40,8 @@ import io.workm8.agui4j.json.mixins.StateMixin;
  * String json = mapper.writeValueAsString(baseMessage);
  * BaseMessage message = mapper.readValue(json, BaseMessage.class);
  * }</pre>
+ *
+ * @author Pascal Wilbrink
  */
 public class ObjectMapperFactory {
 

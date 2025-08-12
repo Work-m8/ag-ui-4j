@@ -3,7 +3,6 @@ package io.workm8.agui4j.core.agent;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * @author Pascal Wilbrink
  *
  * Core interface for AI agent execution within the agui4j framework.
  * <p>
@@ -15,6 +14,8 @@ import java.util.concurrent.CompletableFuture;
  * allowing for efficient resource utilization and responsive user interfaces.
  * Progress and events during execution are communicated through the provided
  * AgentSubscriber callback interface.
+ *
+ * @author Pascal Wilbrink
  */
 public interface Agent {
 

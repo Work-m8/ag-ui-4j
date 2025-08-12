@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that signals the completion of thinking text message content.
  * <p>
  * This event is fired when a system or AI component has finished generating
@@ -23,6 +21,8 @@ import io.workm8.agui4j.core.type.EventType;
  * @see ThinkingTextMessageStartEvent
  * @see ThinkingTextMessageContentEvent
  * @see ThinkingEndEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ThinkingTextMessageEndEvent extends BaseEvent {
 

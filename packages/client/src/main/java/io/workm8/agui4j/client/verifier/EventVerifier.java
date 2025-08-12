@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * @author Pascal Wilbrink
- *
  * Validates the sequence and state consistency of events in an AGUI run.
  * <p>
  * This verifier ensures that events are sent in the correct order and that
@@ -29,6 +27,7 @@ import java.util.Objects;
  *   <li>No events allowed after RUN_FINISHED or RUN_ERROR</li>
  * </ul>
  *
+ * @author Pascal Wilbrink
  */
 public class EventVerifier {
 

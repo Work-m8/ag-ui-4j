@@ -6,8 +6,6 @@ import io.workm8.agui4j.core.state.State;
 import java.util.List;
 
 /**
- * @author Pascal Wilbrink
- *
  * Immutable parameter object containing context and state information for agent subscriber callbacks.
  * <p>
  * This record encapsulates all the essential information that subscriber methods need to
@@ -25,5 +23,7 @@ import java.util.List;
  *                these subscriber callbacks
  * @param input    the original input parameters that were provided when the
  *                agent run was initiated
+ *
+ * @author Pascal Wilbrink
  */
 public record AgentSubscriberParams(List<BaseMessage> messages, State state, Agent agent, RunAgentInput input) { }

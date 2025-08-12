@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that represents the successful completion of a run or execution.
  * <p>
  * This event is fired when a process, operation, or run cycle completes
@@ -18,6 +16,8 @@ import io.workm8.agui4j.core.type.EventType;
  *
  * @see BaseEvent
  * @see EventType#RUN_FINISHED
+ *
+ * @author Pascal Wilbrink
  */
 public class RunFinishedEvent extends BaseEvent {
 

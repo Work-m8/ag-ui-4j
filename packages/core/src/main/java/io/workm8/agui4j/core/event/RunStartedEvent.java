@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that represents the initiation of a run or execution.
  * <p>
  * This event is fired when a process, operation, or run cycle begins
@@ -21,6 +19,8 @@ import io.workm8.agui4j.core.type.EventType;
  * @see EventType#RUN_STARTED
  * @see RunFinishedEvent
  * @see RunErrorEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class RunStartedEvent extends BaseEvent {
 

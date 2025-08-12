@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import java.util.Map;
 
 /**
- * @author Pascal Wilbrink
- *
  * Jackson mixin interface for configuring JSON serialization of State objects.
  * <p>
  * StateMixin provides Jackson annotations to enable flexible JSON serialization and
@@ -61,6 +59,8 @@ import java.util.Map;
  * The mixin eliminates the need for wrapper objects or nested structures,
  * providing a clean, flat JSON representation that's easy to work with
  * in both client and server environments.
+ *
+ * @author Pascal Wilbrink
  */
 public interface StateMixin {
 

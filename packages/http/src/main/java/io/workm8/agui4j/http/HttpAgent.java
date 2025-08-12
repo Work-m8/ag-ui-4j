@@ -13,8 +13,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * @author Pascal Wilbrink
- *
  * HTTP-based agent implementation that delegates execution to remote services via HTTP clients.
  * <p>
  * HttpAgent extends AbstractAgent to provide agent execution capabilities through HTTP
@@ -43,6 +41,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *     .debug(true)
  *     .build();
  * }</pre>
+ *
+ * @author Pascal Wilbrink
  */
 public class HttpAgent extends AbstractAgent {
 

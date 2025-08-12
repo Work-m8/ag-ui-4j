@@ -1,10 +1,7 @@
 package io.workm8.agui4j.langchain4j;
 
-import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
-import dev.langchain4j.model.chat.request.ToolChoice;
-import dev.langchain4j.model.chat.request.json.JsonObjectSchema;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.CompleteToolCall;
 import dev.langchain4j.model.chat.response.PartialToolCall;
@@ -22,8 +19,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * @author Pascal Wilbrink
- *
  * Agent implementation that integrates with LangChain4j's StreamingChatModel for AI conversations.
  * <p>
  * Langchain4jAgent provides a bridge between the agui4j agent framework and LangChain4j's
@@ -57,6 +52,8 @@ import java.util.concurrent.CompletableFuture;
  *     initialMessages
  * );
  * }</pre>
+ *
+ * @author Pascal Wilbrink
  */
 public class Langchain4jAgent implements Agent {
 

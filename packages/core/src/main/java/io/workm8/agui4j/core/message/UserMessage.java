@@ -1,8 +1,6 @@
 package io.workm8.agui4j.core.message;
 
 /**
- * @author Pascal Wilbrink
- *
  * A message representing communication from a user.
  * <p>
  * This message type is used for communications that originate from end users
@@ -18,6 +16,8 @@ package io.workm8.agui4j.core.message;
  * </p>
  *
  * @see BaseMessage
+ *
+ * @author Pascal Wilbrink
  */
 public class UserMessage extends BaseMessage {
 

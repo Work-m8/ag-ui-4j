@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.workm8.agui4j.core.event.*;
 
 /**
- * @author Pascal Wilbrink
- *
  * Jackson mixin interface for configuring JSON serialization of BaseEvent and its subclasses.
  * <p>
  * EventMixin provides Jackson annotations to enable proper polymorphic serialization and
@@ -50,6 +48,8 @@ import io.workm8.agui4j.core.event.*;
  *   "timestamp": "2023-12-01T10:30:00Z"
  * }
  * }</pre>
+ *
+ * @author Pascal Wilbrink
  */
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

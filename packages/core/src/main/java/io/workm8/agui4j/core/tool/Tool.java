@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * @author Pascal Wilbrink
- *
  * Represents a tool that can be invoked within the system.
  * <p>
  * This record provides an immutable data structure for storing tool metadata
@@ -27,6 +25,8 @@ import java.util.Objects;
  *                    the tool accepts no parameters.
  *
  * @see ToolCall
+ *
+ * @author Pascal Wilbrink
  */
 public record Tool(String name, String description, ToolParameters parameters) {
     public Tool {

@@ -5,8 +5,6 @@ import io.workm8.agui4j.core.message.BaseMessage;
 import io.workm8.agui4j.core.tool.ToolCall;
 
 /**
- * @author Pascal Wilbrink
- *
  * Interface for subscribing to agent lifecycle events, state changes, and real-time updates.
  * <p>
  * AgentSubscriber provides a comprehensive set of callback methods that allow implementers to
@@ -20,6 +18,7 @@ import io.workm8.agui4j.core.tool.ToolCall;
  * All methods have default empty implementations, allowing implementers to selectively
  * override only the events they're interested in.
  *
+ * @author Pascal Wilbrink
  */
 public interface AgentSubscriber {
 

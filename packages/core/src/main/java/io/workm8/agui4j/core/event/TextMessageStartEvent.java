@@ -3,8 +3,6 @@ package io.workm8.agui4j.core.event;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
- * @author Pascal Wilbrink
- *
  * An event that signals the beginning of a text message stream.
  * <p>
  * This event is fired when a text message begins streaming, marking the start
@@ -22,6 +20,8 @@ import io.workm8.agui4j.core.type.EventType;
  * @see TextMessageEndEvent
  * @see TextMessageContentEvent
  * @see TextMessageChunkEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class TextMessageStartEvent extends BaseEvent {
 

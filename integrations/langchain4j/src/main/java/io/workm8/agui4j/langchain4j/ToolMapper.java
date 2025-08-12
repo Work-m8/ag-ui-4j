@@ -5,8 +5,6 @@ import dev.langchain4j.model.chat.request.json.JsonObjectSchema;
 import io.workm8.agui4j.core.tool.Tool;
 
 /**
- * @author Pascal Wilbrink
- *
  * Utility class for converting agui4j tool definitions to LangChain4j tool specifications.
  * <p>
  * ToolMapper provides conversion functionality between agui4j's Tool format and LangChain4j's
@@ -30,6 +28,8 @@ import io.workm8.agui4j.core.tool.Tool;
  * <p>
  * This class is stateless and thread-safe, making it suitable for use in
  * concurrent environments and as a singleton or utility class.
+ *
+ * @author Pascal Wilbrink
  */
 public class ToolMapper {
 

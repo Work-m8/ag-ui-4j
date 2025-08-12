@@ -1,8 +1,6 @@
 package io.workm8.agui4j.core.message;
 
 /**
- * @author Pascal Wilbrink
- *
  * A message representing the result or response from a tool execution.
  * <p>
  * This message type is used to communicate the results of tool calls back
@@ -18,6 +16,8 @@ package io.workm8.agui4j.core.message;
  *
  * @see BaseMessage
  * @see io.workm8.agui4j.core.tool.ToolCall
+ *
+ * @author Pascal Wilbrink
  */
 public class ToolMessage extends BaseMessage {
 
