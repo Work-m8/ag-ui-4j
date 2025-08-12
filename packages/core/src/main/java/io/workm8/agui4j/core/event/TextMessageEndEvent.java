@@ -15,12 +15,13 @@ import io.workm8.agui4j.core.type.EventType;
  * and identifies the completed message through its unique identifier.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TEXT_MESSAGE_END
  * @see TextMessageStartEvent
  * @see TextMessageContentEvent
  * @see TextMessageChunkEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class TextMessageEndEvent extends BaseEvent {
 

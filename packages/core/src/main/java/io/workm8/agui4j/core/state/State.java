@@ -17,7 +17,7 @@ import java.util.Map;
  * map implementations.
  * </p>
  *
- * @author pascalwilbrink
+ * @author Pascal Wilbrink
  */
 public class State {
 

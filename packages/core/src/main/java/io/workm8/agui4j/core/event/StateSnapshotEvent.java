@@ -16,10 +16,11 @@ import io.workm8.agui4j.core.type.EventType;
  * {@link BaseEvent#setRawEvent(Object)} method.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#STATE_SNAPSHOT
  * @see StateDeltaEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class StateSnapshotEvent extends BaseEvent {
 

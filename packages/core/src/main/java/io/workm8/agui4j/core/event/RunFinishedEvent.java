@@ -14,9 +14,10 @@ import io.workm8.agui4j.core.type.EventType;
  * provides fields to store the thread ID, run ID, and execution result.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#RUN_FINISHED
+ *
+ * @author Pascal Wilbrink
  */
 public class RunFinishedEvent extends BaseEvent {
 

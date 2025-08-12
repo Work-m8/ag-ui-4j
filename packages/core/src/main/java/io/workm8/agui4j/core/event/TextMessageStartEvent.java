@@ -15,12 +15,13 @@ import io.workm8.agui4j.core.type.EventType;
  * and establishes the context for the streaming message that will follow.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TEXT_MESSAGE_START
  * @see TextMessageEndEvent
  * @see TextMessageContentEvent
  * @see TextMessageChunkEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class TextMessageStartEvent extends BaseEvent {
 

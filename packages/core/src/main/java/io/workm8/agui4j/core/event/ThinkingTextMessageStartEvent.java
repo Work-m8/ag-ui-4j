@@ -15,12 +15,13 @@ import io.workm8.agui4j.core.type.EventType;
  * and establishes the context for the thinking text stream that will follow.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#THINKING_TEXT_MESSAGE_START
  * @see ThinkingTextMessageEndEvent
  * @see ThinkingTextMessageContentEvent
  * @see ThinkingStartEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ThinkingTextMessageStartEvent extends BaseEvent {
 

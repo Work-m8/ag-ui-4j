@@ -15,12 +15,13 @@ import io.workm8.agui4j.core.type.EventType;
  * and identifies the completed tool call through its unique identifier.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TOOL_CALL_END
  * @see ToolCallStartEvent
  * @see ToolCallChunkEvent
  * @see ToolCallArgsEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ToolCallEndEvent extends BaseEvent {
 

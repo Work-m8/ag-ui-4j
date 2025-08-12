@@ -15,8 +15,9 @@ package io.workm8.agui4j.core.message;
  * actions from the system.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseMessage
+ *
+ * @author Pascal Wilbrink
  */
 public class UserMessage extends BaseMessage {
 

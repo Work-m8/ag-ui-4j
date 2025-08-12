@@ -1,5 +1,9 @@
 package io.workm8.agui4j.core.tool;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * Represents a tool that can be invoked within the system.
  * <p>
@@ -20,7 +24,17 @@ package io.workm8.agui4j.core.tool;
  *                    a JSON Schema object or similar structure. Can be null if
  *                    the tool accepts no parameters.
  *
- * @author pascalwilbrink
  * @see ToolCall
+ *
+ * @author Pascal Wilbrink
  */
-public record Tool(String name, String description, Object parameters) { }
+public record Tool(String name, String description, ToolParameters parameters) {
+    public Tool {
+        Objects.requireNonNull(name, "name cannot be null");
+    }
+
+    public record ToolParameters(String type, Map<String, ToolProperty> properties, List<String> required) { }
+
+    public record ToolProperty(String type, String description) { }
+}
+

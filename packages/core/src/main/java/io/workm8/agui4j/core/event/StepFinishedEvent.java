@@ -15,10 +15,11 @@ import io.workm8.agui4j.core.type.EventType;
  * captures the name of the completed step for identification purposes.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#STEP_FINISHED
  * @see StepStartedEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class StepFinishedEvent extends BaseEvent {
 

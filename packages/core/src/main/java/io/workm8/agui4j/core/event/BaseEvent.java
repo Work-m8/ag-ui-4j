@@ -7,8 +7,6 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- * @author pascalwilbrink
- *
  * Abstract base class for all events that the AG-UI protocol can emit.
  * <p>
  * This class provides common functionality for events including type identification,
@@ -20,6 +18,8 @@ import java.util.Objects;
  * but can be overridden if needed. The raw event object can store the original
  * event data from external sources.
  * </p>
+ *
+ * @author Pascal Wilbrink
  */
 public abstract class BaseEvent {
 
@@ -40,7 +40,7 @@ public abstract class BaseEvent {
      * @throws NullPointerException if type is null
      */
     public BaseEvent(@NotNull final EventType type) {
-        Objects.requireNonNull(rawEvent, "type cannot be null");
+        Objects.requireNonNull(type, "type cannot be null");
         this.type = type;
         this.timestamp = Instant.now().toEpochMilli();
     }

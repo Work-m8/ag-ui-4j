@@ -15,8 +15,9 @@ package io.workm8.agui4j.core.message;
  * be processed by other system components.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseMessage
+ *
+ * @author Pascal Wilbrink
  */
 public class SystemMessage extends BaseMessage {
 

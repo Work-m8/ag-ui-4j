@@ -16,10 +16,11 @@ import io.workm8.agui4j.core.type.EventType;
  * or analytical processes.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#THINKING_END
  * @see ThinkingStartEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ThinkingEndEvent extends BaseEvent {
 

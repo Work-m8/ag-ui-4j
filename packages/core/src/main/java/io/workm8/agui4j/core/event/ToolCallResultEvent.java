@@ -16,12 +16,13 @@ import io.workm8.agui4j.core.type.EventType;
  * content, identifiers, and role information.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TOOL_CALL_RESULT
  * @see ToolCallStartEvent
  * @see ToolCallEndEvent
  * @see ToolCallChunkEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ToolCallResultEvent extends BaseEvent {
 

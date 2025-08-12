@@ -15,10 +15,11 @@ import io.workm8.agui4j.core.type.EventType;
  * and provides fields to identify the target message and deliver the content delta.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TEXT_MESSAGE_CONTENT
  * @see TextMessageChunkEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class TextMessageContentEvent extends BaseEvent {
 

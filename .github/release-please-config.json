@@ -29,6 +29,35 @@
           "xpath": "/project/version"
         }
       ]
+    },
+    "packages/client": {
+      "package-name": "client",
+      "release-type": "maven",
+      "component": "client",
+      "include-component-in-tag": true,
+      "tag-separator": "/v",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "changelog-sections": [
+        {"type": "feat", "section": "Features"},
+        {"type": "fix", "section": "Bug Fixes"},
+        {"type": "perf", "section": "Performance Improvements"},
+        {"type": "revert", "section": "Reverts"},
+        {"type": "docs", "section": "Documentation"},
+        {"type": "style", "section": "Styles", "hidden": true},
+        {"type": "chore", "section": "Miscellaneous Chores", "hidden": true},
+        {"type": "refactor", "section": "Code Refactoring", "hidden": true},
+        {"type": "test", "section": "Tests", "hidden": true},
+        {"type": "build", "section": "Build System", "hidden": true},
+        {"type": "ci", "section": "Continuous Integration", "hidden": true}
+      ],
+      "extra-files": [
+        {
+          "type": "xml",
+          "path": "packages/client/pom.xml",
+          "xpath": "/project/version"
+        }
+      ]
     }
   },
   "always-link-local": false,

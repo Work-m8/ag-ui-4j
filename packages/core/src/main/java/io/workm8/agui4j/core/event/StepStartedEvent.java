@@ -14,10 +14,11 @@ import io.workm8.agui4j.core.type.EventType;
  * captures the name of the step being initiated for identification purposes.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#STEP_STARTED
  * @see StepFinishedEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class StepStartedEvent extends BaseEvent {
 

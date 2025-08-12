@@ -15,12 +15,13 @@ import io.workm8.agui4j.core.type.EventType;
  * and establishes the context for the tool call execution that will follow.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TOOL_CALL_START
  * @see ToolCallEndEvent
  * @see ToolCallChunkEvent
  * @see ToolCallResultEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ToolCallStartEvent extends BaseEvent {
 

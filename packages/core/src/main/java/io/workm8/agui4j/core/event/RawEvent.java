@@ -16,9 +16,10 @@ import io.workm8.agui4j.core.type.EventType;
  * pipeline.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#RAW
+ *
+ * @author Pascal Wilbrink
  */
 public class RawEvent extends BaseEvent {
 

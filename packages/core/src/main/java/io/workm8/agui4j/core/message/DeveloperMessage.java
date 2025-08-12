@@ -14,8 +14,9 @@ package io.workm8.agui4j.core.message;
  * for technical audiences or system processing.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseMessage
+ *
+ * @author Pascal Wilbrink
  */
 public class DeveloperMessage extends BaseMessage {
 

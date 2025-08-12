@@ -4,6 +4,7 @@ import io.workm8.agui4j.core.tool.ToolCall;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A message representing communication from an AI assistant or automated system.
@@ -19,9 +20,10 @@ import java.util.List;
  * the assistant wants to perform or has performed.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseMessage
  * @see ToolCall
+ *
+ * @author Pascal Wilbrink
  */
 public class AssistantMessage extends BaseMessage {
 
@@ -47,6 +49,19 @@ public class AssistantMessage extends BaseMessage {
      */
     public void setToolCalls(final List<ToolCall> toolCalls) {
         this.toolCalls = toolCalls;
+    }
+
+    /**
+     * Add a tool call
+     *
+     * @param toolCall the tool call to be added.
+     */
+    public void addToolCall(final ToolCall toolCall) {
+        if (Objects.isNull(this.toolCalls)) {
+            this.toolCalls = new ArrayList<>();
+        }
+
+        this.toolCalls.add(toolCall);
     }
 
     /**

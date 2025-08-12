@@ -14,9 +14,10 @@ package io.workm8.agui4j.core.message;
  * This allows for comprehensive tool execution feedback within the system.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseMessage
  * @see io.workm8.agui4j.core.tool.ToolCall
+ *
+ * @author Pascal Wilbrink
  */
 public class ToolMessage extends BaseMessage {
 

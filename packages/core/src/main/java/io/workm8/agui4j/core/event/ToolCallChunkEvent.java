@@ -17,12 +17,13 @@ import io.workm8.agui4j.core.type.EventType;
  * information for correlation and debugging purposes.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TOOL_CALL_CHUNK
  * @see ToolCallArgsEvent
  * @see ToolCallStartEvent
  * @see ToolCallEndEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ToolCallChunkEvent extends BaseEvent {
 

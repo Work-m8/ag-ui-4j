@@ -16,12 +16,13 @@ import io.workm8.agui4j.core.type.EventType;
  * {@link BaseEvent#setRawEvent(Object)} method.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#THINKING_TEXT_MESSAGE_CONTENT
  * @see ThinkingStartEvent
  * @see ThinkingEndEvent
  * @see TextMessageContentEvent
+ *
+ *  @author Pascal Wilbrink
  */
 public class ThinkingTextMessageContentEvent extends BaseEvent {
 

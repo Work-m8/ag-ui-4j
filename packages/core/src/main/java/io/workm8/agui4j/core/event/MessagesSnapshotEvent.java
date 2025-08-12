@@ -20,10 +20,11 @@ import java.util.List;
  * actual messages.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see BaseMessage
  * @see EventType#MESSAGES_SNAPSHOT
+ *
+ * @author Pascal Wilbrink
  */
 public class MessagesSnapshotEvent extends BaseEvent {
 

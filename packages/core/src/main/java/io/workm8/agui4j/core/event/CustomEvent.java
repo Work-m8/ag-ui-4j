@@ -15,9 +15,10 @@ import io.workm8.agui4j.core.type.EventType;
  * event information.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#CUSTOM
+ *
+ * @author Pascal Wilbrink
  */
 public class CustomEvent extends BaseEvent {
 

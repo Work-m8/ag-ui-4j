@@ -16,12 +16,13 @@ import io.workm8.agui4j.core.type.EventType;
  * or decision-making.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#THINKING_TEXT_MESSAGE_END
  * @see ThinkingTextMessageStartEvent
  * @see ThinkingTextMessageContentEvent
  * @see ThinkingEndEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ThinkingTextMessageEndEvent extends BaseEvent {
 

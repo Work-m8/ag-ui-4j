@@ -15,11 +15,12 @@ import io.workm8.agui4j.core.type.EventType;
  * provides fields to store the thread ID and run ID for tracking purposes.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#RUN_STARTED
  * @see RunFinishedEvent
  * @see RunErrorEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class RunStartedEvent extends BaseEvent {
 

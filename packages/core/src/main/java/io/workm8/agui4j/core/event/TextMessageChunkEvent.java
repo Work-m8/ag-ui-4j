@@ -16,9 +16,10 @@ import io.workm8.agui4j.core.type.EventType;
  * incremental text content (delta).
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TEXT_MESSAGE_CHUNK
+ *
+ * @author Pascal Wilbrink
  */
 public class TextMessageChunkEvent extends BaseEvent {
 

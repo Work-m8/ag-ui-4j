@@ -13,8 +13,9 @@ package io.workm8.agui4j.core.exception;
  * in method signatures where it might be thrown.
  * </p>
  *
- * @author pascalwilbrink
  * @see Exception
+ *
+ * @author Pascal Wilbrink
  */
 public class AGUIException extends Exception {
 

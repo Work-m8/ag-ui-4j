@@ -16,7 +16,7 @@ import java.util.UUID;
  * whether between users, AI assistants, or system components.
  * </p>
  *
- * @author pascalwilbrink
+ * @author Pascal Wilbrink
  */
 public abstract class BaseMessage {
 

@@ -16,11 +16,12 @@ import io.workm8.agui4j.core.type.EventType;
  * content incrementally through deltas.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#TOOL_CALL_ARGS
  * @see ToolCallStartEvent
  * @see ToolCallEndEvent
+ *
+ * @author Pascal Wilbrink
  */
 public class ToolCallArgsEvent extends BaseEvent {
 

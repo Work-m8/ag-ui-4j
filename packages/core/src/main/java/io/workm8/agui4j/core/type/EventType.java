@@ -22,8 +22,9 @@ package io.workm8.agui4j.core.type;
  * <li><strong>General:</strong> Raw data and custom event types</li>
  * </ul>
  *
- * @author pascalwilbrink
  * @see io.workm8.agui4j.core.event.BaseEvent
+ *
+ * @author Pascal Wilbrink
  */
 public enum EventType {
     /** Signals the start of a text message stream */

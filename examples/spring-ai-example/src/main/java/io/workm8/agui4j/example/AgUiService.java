@@ -1,0 +1,57 @@
+package io.workm8.agui4j.example;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.workm8.agui4j.core.agent.RunAgentParameters;
+import io.workm8.agui4j.core.event.BaseEvent;
+import io.workm8.agui4j.core.stream.EventStream;
+import io.workm8.agui4j.json.ObjectMapperFactory;
+import io.workm8.agui4j.server.streamer.AgentStreamer;
+import io.workm8.agui4j.spring.ai.SpringAIAgent;
+import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.io.IOException;
+
+@Service
+public class AgUiService {
+
+    private final AgentStreamer agentStreamer;
+
+    private final ObjectMapper objectMapper;
+
+    public AgUiService(
+        final AgentStreamer agentStreamer
+    ) {
+        this.agentStreamer = agentStreamer;
+
+        this.objectMapper = new ObjectMapper();
+        ObjectMapperFactory.addMixins(objectMapper);
+    }
+
+    public SseEmitter runAgent(final SpringAIAgent agent, final AgUiParameters agUiParameters) {
+        var parameters = RunAgentParameters.builder()
+            .runId(agUiParameters.getRunId())
+            .tools(agUiParameters.getTools())
+            .context(agUiParameters.getContext())
+            .forwardedProps(agUiParameters.getForwardedProps())
+            .build();
+
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+
+        var eventStream = new EventStream<BaseEvent>(
+                event -> {
+                    try {
+                        emitter.send(SseEmitter.event().data(" " + objectMapper.writeValueAsString(event)).build());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                emitter::completeWithError,
+                emitter::complete
+        );
+
+        this.agentStreamer.streamEvents(agent, parameters, eventStream);
+
+        return emitter;
+    }
+}

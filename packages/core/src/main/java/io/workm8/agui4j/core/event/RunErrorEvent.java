@@ -14,9 +14,10 @@ import io.workm8.agui4j.core.type.EventType;
  * provides a field to store the error message or description.
  * </p>
  *
- * @author pascalwilbrink
  * @see BaseEvent
  * @see EventType#RUN_ERROR
+ *
+ * @author Pascal Wilbrink
  */
 public class RunErrorEvent extends BaseEvent {
 
