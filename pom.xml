@@ -20,6 +20,7 @@
         <module>examples/spring-ai-example</module>
         <module>packages/server</module>
         <module>examples/langchain4j-example</module>
+        <module>servers/spring</module>
     </modules>
 
     <properties>

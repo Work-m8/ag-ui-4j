@@ -1,7 +1,10 @@
 package io.workm8.agui4j.example;
 
-import io.workm8.agui4j.core.agent.RunAgentInput;
-import io.workm8.agui4j.core.agent.RunAgentParameters;
+import dev.langchain4j.model.chat.StreamingChatModel;
+import dev.langchain4j.model.ollama.OllamaStreamingChatModel;
+import io.workm8.agui4j.langchain4j.Langchain4jAgent;
+import io.workm8.agui4j.server.spring.AgUiParameters;
+import io.workm8.agui4j.server.spring.AgUiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
@@ -25,24 +28,19 @@ public class AgUiController {
 
     @PostMapping(value = "/sse/{agentId}")
     public ResponseEntity<SseEmitter> streamData(@PathVariable("agentId") final String agentId, @RequestBody() final AgUiParameters agUiParameters) {
-        var parameters = RunAgentParameters.builder()
-            .runId(agUiParameters.getRunId())
-            .tools(agUiParameters.getTools())
-            .context(agUiParameters.getContext())
-            .forwardedProps(agUiParameters.getForwardedProps())
+        StreamingChatModel chatModel = OllamaStreamingChatModel.builder()
+            .baseUrl("http://localhost:11434")
+            .modelName("llama3.2")
             .build();
 
-        var input = new RunAgentInput(
+        var agent =  new Langchain4jAgent(
             agUiParameters.getThreadId(),
-            agUiParameters.getRunId(),
             agUiParameters.getState(),
-            agUiParameters.getMessages(),
-            agUiParameters.getTools(),
-            agUiParameters.getContext(),
-            agUiParameters.getForwardedProps()
+            chatModel,
+            agUiParameters.getMessages()
         );
 
-        SseEmitter emitter = this.agUiService.streamEvents(parameters, input);
+        SseEmitter emitter = agUiService.runAgent(agent, agUiParameters);
 
         return ResponseEntity
             .ok()

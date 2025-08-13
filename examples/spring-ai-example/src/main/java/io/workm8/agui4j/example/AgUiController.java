@@ -1,5 +1,7 @@
 package io.workm8.agui4j.example;
 
+import io.workm8.agui4j.server.spring.AgUiParameters;
+import io.workm8.agui4j.server.spring.AgUiService;
 import io.workm8.agui4j.spring.ai.SpringAIAgent;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.ollama.OllamaChatModel;
