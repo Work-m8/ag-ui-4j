@@ -78,16 +78,16 @@ public class SpringAIAgent extends LocalAgent {
      * initial conversation history. The message mapper and object mapper are
      * automatically created to handle format conversions and JSON serialization.
      *
-     * @param threadId    unique identifier for the conversation thread
+     * @param agentId    unique identifier for the agent
      * @param chatClient  the Spring AI ChatClient for AI communication
      * @param messages    the initial conversation history as agui4j BaseMessage objects
      */
     public SpringAIAgent(
-        final String threadId,
+        final String agentId,
         final ChatClient chatClient,
         final List<BaseMessage> messages
     ) {
-        this.threadId = threadId;
+        this.agentId = agentId;
         this.chatClient = chatClient;
         this.messageMapper = new MessageMapper();
         this.messages = messages;

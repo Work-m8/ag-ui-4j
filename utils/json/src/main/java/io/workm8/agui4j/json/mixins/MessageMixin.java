@@ -60,15 +60,15 @@ import io.workm8.agui4j.core.message.*;
  * @author Pascal Wilbrink
  */
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        property = "role"
+    use = JsonTypeInfo.Id.NAME,
+    property = "role"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AssistantMessage.class, name = "assistant"),
-        @JsonSubTypes.Type(value = DeveloperMessage.class, name = "developer"),
-        @JsonSubTypes.Type(value = UserMessage.class, name = "user"),
-        @JsonSubTypes.Type(value = SystemMessage.class, name = "system"),
-        @JsonSubTypes.Type(value = ToolMessage.class, name = "tool")
+    @JsonSubTypes.Type(value = AssistantMessage.class, name = "assistant"),
+    @JsonSubTypes.Type(value = DeveloperMessage.class, name = "developer"),
+    @JsonSubTypes.Type(value = UserMessage.class, name = "user"),
+    @JsonSubTypes.Type(value = SystemMessage.class, name = "system"),
+    @JsonSubTypes.Type(value = ToolMessage.class, name = "tool")
 })
 public interface MessageMixin {
 }

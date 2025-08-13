@@ -4,12 +4,12 @@
     <parent>
         <groupId>io.workm8.agui4j</groupId>
         <artifactId>ag-ui</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>0.0.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <name>AG-UI-4J Core</name>
     <description>AG-UI-4J Core library</description>

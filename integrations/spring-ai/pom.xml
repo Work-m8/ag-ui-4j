@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.workm8.agui4j</groupId>
         <artifactId>ag-ui</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>0.0.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>spring-ai</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <name>AG-UI-4J Spring AI</name>
     <description>AG-UI-4J Spring AI Integration</description>
@@ -36,13 +36,13 @@
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>json</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>server</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

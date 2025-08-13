@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 
-@Service
 public class AgUiService {
 
     private final AgentStreamer agentStreamer;
@@ -26,6 +25,7 @@ public class AgUiService {
         this.agentStreamer = agentStreamer;
 
         this.objectMapper = objectMapper;
+        ObjectMapperFactory.addMixins(this.objectMapper);
     }
 
     public SseEmitter runAgent(final LocalAgent agent, final AgUiParameters agUiParameters) {
