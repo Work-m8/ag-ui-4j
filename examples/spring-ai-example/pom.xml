@@ -28,19 +28,19 @@
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>spring-ai</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>server</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>spring</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
