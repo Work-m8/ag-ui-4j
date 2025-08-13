@@ -78,7 +78,7 @@ jobs:
           echo "Release date: $(date)" >> release-assets/core/README.md
 
       - name: Upload assets to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.release-please.outputs.packages-core--tag_name }}
           files: |
@@ -141,7 +141,7 @@ jobs:
           echo "Release date: $(date)" >> release-assets/client/README.md
 
       - name: Upload assets to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.release-please.outputs.packages-client--tag_name }}
           files: |
