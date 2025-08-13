@@ -1,4 +1,4 @@
-package io.workm8.agui4j.example;
+package io.workm8.agui4j.server.spring;
 
 import io.workm8.agui4j.core.context.Context;
 import io.workm8.agui4j.core.message.BaseMessage;
@@ -73,4 +73,5 @@ public class AgUiParameters {
         return state;
     }
 }
+
 
