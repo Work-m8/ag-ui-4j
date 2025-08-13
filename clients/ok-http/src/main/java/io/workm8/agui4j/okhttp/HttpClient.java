@@ -17,8 +17,6 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 /**
- * @author Pascal Wilbrink
- *
  * OkHttp-based implementation of BaseHttpClient for streaming agent communication.
  * <p>
  * HttpClient provides a concrete implementation of the BaseHttpClient using OkHttp
@@ -62,6 +60,8 @@ import java.util.logging.Logger;
  *     client.close();
  * });
  * }</pre>
+ *
+ * @author Pascal Wilbrink
  */
 public class HttpClient implements BaseHttpClient {
 
@@ -140,23 +140,23 @@ public class HttpClient implements BaseHttpClient {
      */
     @Override
     public CompletableFuture<Void> streamEvents(
-            final RunAgentInput input,
-            final Consumer<BaseEvent> eventHandler,
-            final AtomicBoolean cancellationToken
+        final RunAgentInput input,
+        final Consumer<BaseEvent> eventHandler,
+        final AtomicBoolean cancellationToken
     ) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         try {
             var body = RequestBody.create(
-                    objectMapper.writeValueAsString(input),
-                    MediaType.get("application/json")
+                objectMapper.writeValueAsString(input),
+                MediaType.get("application/json")
             );
 
             Request request = new Request.Builder()
-                    .url(url)
-                    .header("Accept", "application/json")
-                    .post(body)
-                    .build();
+                .url(url)
+                .header("Accept", "application/json")
+                .post(body)
+                .build();
 
             Call call = client.newCall(request);
 
@@ -170,20 +170,25 @@ public class HttpClient implements BaseHttpClient {
             call.enqueue(new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
-                    try (BufferedReader reader = new BufferedReader(response.body().charStream())) {
-                        String line;
-                        while ((line = reader.readLine()) != null &&
-                                !future.isCancelled() &&
-                                !cancellationToken.get()) {
+                    if (response.isSuccessful()) {
+                        try (BufferedReader reader = new BufferedReader(response.body().charStream())) {
+                            String line;
+                            while (
+                                    (line = reader.readLine()) != null &&
+                                            !future.isCancelled() &&
+                                            !cancellationToken.get()
+                            ) {
+                                handleEvent(line.trim());
+                            }
 
-                            handleEvent(line);
+                            if (!future.isCancelled() && !cancellationToken.get()) {
+                                future.complete(null);
+                            }
+                        } catch (IOException e) {
+                            future.completeExceptionally(e);
                         }
-
-                        if (!future.isCancelled() && !cancellationToken.get()) {
-                            future.complete(null);
-                        }
-                    } catch (IOException e) {
-                        future.completeExceptionally(e);
+                    } else {
+                        future.completeExceptionally(new RuntimeException(response.message()));
                     }
                 }
 
