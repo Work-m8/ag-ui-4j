@@ -2,23 +2,16 @@ package io.workm8.agui4j.server.streamer;
 
 import io.workm8.agui4j.core.agent.Agent;
 import io.workm8.agui4j.core.agent.AgentSubscriber;
-import io.workm8.agui4j.core.agent.AgentSubscriberParams;
 import io.workm8.agui4j.core.agent.RunAgentParameters;
 import io.workm8.agui4j.core.event.BaseEvent;
 import io.workm8.agui4j.core.event.RawEvent;
 import io.workm8.agui4j.core.stream.EventStream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.*;
 

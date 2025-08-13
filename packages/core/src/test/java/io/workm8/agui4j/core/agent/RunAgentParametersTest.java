@@ -1,7 +1,6 @@
 package io.workm8.agui4j.core.agent;
 
 import io.workm8.agui4j.core.context.Context;
-import io.workm8.agui4j.core.message.BaseMessage;
 import io.workm8.agui4j.core.tool.Tool;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,8 +20,8 @@ class RunAgentParametersTest {
 
         assertThat(sut.getRunId()).isNull();
         assertThat(sut.getForwardedProps()).isNull();
-        assertThat(sut.getContext().size()).isEqualTo(0);
-        assertThat(sut.getTools().size()).isEqualTo(0);
+        assertThat(sut.getContext()).isEmpty();
+        assertThat(sut.getTools()).isEmpty();
     }
 
     @Test

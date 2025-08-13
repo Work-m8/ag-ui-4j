@@ -62,30 +62,27 @@ class AbstractAgentTest {
         @BeforeEach
         void setUp() {
             testAgent = new TestAgent(
-                    "test-agent",
-                    "Test agent description",
-                    "test-thread",
-                    new ArrayList<>(),
-                    new State(),
-                    false
+                "test-agent",
+                "Test agent description",
+                "test-thread",
+                new ArrayList<>(),
+                new State(),
+                false
             );
         }
 
         @Test
         void shouldAddSingleMessageWithGeneratedId() {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             testAgent.subscribe(subscriber);
 
             BaseMessage message = new UserMessage();
             message.setContent("Test message");
 
-            // Act
             testAgent.addMessage(message);
 
-            // Assert
             assertThat(message.getId()).isNotNull();
-            assertThat(message.getName()).isEqualTo("");
+            assertThat(message.getName()).isEmpty();
             assertThat(testAgent.messages).hasSize(1);
             assertThat(subscriber.getMethodCalls()).contains("onNewMessage");
         }
@@ -112,20 +109,17 @@ class AbstractAgentTest {
 
         @Test
         void shouldAddMultipleMessages() {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             testAgent.subscribe(subscriber);
 
             List<BaseMessage> messages = List.of(
-                    createMessage("Message 1"),
-                    createMessage("Message 2"),
-                    createMessage("Message 3")
+                createMessage("Message 1"),
+                createMessage("Message 2"),
+                createMessage("Message 3")
             );
 
-            // Act
             testAgent.addMessages(messages);
 
-            // Assert
             assertThat(testAgent.messages).hasSize(3);
             long newMessageCalls = subscriber.getMethodCalls().stream()
                     .filter(call -> call.equals("onNewMessage"))
@@ -135,7 +129,6 @@ class AbstractAgentTest {
 
         @Test
         void shouldReplaceAllMessagesAndNotifySubscribers() {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             testAgent.subscribe(subscriber);
 
@@ -143,14 +136,12 @@ class AbstractAgentTest {
             subscriber.getMethodCalls().clear(); // Clear previous calls
 
             List<BaseMessage> newMessages = List.of(
-                    createMessage("New message 1"),
-                    createMessage("New message 2")
+                createMessage("New message 1"),
+                createMessage("New message 2")
             );
 
-            // Act
             testAgent.setMessages(newMessages);
 
-            // Assert
             assertThat(testAgent.messages).hasSize(2);
             assertThat(testAgent.messages.get(0).getContent()).isEqualTo("New message 1");
             assertThat(subscriber.getMethodCalls()).contains("onMessagesChanged");
@@ -170,7 +161,6 @@ class AbstractAgentTest {
 
             BaseMessage message = createMessage("Test message");
 
-            // Act & Assert - Should not throw exception
             testAgent.addMessage(message);
             assertThat(testAgent.messages).hasSize(1);
         }
@@ -191,35 +181,30 @@ class AbstractAgentTest {
         @BeforeEach
         void setUp() {
             testAgent = new TestAgent(
-                    "test-agent",
-                    "Test agent description",
-                    "test-thread",
-                    new ArrayList<>(),
-                    new State(),
-                    false
+                "test-agent",
+                "Test agent description",
+                "test-thread",
+                new ArrayList<>(),
+                new State(),
+                false
             );
         }
 
         @Test
         void shouldUpdateState() {
-            // Arrange
             State newState = new State();
             newState.set("key", "value");
 
-            // Act
             testAgent.setState(newState);
 
-            // Assert
             assertThat(testAgent.getState()).isEqualTo(newState);
             assertThat(testAgent.getState().get("key")).isEqualTo("value");
         }
 
         @Test
         void shouldHandleNullState() {
-            // Act
             testAgent.setState(null);
 
-            // Assert
             assertThat(testAgent.getState()).isNull();
         }
     }
@@ -233,33 +218,27 @@ class AbstractAgentTest {
         @BeforeEach
         void setUp() {
             testAgent = new TestAgent(
-                    "test-agent",
-                    "Test agent description",
-                    "test-thread",
-                    new ArrayList<>(),
-                    new State(),
-                    false
+                "test-agent",
+                "Test agent description",
+                "test-thread",
+                new ArrayList<>(),
+                new State(),
+                false
             );
         }
 
         @Test
         void shouldHandleMultipleUnsubscriptionsSafely() {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             var subscription = testAgent.subscribe(subscriber);
 
-            // Act - Multiple unsubscriptions should not cause issues
             subscription.unsubscribe();
             subscription.unsubscribe();
             subscription.unsubscribe();
 
-            // Assert - No exception should be thrown
-            // Note: We can't directly access agentSubscribers as it's private
-            // but we can verify behavior through a run
             TestSubscriber testSubscriber = new TestSubscriber();
             try {
                 testAgent.runAgent(RunAgentParameters.empty(), testSubscriber).get(5, TimeUnit.SECONDS);
-                // If unsubscription worked, only testSubscriber should be called, not the original subscriber
                 assertThat(testSubscriber.wasOnRunInitializedCalled()).isTrue();
             } catch (Exception e) {
                 // Should not happen
@@ -278,12 +257,12 @@ class AbstractAgentTest {
         @BeforeEach
         void setUp() {
             testAgent = new TestAgent(
-                    "test-agent",
-                    "Test agent description",
-                    "test-thread",
-                    new ArrayList<>(),
-                    new State(),
-                    true // Enable debug mode
+                "test-agent",
+                "Test agent description",
+                "test-thread",
+                new ArrayList<>(),
+                new State(),
+                true // Enable debug mode
             );
 
             parameters = RunAgentParameters.empty();
@@ -291,14 +270,11 @@ class AbstractAgentTest {
 
         @Test
         void shouldHandleInterruptedThreadDuringDelay() {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             testAgent.setDelay(5000);
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(parameters, subscriber);
 
-            // Interrupt the thread
             CompletableFuture.runAsync(() -> {
                 try {
                     Thread.sleep(100);
@@ -308,7 +284,6 @@ class AbstractAgentTest {
                 }
             });
 
-            // Assert
             assertThatExceptionOfType(Exception.class)
                     .isThrownBy(() -> future.get(2, TimeUnit.SECONDS));
         }
@@ -331,29 +306,25 @@ class AbstractAgentTest {
 
         @Test
         void shouldWorkWithDebugModeEnabled() throws Exception {
-            // Arrange
             TestAgent debugAgent = new TestAgent(
-                    "debug-agent",
-                    "Debug agent",
-                    "debug-thread",
-                    new ArrayList<>(),
-                    new State(),
-                    true // debug enabled
+                "debug-agent",
+                "Debug agent",
+                "debug-thread",
+                new ArrayList<>(),
+                new State(),
+                true // debug enabled
             );
 
             TestSubscriber subscriber = new TestSubscriber();
 
-            // Create unknown event to trigger debug logging
             BaseEvent unknownEvent = new BaseEvent(EventType.CUSTOM) {
             };
 
             debugAgent.setEventsToEmit(List.of(unknownEvent));
 
-            // Act
             CompletableFuture<Void> future = debugAgent.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(debugAgent.debug).isTrue();
         }
@@ -361,12 +332,10 @@ class AbstractAgentTest {
 
     @Test
     void shouldCreateAgentWithDefaults() {
-        // Act
         var agent = new TestAgent(null, null, null, null, null, false);
 
-        // Assert
         assertThat(agent.agentId).isNull(); // Will be generated in runAgent
-        assertThat(agent.description).isEqualTo("");
+        assertThat(agent.description).isEmpty();
         assertThat(agent.threadId).isNotNull(); // UUID generated
         assertThat(agent.messages).isEmpty();
         assertThat(agent.state).isNotNull();
@@ -383,66 +352,57 @@ class AbstractAgentTest {
         @BeforeEach
         void setUp() {
             testAgent = new TestAgent(
-                    "test-agent",
-                    "Test agent description",
-                    "test-thread",
-                    new ArrayList<>(),
-                    new State(),
-                    false
+                "test-agent",
+                "Test agent description",
+                "test-thread",
+                new ArrayList<>(),
+                new State(),
+                false
             );
 
             parameters = RunAgentParameters.builder()
-                    .runId("test-run-id")
-                    .tools(new ArrayList<>())
-                    .context(new ArrayList<>())
-                    .build();
+                .runId("test-run-id")
+                .tools(new ArrayList<>())
+                .context(new ArrayList<>())
+                .build();
         }
 
         @Test
         void shouldCompleteSuccessfullyWithEvents() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             RunStartedEvent startEvent = new RunStartedEvent();
 
             testAgent.setEventsToEmit(List.of(startEvent));
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(future.isCompletedExceptionally()).isFalse();
 
-            // Verify subscriber lifecycle methods
             assertThat(subscriber.wasOnRunInitializedCalled()).isTrue();
             assertThat(subscriber.wasOnRunFinalizedCalled()).isTrue();
             assertThat(subscriber.wasOnRunErrorCalled()).isFalse();
 
-            // Verify events were processed (start event + finish event)
             assertThat(subscriber.getEventCount()).isEqualTo(2);
             assertThat(subscriber.getMethodCalls())
-                    .contains("onRunInitialized", "onRunFinalized", "onRunStartedEvent", "onRunFinishedEvent");
+                .contains("onRunInitialized", "onRunFinalized", "onRunStartedEvent", "onRunFinishedEvent");
         }
 
         @Test
         void shouldHandleExceptionsProperly() {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             testAgent.setShouldThrowException(true);
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(parameters, subscriber);
 
-            // Assert
             assertThatExceptionOfType(ExecutionException.class)
-                    .isThrownBy(() -> future.get(5, TimeUnit.SECONDS))
-                    .withCauseInstanceOf(RuntimeException.class)
-                    .withMessageContaining("Test exception");
+                .isThrownBy(() -> future.get(5, TimeUnit.SECONDS))
+                .withCauseInstanceOf(RuntimeException.class)
+                .withMessageContaining("Test exception");
 
             assertThat(future.isCompletedExceptionally()).isTrue();
 
-            // Verify error handling lifecycle
             assertThat(subscriber.wasOnRunInitializedCalled()).isTrue();
             assertThat(subscriber.wasOnRunErrorCalled()).isTrue();
             assertThat(subscriber.wasOnRunFinalizedCalled()).isFalse();
@@ -451,22 +411,18 @@ class AbstractAgentTest {
 
         @Test
         void shouldWorkWithNullSubscriber() throws Exception {
-            // Arrange
             RunStartedEvent startEvent = new RunStartedEvent();
             testAgent.setEventsToEmit(List.of(startEvent));
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(parameters, null);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(future.isCompletedExceptionally()).isFalse();
         }
 
         @Test
         void shouldNotifyBothPersistentAndRunSpecificSubscribers() throws Exception {
-            // Arrange
             TestSubscriber persistentSubscriber = new TestSubscriber();
             TestSubscriber runSubscriber = new TestSubscriber();
 
@@ -475,19 +431,15 @@ class AbstractAgentTest {
             RunStartedEvent startEvent = new RunStartedEvent();
             testAgent.setEventsToEmit(List.of(startEvent));
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(parameters, runSubscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
 
-            // Verify persistent subscriber was called
             assertThat(persistentSubscriber.wasOnRunInitializedCalled()).isTrue();
             assertThat(persistentSubscriber.wasOnRunFinalizedCalled()).isTrue();
             assertThat(persistentSubscriber.getEventCount()).isEqualTo(2); // start + finish events
 
-            // Verify run subscriber was called
             assertThat(runSubscriber.wasOnRunInitializedCalled()).isTrue();
             assertThat(runSubscriber.wasOnRunFinalizedCalled()).isTrue();
             assertThat(runSubscriber.getEventCount()).isEqualTo(2); // start + finish events
@@ -495,46 +447,37 @@ class AbstractAgentTest {
 
         @Test
         void shouldProcessMultipleEventsInSequence() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
 
             RunStartedEvent startEvent = new RunStartedEvent();
-
             StepStartedEvent stepEvent = new StepStartedEvent();
-
             StepFinishedEvent stepFinishedEvent = new StepFinishedEvent();
 
             testAgent.setEventsToEmit(List.of(startEvent, stepEvent, stepFinishedEvent));
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(future.isCompletedExceptionally()).isFalse();
 
-            // Verify all events were processed (3 custom + 1 finish = 4 total)
             assertThat(subscriber.getEventCount()).isEqualTo(4);
             assertThat(subscriber.getMethodCalls()).contains(
-                    "onRunStartedEvent",
-                    "onStepStartedEvent",
-                    "onStepFinishedEvent",
-                    "onRunFinishedEvent"
+                "onRunStartedEvent",
+                "onStepStartedEvent",
+                "onStepFinishedEvent",
+                "onRunFinishedEvent"
             );
         }
 
         @Test
         void shouldWorkWithEmptyParameters() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             RunAgentParameters emptyParams = RunAgentParameters.empty();
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(emptyParams, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(future.isCompletedExceptionally()).isFalse();
             assertThat(subscriber.wasOnRunInitializedCalled()).isTrue();
@@ -543,22 +486,19 @@ class AbstractAgentTest {
 
         @Test
         void shouldGenerateAgentIdWhenNull() throws Exception {
-            // Arrange
             TestAgent agentWithNullId = new TestAgent(
-                    null, // null agentId
-                    "Test description",
-                    "test-thread",
-                    new ArrayList<>(),
-                    new State(),
-                    false
+                null, // null agentId
+                "Test description",
+                "test-thread",
+                new ArrayList<>(),
+                new State(),
+                false
             );
             TestSubscriber subscriber = new TestSubscriber();
 
-            // Act
             CompletableFuture<Void> future = agentWithNullId.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(agentWithNullId.agentId).isNotNull();
             assertThat(subscriber.wasOnRunInitializedCalled()).isTrue();
@@ -566,23 +506,19 @@ class AbstractAgentTest {
 
         @Test
         void shouldTimeoutForLongRunningOperations() {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             testAgent.setDelay(10000); // 10 second delay
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(parameters, subscriber);
 
-            // Assert
             assertThatExceptionOfType(TimeoutException.class)
-                    .isThrownBy(() -> future.get(1, TimeUnit.SECONDS));
+                .isThrownBy(() -> future.get(1, TimeUnit.SECONDS));
 
             assertThat(future).isNotDone();
         }
 
         @Test
         void shouldHandleTextMessageEventsProperly() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
 
             TextMessageStartEvent startEvent = new TextMessageStartEvent();
@@ -597,45 +533,37 @@ class AbstractAgentTest {
 
             testAgent.setEventsToEmit(List.of(startEvent, contentEvent, endEvent));
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(subscriber.getMethodCalls()).contains(
-                    "onTextMessageStartEvent",
-                    "onTextMessageContentEvent",
-                    "onTextMessageEndEvent"
+                "onTextMessageStartEvent",
+                "onTextMessageContentEvent",
+                "onTextMessageEndEvent"
             );
         }
 
         @Test
         void shouldHandleToolCallEventsProperly() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
 
             ToolCallStartEvent startEvent = new ToolCallStartEvent();
-
             ToolCallArgsEvent argsEvent = new ToolCallArgsEvent();
-
             ToolCallResultEvent resultEvent = new ToolCallResultEvent();
-
             ToolCallEndEvent endEvent = new ToolCallEndEvent();
 
             testAgent.setEventsToEmit(List.of(startEvent, argsEvent, resultEvent, endEvent));
 
-            // Act
             CompletableFuture<Void> future = testAgent.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(subscriber.getMethodCalls()).contains(
-                    "onToolCallStartEvent",
-                    "onToolCallArgsEvent",
-                    "onToolCallResultEvent",
-                    "onToolCallEndEvent"
+                "onToolCallStartEvent",
+                "onToolCallArgsEvent",
+                "onToolCallResultEvent",
+                "onToolCallEndEvent"
             );
         }
     }
