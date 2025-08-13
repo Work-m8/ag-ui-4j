@@ -25,7 +25,6 @@ public class AgUiService {
         this.agentStreamer = agentStreamer;
 
         this.objectMapper = objectMapper;
-        ObjectMapperFactory.addMixins(this.objectMapper);
     }
 
     public SseEmitter runAgent(final LocalAgent agent, final AgUiParameters agUiParameters) {

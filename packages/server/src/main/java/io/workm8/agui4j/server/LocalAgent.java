@@ -17,7 +17,6 @@ import java.util.concurrent.CompletableFuture;
 public abstract class LocalAgent implements Agent {
 
     protected String agentId;
-    protected String threadId;
     protected State state;
     protected List<BaseMessage> messages = new ArrayList<>();
 
