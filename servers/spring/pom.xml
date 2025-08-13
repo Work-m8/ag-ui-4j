@@ -11,18 +11,19 @@
     </parent>
 
     <artifactId>spring</artifactId>
+    <version>0.0.1</version>
 
     <dependencies>
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>server</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -34,7 +35,7 @@
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>json</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

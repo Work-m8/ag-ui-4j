@@ -16,9 +16,13 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class LocalAgent implements Agent {
 
-    protected String threadId;
+    protected String agentId;
     protected State state;
     protected List<BaseMessage> messages = new ArrayList<>();
+
+    public String getAgentId() {
+        return this.agentId;
+    }
 
     /**
      * Sets the thread identifier for this agent.
@@ -99,15 +103,15 @@ public abstract class LocalAgent implements Agent {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         var input = new RunAgentInput(
-                this.threadId,
-                Objects.isNull(parameters.getRunId())
-                        ? UUID.randomUUID().toString()
-                        : parameters.getRunId(),
-                this.state,
-                this.messages,
-                parameters.getTools(),
-                parameters.getContext(),
-                parameters.getForwardedProps()
+            this.threadId,
+            Objects.isNull(parameters.getRunId())
+                ? UUID.randomUUID().toString()
+                : parameters.getRunId(),
+            this.state,
+            this.messages,
+            parameters.getTools(),
+            parameters.getContext(),
+            parameters.getForwardedProps()
         );
 
         CompletableFuture.runAsync(() -> this.run(input, subscriber));

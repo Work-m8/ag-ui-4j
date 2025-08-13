@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 
-@Service
 public class AgUiService {
 
     private final AgentStreamer agentStreamer;

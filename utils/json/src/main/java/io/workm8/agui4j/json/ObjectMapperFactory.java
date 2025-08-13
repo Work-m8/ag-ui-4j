@@ -8,6 +8,8 @@ import io.workm8.agui4j.json.mixins.EventMixin;
 import io.workm8.agui4j.json.mixins.MessageMixin;
 import io.workm8.agui4j.json.mixins.StateMixin;
 
+import java.util.Objects;
+
 /**
  * Factory class for configuring Jackson ObjectMapper instances with agui4j-specific mixins.
  * <p>
@@ -82,9 +84,15 @@ public class ObjectMapperFactory {
      * @throws IllegalArgumentException if objectMapper is null
      */
     public static void addMixins(final ObjectMapper objectMapper) {
-        objectMapper.addMixIn(BaseMessage.class, MessageMixin.class);
-        objectMapper.addMixIn(BaseEvent.class, EventMixin.class);
-        objectMapper.addMixIn(State.class, StateMixin.class);
+        if (Objects.isNull(objectMapper.findMixInClassFor(BaseMessage.class))) {
+            objectMapper.addMixIn(BaseMessage.class, MessageMixin.class);
+        }
+        if (Objects.isNull(objectMapper.findMixInClassFor(BaseEvent.class))) {
+            objectMapper.addMixIn(BaseEvent.class, EventMixin.class);
+        }
+        if (Objects.isNull(objectMapper.findMixInClassFor(State.class))) {
+            objectMapper.addMixIn(State.class, StateMixin.class);
+        }
     }
 
 }
