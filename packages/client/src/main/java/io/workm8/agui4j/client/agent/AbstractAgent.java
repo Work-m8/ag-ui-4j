@@ -64,7 +64,7 @@ public abstract class AbstractAgent implements Agent {
      * @param state           initial agent state, or null for default empty state
      * @param debug           whether to enable debug logging and output
      */
-    public AbstractAgent(
+    protected AbstractAgent(
         String agentId,
         String description,
         String threadId,

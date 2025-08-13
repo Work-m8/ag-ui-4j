@@ -170,6 +170,10 @@ public class HttpClient implements BaseHttpClient {
             call.enqueue(new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
+                    extracted(response);
+                }
+
+                private void extracted(Response response) {
                     if (response.isSuccessful()) {
                         try (BufferedReader reader = new BufferedReader(response.body().charStream())) {
                             String line;

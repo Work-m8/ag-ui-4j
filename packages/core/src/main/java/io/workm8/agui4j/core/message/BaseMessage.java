@@ -31,7 +31,7 @@ public abstract class BaseMessage {
      * {@link UUID#randomUUID()} and initializes content and name as empty strings.
      * </p>
      */
-    public BaseMessage() {
+    protected BaseMessage() {
         this(UUID.randomUUID().toString(), "", "");
     }
 
@@ -42,7 +42,7 @@ public abstract class BaseMessage {
      * @param content the content/text of the message
      * @param name    the name associated with this message
      */
-    public BaseMessage(final String id, final String content, final String name) {
+    protected BaseMessage(final String id, final String content, final String name) {
         this.id = id;
         this.content = content;
         this.name = name;

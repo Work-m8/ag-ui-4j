@@ -33,17 +33,14 @@ class HttpAgentTest {
 
         @Test
         void shouldBuildAgentWithAllRequiredParameters() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
 
-            // Act
             HttpAgent agent = HttpAgent.builder()
-                    .agentId("test-agent")
-                    .threadId("test-thread")
-                    .httpClient(httpClient)
-                    .build();
+                .agentId("test-agent")
+                .threadId("test-thread")
+                .httpClient(httpClient)
+                .build();
 
-            // Assert
             assertThat(agent).isNotNull();
             assertThat(agent.getMessages()).isEmpty();
             assertThat(agent.getState()).isNotNull();
@@ -52,13 +49,11 @@ class HttpAgentTest {
 
         @Test
         void shouldBuildAgentWithAllOptionalParameters() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
             List<BaseMessage> messages = List.of(createMessage("Test message"));
             State state = new State();
             state.set("key", "value");
 
-            // Act
             HttpAgent agent = HttpAgent.builder()
                 .agentId("test-agent")
                 .description("Test description")
@@ -69,7 +64,6 @@ class HttpAgentTest {
                 .debug(true)
                 .build();
 
-            // Assert
             assertThat(agent.getMessages()).hasSize(1);
             assertThat(agent.getState().get("key")).isEqualTo("value");
         }
@@ -78,21 +72,18 @@ class HttpAgentTest {
 
         @Test
         void shouldAddSingleMessageToBuilder() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
             BaseMessage message1 = createMessage("Message 1");
             BaseMessage message2 = createMessage("Message 2");
 
-            // Act
             HttpAgent agent = HttpAgent.builder()
-                    .agentId("test-agent")
-                    .threadId("test-thread")
-                    .httpClient(httpClient)
-                    .addMessage(message1)
-                    .addMessage(message2)
-                    .build();
+                .agentId("test-agent")
+                .threadId("test-thread")
+                .httpClient(httpClient)
+                .addMessage(message1)
+                .addMessage(message2)
+                .build();
 
-            // Assert
             assertThat(agent.getMessages()).hasSize(2);
             assertThat(agent.getMessages().get(0).getContent()).isEqualTo("Message 1");
             assertThat(agent.getMessages().get(1).getContent()).isEqualTo("Message 2");
@@ -100,44 +91,36 @@ class HttpAgentTest {
 
         @Test
         void shouldHandleNullMessagesList() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
 
-            // Act
             HttpAgent agent = HttpAgent.builder()
-                    .agentId("test-agent")
-                    .threadId("test-thread")
-                    .httpClient(httpClient)
-                    .messages(null)
-                    .build();
+                .agentId("test-agent")
+                .threadId("test-thread")
+                .httpClient(httpClient)
+                .messages(null)
+                .build();
 
-            // Assert
             assertThat(agent.getMessages()).isEmpty();
         }
 
         @Test
         void shouldHandleNullState() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
 
-            // Act
             HttpAgent agent = HttpAgent.builder()
-                    .agentId("test-agent")
-                    .threadId("test-thread")
-                    .httpClient(httpClient)
-                    .state(null)
-                    .build();
+                .agentId("test-agent")
+                .threadId("test-thread")
+                .httpClient(httpClient)
+                .state(null)
+                .build();
 
-            // Assert
             assertThat(agent.getState()).isNotNull();
         }
 
         @Test
         void shouldThrowExceptionWhenAgentIdIsNull() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
 
-            // Act & Assert
             assertThatExceptionOfType(IllegalArgumentException.class)
                     .isThrownBy(() -> HttpAgent.builder()
                             .threadId("test-thread")
@@ -148,76 +131,66 @@ class HttpAgentTest {
 
         @Test
         void shouldThrowExceptionWhenAgentIdIsEmpty() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
 
-            // Act & Assert
             assertThatExceptionOfType(IllegalArgumentException.class)
                     .isThrownBy(() -> HttpAgent.builder()
-                            .agentId("   ")
-                            .threadId("test-thread")
-                            .httpClient(httpClient)
-                            .build())
+                        .agentId("   ")
+                        .threadId("test-thread")
+                        .httpClient(httpClient)
+                        .build())
                     .withMessage("agentId is required");
         }
 
         @Test
         void shouldThrowExceptionWhenThreadIdIsNull() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
 
-            // Act & Assert
             assertThatExceptionOfType(IllegalArgumentException.class)
                     .isThrownBy(() -> HttpAgent.builder()
-                            .agentId("test-agent")
-                            .httpClient(httpClient)
-                            .build())
+                        .agentId("test-agent")
+                        .httpClient(httpClient)
+                        .build())
                     .withMessage("threadId is required");
         }
 
         @Test
         void shouldThrowExceptionWhenThreadIdIsEmpty() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
 
-            // Act & Assert
             assertThatExceptionOfType(IllegalArgumentException.class)
                     .isThrownBy(() -> HttpAgent.builder()
-                            .agentId("test-agent")
-                            .threadId("")
-                            .httpClient(httpClient)
-                            .build())
+                        .agentId("test-agent")
+                        .threadId("")
+                        .httpClient(httpClient)
+                        .build())
                     .withMessage("threadId is required");
         }
 
         @Test
         void shouldThrowExceptionWhenHttpClientIsNull() {
-            // Act & Assert
             assertThatExceptionOfType(IllegalArgumentException.class)
                     .isThrownBy(() -> HttpAgent.builder()
-                            .agentId("test-agent")
-                            .threadId("test-thread")
-                            .build())
+                        .agentId("test-agent")
+                        .threadId("test-thread")
+                        .build())
                     .withMessage("http client is required");
         }
 
         @Test
         void shouldSupportMethodChaining() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
 
-            // Act & Assert - Should compile and not throw exceptions
             HttpAgent agent = HttpAgent.builder()
-                    .agentId("test-agent")
-                    .description("Test description")
-                    .threadId("test-thread")
-                    .httpClient(httpClient)
-                    .messages(new ArrayList<>())
-                    .addMessage(createMessage("Test"))
-                    .state(new State())
-                    .debug(false)
-                    .debug()
-                    .build();
+                .agentId("test-agent")
+                .description("Test description")
+                .threadId("test-thread")
+                .httpClient(httpClient)
+                .messages(new ArrayList<>())
+                .addMessage(createMessage("Test"))
+                .state(new State())
+                .debug(false)
+                .build();
 
             assertThat(agent).isNotNull();
         }
@@ -235,17 +208,16 @@ class HttpAgentTest {
         void setUp() {
             httpClient = new TestHttpClient();
             agent = HttpAgent.builder()
-                    .agentId("test-agent")
-                    .threadId("test-thread")
-                    .httpClient(httpClient)
-                    .build();
+                .agentId("test-agent")
+                .threadId("test-thread")
+                .httpClient(httpClient)
+                .build();
 
             parameters = RunAgentParameters.empty();
         }
 
         @Test
         void shouldExecuteSuccessfullyWithEventsFromHttpClient() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
 
             RunStartedEvent startEvent = new RunStartedEvent();
@@ -254,11 +226,9 @@ class HttpAgentTest {
             httpClient.setEventsToEmit(List.of(startEvent, finishEvent));
             httpClient.setShouldComplete(true);
 
-            // Act
             CompletableFuture<Void> future = agent.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(future.isCompletedExceptionally()).isFalse();
 
@@ -266,23 +236,18 @@ class HttpAgentTest {
             assertThat(subscriber.wasOnRunFinalizedCalled()).isTrue();
             assertThat(subscriber.getEventCount()).isEqualTo(2);
 
-
-            // Verify HTTP client was called with correct input
             assertThat(httpClient.getLastInput()).isNotNull();
             assertThat(httpClient.getLastInput().threadId()).isEqualTo("test-thread");
         }
 
         @Test
         void shouldHandleHttpClientErrorsProperly() {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             httpClient.setShouldThrowError(true);
             httpClient.setErrorToThrow(new RuntimeException("HTTP error"));
 
-            // Act
             CompletableFuture<Void> future = agent.runAgent(parameters, subscriber);
 
-            // Assert
             assertThatExceptionOfType(Exception.class)
                     .isThrownBy(() -> future.get(5, TimeUnit.SECONDS))
                     .withCauseInstanceOf(RuntimeException.class)
@@ -294,18 +259,14 @@ class HttpAgentTest {
 
         @Test
         void shouldNotForwardEventsWhenStreamIsCancelled() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
 
-            // Set up HTTP client to emit events after a delay
             httpClient.setDelayBeforeEvents(100);
             httpClient.setEventsToEmit(List.of(new RunStartedEvent()));
             httpClient.setShouldComplete(true);
 
-            // Act
             CompletableFuture<Void> future = agent.runAgent(parameters, subscriber);
 
-            // Cancel immediately
             future.cancel(true);
 
             try {
@@ -314,66 +275,54 @@ class HttpAgentTest {
                 // Expected due to cancellation
             }
 
-            // Assert
-            // Give a moment for any delayed events to potentially arrive
             Thread.sleep(200);
 
-            // The HTTP client should have been called, but events shouldn't be forwarded
             assertThat(httpClient.wasStreamEventsCalled()).isTrue();
         }
 
         @Test
         void shouldPassCancellationTokenToHttpClient() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             httpClient.setShouldComplete(true);
 
-            // Act
             CompletableFuture<Void> future = agent.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(httpClient.getLastCancellationToken()).isNotNull();
         }
 
         @Test
         void shouldHandleMultipleEventsInSequence() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
 
             List<BaseEvent> events = List.of(
-                    new RunStartedEvent(),
-                    new RunStartedEvent(), // Another event
-                    new RunFinishedEvent()
+                new RunStartedEvent(),
+                new RunStartedEvent(), // Another event
+                new RunFinishedEvent()
             );
 
             httpClient.setEventsToEmit(events);
             httpClient.setShouldComplete(true);
 
-            // Act
             CompletableFuture<Void> future = agent.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(subscriber.getEventCount()).isEqualTo(3);
         }
 
         @Test
         void shouldHandleEmptyEventStream() throws Exception {
-            // Arrange
             TestSubscriber subscriber = new TestSubscriber();
             httpClient.setEventsToEmit(List.of()); // No events
             httpClient.setShouldComplete(true);
 
-            // Act
             CompletableFuture<Void> future = agent.runAgent(parameters, subscriber);
             future.get(5, TimeUnit.SECONDS);
 
-            // Assert
             assertThat(future).isDone();
             assertThat(future.isCompletedExceptionally()).isFalse();
-            assertThat(subscriber.getEventCount()).isEqualTo(0);
+            assertThat(subscriber.getEventCount()).isZero();
         }
     }
 
@@ -383,36 +332,27 @@ class HttpAgentTest {
 
         @Test
         void shouldCloseHttpClientWhenCloseIsCalled() {
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
             HttpAgent agent = HttpAgent.builder()
-                    .agentId("test-agent")
-                    .threadId("test-thread")
-                    .httpClient(httpClient)
-                    .build();
+                .agentId("test-agent")
+                .threadId("test-thread")
+                .httpClient(httpClient)
+                .build();
 
-            // Act
             agent.close();
 
-            // Assert
             assertThat(httpClient.wasClosed()).isTrue();
         }
 
         @Test
         void shouldHandleCloseWhenHttpClientIsNull() {
-            // This test verifies the null check in close() method
-            // We can't easily create an HttpAgent with null httpClient due to validation
-            // but we can test the defensive programming aspect
-
-            // Arrange
             TestHttpClient httpClient = new TestHttpClient();
             HttpAgent agent = HttpAgent.builder()
-                    .agentId("test-agent")
-                    .threadId("test-thread")
-                    .httpClient(httpClient)
-                    .build();
+                .agentId("test-agent")
+                .threadId("test-thread")
+                .httpClient(httpClient)
+                .build();
 
-            // Act & Assert - Should not throw exception
             agent.close();
             agent.close(); // Multiple calls should be safe
 
@@ -420,7 +360,6 @@ class HttpAgentTest {
         }
     }
 
-    // Test implementations
     private static class TestSubscriber implements io.workm8.agui4j.core.agent.AgentSubscriber {
         private final List<BaseEvent> receivedEvents = new ArrayList<>();
         private final List<String> methodCalls = new ArrayList<>();
