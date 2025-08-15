@@ -16,10 +16,34 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class LocalAgent implements Agent {
 
-    protected String agentId;
+    protected final String agentId;
+    protected final String instructions;
     protected String threadId;
     protected State state;
     protected List<BaseMessage> messages = new ArrayList<>();
+
+    public LocalAgent(
+        final String agentId,
+        final String instructions
+    ) {
+        this(agentId, instructions, UUID.randomUUID().toString(), new ArrayList<>());
+    }
+
+    public LocalAgent(
+        final String agentId,
+        final String threadId,
+        final String instructions,
+        final List<BaseMessage> initialMessages
+    ) {
+        this.agentId = agentId;
+        this.instructions = instructions;
+
+        this.threadId = threadId;
+
+        this.messages = new ArrayList<>();
+
+        this.messages.addAll(initialMessages);
+    }
 
     public String getAgentId() {
         return this.agentId;
@@ -170,4 +194,5 @@ public abstract class LocalAgent implements Agent {
             case TOOL_CALL_END -> subscriber.onToolCallEndEvent((ToolCallEndEvent) event);
         }
     }
+
 }

@@ -7,7 +7,6 @@ import io.workm8.agui4j.core.stream.EventStream;
 import io.workm8.agui4j.json.ObjectMapperFactory;
 import io.workm8.agui4j.server.LocalAgent;
 import io.workm8.agui4j.server.streamer.AgentStreamer;
-import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -36,6 +35,7 @@ public class AgUiService {
             .forwardedProps(agUiParameters.getForwardedProps())
             .build();
 
+        agent.setThreadId(agUiParameters.getThreadId());
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
         var eventStream = new EventStream<BaseEvent>(

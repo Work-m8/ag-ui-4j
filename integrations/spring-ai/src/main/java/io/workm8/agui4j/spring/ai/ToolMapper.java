@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static java.util.stream.Collectors.toList;
-
 public class ToolMapper {
 
     private final ObjectMapper objectMapper;

@@ -3,11 +3,8 @@ package io.workm8.agui4j.langchain4j;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.chat.response.CompleteToolCall;
-import dev.langchain4j.model.chat.response.PartialToolCall;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import io.workm8.agui4j.core.agent.*;
-import io.workm8.agui4j.core.event.*;
 import io.workm8.agui4j.core.message.AssistantMessage;
 import io.workm8.agui4j.core.message.BaseMessage;
 import io.workm8.agui4j.core.state.State;
@@ -16,6 +13,8 @@ import io.workm8.agui4j.server.LocalAgent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static io.workm8.agui4j.server.EventFactory.*;
 
 /**
  * Agent implementation that integrates with LangChain4j's StreamingChatModel for AI conversations.
@@ -68,21 +67,14 @@ public class Langchain4jAgent extends LocalAgent {
      * conversation history, and state management. The message and tool mappers are
      * automatically created to handle format conversions.
      *
-     * @param threadId   unique identifier for the conversation thread
-     * @param state      the initial agent state for maintaining context
-     * @param chatModel  the LangChain4j StreamingChatModel for AI communication
-     * @param messages   the initial conversation history as ag-ui-4j BaseMessage objects
      */
-    public Langchain4jAgent(
-        final String threadId,
-        final State state,
-        final StreamingChatModel chatModel,
-        final List<BaseMessage> messages
+    private Langchain4jAgent(
+        final Builder builder
     ) {
-        this.threadId = threadId;
-        this.state = state;
-        this.chatModel = chatModel;
-        this.messages = messages;
+        super(builder.agentId, builder.threadId, builder.instructions, builder.messages);
+
+        this.chatModel = builder.chatModel;
+        this.state = builder.state;
 
         this.messageMapper = new MessageMapper();
         this.toolMapper = new ToolMapper();
@@ -128,66 +120,34 @@ public class Langchain4jAgent extends LocalAgent {
 
         var agent = this;
 
-        var runStartedEvent = new RunStartedEvent();
-        runStartedEvent.setRunId(input.runId());
-        runStartedEvent.setThreadId(input.threadId());
+        this.emitEvent(runStartedEvent(input.threadId(), input.runId()), subscriber);
 
-        this.emitEvent(runStartedEvent, subscriber);
-
-        var messageStartEvent = new TextMessageStartEvent();
-        messageStartEvent.setMessageId(messageId);
-        messageStartEvent.setRole("assistant");
-
-        this.emitEvent(messageStartEvent, subscriber);
+        this.emitEvent(textMessageStartEvent(messageId, "assistant"), subscriber);
 
         chatModel.chat(
             request,
             new StreamingChatResponseHandler() {
                 @Override
                 public void onPartialResponse(String res) {
-                    var messageContentEvent = new TextMessageContentEvent();
-                    messageContentEvent.setMessageId(messageId);
-                    messageContentEvent.setDelta(res);
-
-                    agent.emitEvent(messageContentEvent, subscriber);
+                    agent.emitEvent(textMessageContentEvent(messageId, res), subscriber);
                 }
 
                 @Override
                 public void onCompleteResponse(ChatResponse chatResponse) {
-                    var messageEndEvent = new TextMessageEndEvent();
-                    messageEndEvent.setMessageId(messageId);
-
-                    agent.emitEvent(messageEndEvent, subscriber);
+                    agent.emitEvent(textMessageEndEvent(messageId), subscriber);
 
                     if (chatResponse.aiMessage().hasToolExecutionRequests()) {
                         chatResponse.aiMessage().toolExecutionRequests()
                             .forEach(toolExecutionRequest -> {
                                 var toolCallId = UUID.randomUUID().toString();
 
-                                var toolCallStartEvent = new ToolCallStartEvent();
-                                toolCallStartEvent.setParentMessageId(messageId);
-                                toolCallStartEvent.setToolCallName(toolExecutionRequest.name());
-                                toolCallStartEvent.setToolCallId(toolCallId);
-
-                                agent.emitEvent(toolCallStartEvent, subscriber);
-
-                                var toolCallArgsEvent = new ToolCallArgsEvent();
-                                toolCallArgsEvent.setDelta(toolExecutionRequest.arguments());
-                                toolCallArgsEvent.setToolCallId(toolCallId);
-
-                                agent.emitEvent(toolCallArgsEvent, subscriber);
-
-                                var toolCallEndEvent = new ToolCallEndEvent();
-                                toolCallEndEvent.setToolCallId(toolCallId);
-
-                                agent.emitEvent(toolCallEndEvent, subscriber);
+                                agent.emitEvent(toolCallStartEvent(messageId, toolExecutionRequest.name(), toolCallId), subscriber);
+                                agent.emitEvent(toolCallArgsEvent(toolExecutionRequest.arguments(), toolCallId), subscriber);
+                                agent.emitEvent(toolCallEndEvent(toolCallId), subscriber);
                             });
                     }
-                    var runFinishedEvent = new RunFinishedEvent();
-                    runFinishedEvent.setRunId(input.runId());
-                    runFinishedEvent.setThreadId(threadId);
 
-                    agent.emitEvent(runFinishedEvent, subscriber);
+                    agent.emitEvent(runFinishedEvent(input.threadId(), input.runId()), subscriber);
 
                     var assistantMessage = new AssistantMessage();
                     assistantMessage.setId(messageId);
@@ -203,22 +163,70 @@ public class Langchain4jAgent extends LocalAgent {
 
                 @Override
                 public void onError(Throwable throwable) {
-                    var runErrorEvent = new RunErrorEvent();
-                    runErrorEvent.setError(throwable.getMessage());
-
-                    agent.emitEvent(runErrorEvent, subscriber);
-                }
-
-                @Override
-                public void onPartialToolCall(PartialToolCall partialToolCall) {
-                }
-
-                @Override
-                public void onCompleteToolCall(CompleteToolCall completeToolCall) {
-
+                    agent.emitEvent(runErrorEvent(throwable.getMessage()), subscriber);
                 }
             }
         );
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private String agentId;
+        private String instructions;
+        private State state;
+        private String threadId;
+        private StreamingChatModel chatModel;
+        private List<BaseMessage> messages = new ArrayList<>();
+
+        public Builder agentId(final String agentId) {
+            this.agentId = agentId;
+
+            return this;
+        }
+
+        public Builder instructions(final String instructions) {
+            this.instructions = instructions;
+
+            return this;
+        }
+
+        public Builder state(final State state) {
+            this.state = state;
+
+            return this;
+        }
+
+        public Builder streamingChatModel(final StreamingChatModel chatModel) {
+            this.chatModel = chatModel;
+
+            return this;
+        }
+
+        public Builder message(final BaseMessage message) {
+            this.messages.add(message);
+
+            return this;
+        }
+
+        public Builder messages(final List<BaseMessage> messages) {
+            this.messages.addAll(messages);
+
+            return this;
+        }
+
+        public Builder threadId(final String threadId) {
+            this.threadId = threadId;
+
+            return this;
+        }
+
+
+        public Langchain4jAgent build() {
+            return new Langchain4jAgent(this);
+        }
+    }
 }

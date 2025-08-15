@@ -1,6 +1,5 @@
 package io.workm8.agui4j.spring.ai;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.workm8.agui4j.core.agent.*;
 import io.workm8.agui4j.core.event.*;
@@ -8,17 +7,16 @@ import io.workm8.agui4j.core.message.BaseMessage;
 import io.workm8.agui4j.core.state.State;
 import io.workm8.agui4j.server.LocalAgent;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.AbstractMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.tool.ToolCallback;
-import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
-import static java.util.stream.Collectors.toList;
+import static io.workm8.agui4j.server.EventFactory.*;
 
 /**
  * Agent implementation that integrates with Spring AI's ChatClient for AI conversations.
@@ -71,6 +69,10 @@ public class SpringAIAgent extends LocalAgent {
     private final ToolMapper toolMapper;
     private final ObjectMapper objectMapper;
 
+    private final List<Advisor> advisors;
+
+    private final List<ToolCallback> toolCallbacks;
+
     /**
      * Constructs a new SpringAIAgent with the specified configuration.
      * <p>
@@ -78,21 +80,21 @@ public class SpringAIAgent extends LocalAgent {
      * initial conversation history. The message mapper and object mapper are
      * automatically created to handle format conversions and JSON serialization.
      *
-     * @param agentId    unique identifier for the agent
-     * @param chatClient  the Spring AI ChatClient for AI communication
-     * @param messages    the initial conversation history as agui4j BaseMessage objects
      */
-    public SpringAIAgent(
-        final String agentId,
-        final ChatClient chatClient,
-        final List<BaseMessage> messages
+    protected SpringAIAgent(
+        Builder builder
     ) {
-        this.agentId = agentId;
-        this.chatClient = chatClient;
+        super(builder.agentId, builder.threadId, builder.instructions, builder.messages);
+
+        this.chatClient = builder.chatClient;
+
         this.messageMapper = new MessageMapper();
-        this.messages = messages;
         this.objectMapper = new ObjectMapper();
+
         this.toolMapper = new ToolMapper(this.objectMapper);
+
+        this.advisors = builder.advisors;
+        this.toolCallbacks = builder.toolCallbacks;
     }
 
     /**
@@ -117,50 +119,65 @@ public class SpringAIAgent extends LocalAgent {
      * @param subscriber the subscriber to receive events and lifecycle notifications
      */
     protected void run(RunAgentInput input, AgentSubscriber subscriber) {
+        var messageId = UUID.randomUUID().toString();
+
         var messages = input.messages()
             .stream().map(this.messageMapper::toSpringMessage)
             .toList();
 
         final List<BaseEvent> deferredToolCallEvents = new ArrayList<>();
 
-        var runStartedEvent = new RunStartedEvent();
-        runStartedEvent.setRunId(input.runId());
-        runStartedEvent.setThreadId(input.threadId());
+        this.emitEvent(
+            runStartedEvent(input.runId(), input.threadId()),
+            subscriber
+        );
 
-        this.emitEvent(runStartedEvent, subscriber);
+        this.emitEvent(
+            textMessageStartEvent(messageId, "assistant"),
+            subscriber
+        );
 
-        var messageId = UUID.randomUUID().toString();
-
-        var messageStartEvent = new TextMessageStartEvent();
-        messageStartEvent.setMessageId(messageId);
-        messageStartEvent.setRole("assistant");
-
-        this.emitEvent(messageStartEvent, subscriber);
-
-        List<ToolCallback> toolCallbacks = input.tools()
-            .stream()
-            .map((tool) -> this.toolMapper.toSpringTool(
-                tool,
-                messageId,
-                deferredToolCallEvents::add
-            )).toList();
-
-        this.chatClient.prompt(
+        ChatClient.ChatClientRequestSpec chatRequest = this.chatClient.prompt(
             Prompt
                 .builder()
                 .messages(messages.toArray(new AbstractMessage[0]))
                 .build()
-            )
-            .toolCallbacks(toolCallbacks)
-            .stream()
+            );
+
+        if (!input.tools().isEmpty()) {
+            List<ToolCallback> toolCallbacks = input.tools()
+                    .stream()
+                    .map((tool) -> this.toolMapper.toSpringTool(
+                            tool,
+                            messageId,
+                            deferredToolCallEvents::add
+                    )).toList();
+            chatRequest = chatRequest.toolCallbacks(toolCallbacks);
+        }
+
+        if (!this.toolCallbacks.isEmpty()) {
+            chatRequest = chatRequest.toolCallbacks(this.toolCallbacks);
+        }
+
+        if (!this.advisors.isEmpty()) {
+            chatRequest = chatRequest.advisors(this.advisors);
+        }
+
+        chatRequest.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, this.threadId));
+
+        if (StringUtils.hasText(this.instructions)) {
+            chatRequest = chatRequest.system(this.instructions);
+        }
+
+        chatRequest.stream()
             .chatResponse()
             .subscribe(
                 evt -> {
                     if (StringUtils.hasText(evt.getResult().getOutput().getText())) {
-                        var messageContentEvent = new TextMessageContentEvent();
-                        messageContentEvent.setMessageId(messageId);
-                        messageContentEvent.setDelta(evt.getResult().getOutput().getText());
-                        this.emitEvent(messageContentEvent, subscriber);
+                        this.emitEvent(
+                            textMessageContentEvent(messageId, evt.getResult().getOutput().getText()),
+                            subscriber
+                        );
                     }
                 },
                 err -> {
@@ -170,22 +187,111 @@ public class SpringAIAgent extends LocalAgent {
                     this.emitEvent(runErrorEvent, subscriber);
                 },
                 () -> {
-                    var messageEndEvent = new TextMessageEndEvent();
-                    messageEndEvent.setMessageId(messageId);
-                    this.emitEvent(messageEndEvent, subscriber);
+                    this.emitEvent(textMessageEndEvent(messageId), subscriber);
 
                     deferredToolCallEvents.forEach(deferredToolCallEvent ->
                         this.emitEvent(deferredToolCallEvent, subscriber)
                     );
 
-                    var runFinishedEvent = new RunFinishedEvent();
-                    runFinishedEvent.setThreadId(input.threadId());
-                    runFinishedEvent.setRunId(input.runId());
-                    this.emitEvent(runFinishedEvent, subscriber);
+                    this.emitEvent(runFinishedEvent(input.threadId(), input.runId()), subscriber);
 
                     subscriber.onRunFinalized(new AgentSubscriberParams(this.messages, state, this, input));
                 }
             );
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private final List<Advisor> advisors = new ArrayList<>();
+
+        private final List<BaseMessage> messages = new ArrayList<>();
+
+        private final List<ToolCallback> toolCallbacks = new ArrayList<>();
+
+        private String agentId;
+        private String threadId;
+        private String instructions;
+        private State state;
+
+        private ChatClient chatClient;
+
+        public Builder advisors(final List<Advisor> advisors) {
+            this.advisors.addAll(advisors);
+
+            return this;
+        }
+
+        public Builder advisor(final Advisor advisor) {
+            this.advisors.add(advisor);
+
+            return this;
+        }
+
+        public Builder message(final BaseMessage message) {
+            this.messages.add(message);
+
+            return this;
+        }
+
+        public Builder messages(final List<BaseMessage> messages) {
+            this.messages.addAll(messages);
+
+            return this;
+        }
+
+        public Builder agentId(final String agentId) {
+            this.agentId = agentId;
+
+            return this;
+        }
+
+        public Builder threadId(final String threadId) {
+            this.threadId = threadId;
+
+            return this;
+        }
+
+        public Builder instructions(final String instructions) {
+            this.instructions = instructions;
+
+            return this;
+        }
+
+        public Builder chatClient(final ChatClient chatClient) {
+            this.chatClient = chatClient;
+
+            return this;
+        }
+
+        public Builder state(final State state) {
+            this.state = state;
+
+            return this;
+        }
+
+        public Builder toolCallbacks(final List<ToolCallback> toolCallbacks) {
+            this.toolCallbacks.addAll(toolCallbacks);
+
+            return this;
+        }
+
+        public Builder toolCallback(final ToolCallback toolCallback) {
+            this.toolCallbacks.add(toolCallback);
+
+            return this;
+        }
+
+
+
+
+
+        public SpringAIAgent build() {
+            return new SpringAIAgent(this);
+        }
     }
 
 }
