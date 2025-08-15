@@ -25,6 +25,65 @@ import java.util.function.Function;
 
 import static io.workm8.agui4j.server.EventFactory.*;
 
+/**
+ * Advanced agent implementation that integrates with LangChain4j's AiServices framework.
+ * <p>
+ * LangchainAgent provides a more sophisticated integration with LangChain4j compared to the
+ * basic Langchain4jAgent. It leverages LangChain4j's AiServices builder pattern to create
+ * a fully-featured assistant with comprehensive tool support, memory management, and flexible
+ * model configuration options.
+ * <p>
+ * Key features:
+ * <ul>
+ * <li>Support for both streaming and non-streaming chat models</li>
+ * <li>Built-in chat memory management for conversation persistence</li>
+ * <li>Comprehensive tool integration with automatic execution and result handling</li>
+ * <li>Custom tool provider support for dynamic tool discovery</li>
+ * <li>Hallucinated tool name strategy for error handling</li>
+ * <li>Real-time event streaming with detailed tool call lifecycle tracking</li>
+ * </ul>
+ * <p>
+ * The agent uses LangChain4j's AiServices framework to build a complete AI assistant
+ * that can handle complex conversational flows, tool interactions, and state management.
+ * It automatically manages the conversation history, executes tool calls, and emits
+ * detailed events for monitoring and user interface updates.
+ * <p>
+ * Architecture highlights:
+ * <ul>
+ * <li>Utilizes LangChain4j's service abstraction for clean separation of concerns</li>
+ * <li>Supports flexible tool configuration through both direct tools and tool providers</li>
+ * <li>Implements proper error handling for tool execution failures</li>
+ * <li>Provides real-time progress updates through event emission</li>
+ * <li>Maintains conversation context across multiple interactions</li>
+ * </ul>
+ * <p>
+ * This agent is ideal for complex conversational AI scenarios that require:
+ * <ul>
+ * <li>Persistent conversation memory</li>
+ * <li>Extensive tool integration capabilities</li>
+ * <li>Robust error handling and recovery</li>
+ * <li>Real-time monitoring and feedback</li>
+ * </ul>
+ * <p>
+ * Example usage:
+ * <pre>{@code
+ * ChatMemory memory = MessageWindowChatMemory.withMaxMessages(100);
+ * StreamingChatModel model = OpenAiStreamingChatModel.builder()
+ *     .apiKey("your-api-key")
+ *     .build();
+ *
+ * LangchainAgent agent = LangchainAgent.builder()
+ *     .agentId("agent-123")
+ *     .threadId("thread-456")
+ *     .instructions("You are a helpful assistant with access to tools.")
+ *     .streamingChatModel(model)
+ *     .chatMemory(memory)
+ *     .tools(List.of(calculatorTool, weatherTool))
+ *     .build();
+ * }</pre>
+ *
+ * @author Pascal Wilbrink
+ */
 public class LangchainAgent extends LocalAgent {
 
     private StreamingChatModel streamingChatModel;
@@ -148,6 +207,23 @@ public class LangchainAgent extends LocalAgent {
         return new Builder();
     }
 
+    /**
+     * Builder class for constructing LangchainAgent instances with flexible configuration.
+     * <p>
+     * The Builder provides a fluent interface for configuring all aspects of a LangchainAgent,
+     * including model selection, memory management, tool configuration, and conversation settings.
+     * It supports method chaining for convenient and readable agent construction.
+     * <p>
+     * Configuration options include:
+     * <ul>
+     * <li>Agent identification and threading</li>
+     * <li>Chat model selection (streaming or non-streaming)</li>
+     * <li>Memory management for conversation persistence</li>
+     * <li>Tool integration (direct tools or tool providers)</li>
+     * <li>Error handling strategies for tool execution</li>
+     * <li>Initial conversation messages and system instructions</li>
+     * </ul>
+     */
     public static class Builder {
 
         private String threadId;
@@ -244,10 +320,41 @@ public class LangchainAgent extends LocalAgent {
         }
     }
 
+    /**
+     * Internal interface for LangChain4j AI service integration.
+     * <p>
+     * This interface defines the contract for the AI assistant service created through
+     * LangChain4j's AiServices framework. It provides both streaming and direct chat
+     * capabilities, allowing for flexible interaction patterns based on use case requirements.
+     * <p>
+     * The interface is used internally by the agent to interact with the configured
+     * LangChain4j models and tools, abstracting the complexity of the AiServices
+     * configuration and providing a clean interface for conversation management.
+     */
     interface Assistant {
 
+        /**
+         * Initiates a streaming chat conversation with the given message.
+         * <p>
+         * This method returns a TokenStream that provides real-time access to the
+         * AI model's response as it generates tokens. The stream supports event
+         * callbacks for partial responses, tool executions, completion, and error handling.
+         *
+         * @param message the user message to send to the AI assistant
+         * @return a TokenStream for receiving streaming response tokens and events
+         */
         TokenStream chat(final String message);
 
+        /**
+         * Performs a direct (non-streaming) chat interaction with the given message.
+         * <p>
+         * This method provides a synchronous chat interaction that returns the complete
+         * response after the AI model finishes generating it. Useful for scenarios where
+         * streaming is not required or where a complete response is needed before proceeding.
+         *
+         * @param message the user message to send to the AI assistant
+         * @return a Response containing the complete AI assistant response
+         */
         Response<String> directChat(final String message);
     }
 }

@@ -14,6 +14,53 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Abstract base class for local agent implementations that provides common functionality
+ * for agent execution, message management, and event handling.
+ * <p>
+ * LocalAgent serves as the foundation for server-side agent implementations, providing
+ * essential infrastructure for managing conversation state, executing agent logic, and
+ * handling event emission to subscribers. It implements the Agent interface and provides
+ * concrete implementations for common operations while leaving the core agent logic
+ * to be defined by subclasses.
+ * <p>
+ * Key features:
+ * <ul>
+ * <li>Conversation thread and state management with dynamic updates</li>
+ * <li>Message history management with incremental updates</li>
+ * <li>Centralized event emission with type-specific dispatching</li>
+ * <li>Asynchronous agent execution with proper lifecycle management</li>
+ * <li>Mutable properties for flexible agent configuration</li>
+ * </ul>
+ * <p>
+ * Unlike client-side agent implementations, LocalAgent allows for mutable state
+ * including thread ID, messages, and internal state. This makes it suitable for
+ * server-side scenarios where agents may be reused across different conversations
+ * or need to be dynamically reconfigured.
+ * <p>
+ * Subclasses must implement the {@link #run(RunAgentInput, AgentSubscriber)} method
+ * to define their specific agent logic, such as integration with language models,
+ * tool execution, or other AI services.
+ * <p>
+ * Example subclass implementation:
+ * <pre>{@code
+ * public class MyAgent extends LocalAgent {
+ *     public MyAgent(String agentId, String instructions) {
+ *         super(agentId, instructions);
+ *     }
+ *
+ *     @Override
+ *     protected void run(RunAgentInput input, AgentSubscriber subscriber) {
+ *         // Implement agent-specific logic here
+ *         emitEvent(EventFactory.runStartedEvent(threadId, input.runId()), subscriber);
+ *         // ... process input and generate responses
+ *         emitEvent(EventFactory.runFinishedEvent(threadId, input.runId()), subscriber);
+ *     }
+ * }
+ * }</pre>
+ *
+ * @author Pascal Wilbrink
+ */
 public abstract class LocalAgent implements Agent {
 
     protected final String agentId;
@@ -22,13 +69,18 @@ public abstract class LocalAgent implements Agent {
     protected State state;
     protected List<BaseMessage> messages = new ArrayList<>();
 
-    public LocalAgent(
-        final String agentId,
-        final String instructions
-    ) {
-        this(agentId, instructions, UUID.randomUUID().toString(), new ArrayList<>());
-    }
-
+    /**
+     * Constructs a new LocalAgent with complete configuration.
+     * <p>
+     * This constructor allows full control over agent initialization, including
+     * conversation thread context and initial message history. This is useful
+     * for creating agents with pre-existing conversation context.
+     *
+     * @param agentId         unique identifier for this agent instance
+     * @param threadId        identifier for the conversation thread
+     * @param instructions    system instructions that define the agent's behavior and role
+     * @param initialMessages initial conversation history, will be copied to avoid external modification
+     */
     public LocalAgent(
         final String agentId,
         final String threadId,
@@ -40,11 +92,14 @@ public abstract class LocalAgent implements Agent {
 
         this.threadId = threadId;
 
-        this.messages = new ArrayList<>();
-
         this.messages.addAll(initialMessages);
     }
 
+    /**
+     * Gets the unique identifier for this agent instance.
+     *
+     * @return the agent ID
+     */
     public String getAgentId() {
         return this.agentId;
     }
@@ -144,6 +199,24 @@ public abstract class LocalAgent implements Agent {
         return future;
     }
 
+    /**
+     * Abstract method that subclasses must implement to define their specific agent logic.
+     * <p>
+     * This method is called when the agent is executed and should contain the core
+     * implementation of the agent's functionality. Implementations should:
+     * <ul>
+     * <li>Process the input parameters and context</li>
+     * <li>Perform agent-specific operations (e.g., language model interaction)</li>
+     * <li>Emit appropriate events using {@link #emitEvent(BaseEvent, AgentSubscriber)}</li>
+     * <li>Handle any errors and emit error events as needed</li>
+     * </ul>
+     * <p>
+     * The method is called asynchronously and should not block for extended periods.
+     * Long-running operations should be handled appropriately to maintain responsiveness.
+     *
+     * @param input      the input parameters containing context, messages, tools, and configuration
+     * @param subscriber the subscriber to receive events during agent execution
+     */
     protected abstract void run(RunAgentInput input, AgentSubscriber subscriber);
 
     /**

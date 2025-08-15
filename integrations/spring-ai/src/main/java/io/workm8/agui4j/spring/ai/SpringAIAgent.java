@@ -5,6 +5,7 @@ import io.workm8.agui4j.core.agent.*;
 import io.workm8.agui4j.core.event.*;
 import io.workm8.agui4j.core.message.BaseMessage;
 import io.workm8.agui4j.core.state.State;
+import io.workm8.agui4j.server.EventFactory;
 import io.workm8.agui4j.server.LocalAgent;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
@@ -128,7 +129,7 @@ public class SpringAIAgent extends LocalAgent {
         final List<BaseEvent> deferredToolCallEvents = new ArrayList<>();
 
         this.emitEvent(
-            runStartedEvent(input.runId(), input.threadId()),
+            runStartedEvent(input.threadId(), input.runId()),
             subscriber
         );
 
@@ -204,6 +205,23 @@ public class SpringAIAgent extends LocalAgent {
         return new Builder();
     }
 
+    /**
+     * Builder class for constructing SpringAIAgent instances with flexible configuration.
+     * <p>
+     * The Builder provides a fluent interface for configuring all aspects of a SpringAIAgent,
+     * including chat client setup, advisor configuration, tool callbacks, and conversation settings.
+     * It supports method chaining for convenient and readable agent construction.
+     * <p>
+     * Configuration options include:
+     * <ul>
+     * <li>Agent identification and threading</li>
+     * <li>Spring AI ChatClient configuration</li>
+     * <li>Advisor registration for conversation enhancement</li>
+     * <li>Tool callback integration for function calling</li>
+     * <li>Initial conversation messages and system instructions</li>
+     * <li>State management for persistent context</li>
+     * </ul>
+     */
     public static class Builder {
 
         private final List<Advisor> advisors = new ArrayList<>();
