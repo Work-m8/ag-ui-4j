@@ -39,7 +39,7 @@ public class MessageFactory {
      * @param role the role of the message sender (e.g., "user", "assistant", "developer", "tool")
      * @throws AGUIException if the role is not supported
      */
-    public void createMessage(final String id, final String role) throws AGUIException {
+    public void createMessage(final String id, final Role role) throws AGUIException {
         this.messages.put(id, this.createMessageByRole(id, role));
     }
 
@@ -105,7 +105,7 @@ public class MessageFactory {
 
         var message = this.messages.get(id);
         if (!(message instanceof AssistantMessage)) {
-            throw new AGUIException("Cannot add tool call for message with role '%s'.".formatted(message.getRole()));
+            throw new AGUIException("Cannot add tool call for message with role '%s'.".formatted(message.getRole().name()));
         }
         ((AssistantMessage) message).addToolCall(toolCall);
     }
@@ -126,7 +126,7 @@ public class MessageFactory {
         var message = this.messages.get(id);
 
         if (!(message instanceof ToolMessage)) {
-            throw new AGUIException("Cannot set an error for message with role '%s'.".formatted(message.getRole()));
+            throw new AGUIException("Cannot set an error for message with role '%s'.".formatted(message.getRole().name()));
         }
         ((ToolMessage) message).setError(error);
     }
@@ -148,7 +148,7 @@ public class MessageFactory {
         var message = this.messages.get(id);
 
         if (!(message instanceof ToolMessage)) {
-            throw new AGUIException("Cannot set tool call id for message with role '%s'.".formatted(message.getRole()));
+            throw new AGUIException("Cannot set tool call id for message with role '%s'.".formatted(message.getRole().name()));
         }
 
         ((ToolMessage) message).setToolCallId(toolCallId);
@@ -181,20 +181,18 @@ public class MessageFactory {
      * @param id   the unique identifier for the message
      * @param role the role type for the message
      * @return a new message instance configured with the given ID and role
-     * @throws AGUIException if the role is not supported
      */
-    private BaseMessage createMessageByRole(String id, String role) throws AGUIException {
+    private BaseMessage createMessageByRole(String id, Role role) {
         BaseMessage message = switch (role) {
-            case "developer" -> new DeveloperMessage();
-            case "assistant" -> new AssistantMessage();
-            case "user" -> new UserMessage();
-            case "tool" -> new ToolMessage();
-            case "system" -> new SystemMessage();
-            default -> throw new AGUIException("Message type '%s' is not supported.".formatted(role));
+            case Developer -> new DeveloperMessage();
+            case Assistant -> new AssistantMessage();
+            case User -> new UserMessage();
+            case Tool -> new ToolMessage();
+            case System -> new SystemMessage();
         };
 
         message.setId(id);
-        message.setName(role);
+        message.setName(role.name());
 
         return message;
     }

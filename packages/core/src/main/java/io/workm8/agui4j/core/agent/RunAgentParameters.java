@@ -1,6 +1,7 @@
 package io.workm8.agui4j.core.agent;
 
 import io.workm8.agui4j.core.context.Context;
+import io.workm8.agui4j.core.message.BaseMessage;
 import io.workm8.agui4j.core.tool.Tool;
 
 import java.util.ArrayList;
@@ -30,7 +31,9 @@ import java.util.Objects;
  * @author Pascal Wilbrink
  */
 public class RunAgentParameters {
+    private final String threadId;
     private final String runId;
+    private final List<BaseMessage> messages;
     private final List<Tool> tools;
     private final List<Context> context;
     private final Object forwardedProps;
@@ -41,12 +44,22 @@ public class RunAgentParameters {
      * @param builder the builder containing the configuration values
      */
     private RunAgentParameters(Builder builder) {
+        this.threadId = builder.threadId;
         this.runId = builder.runId;
+        this.messages = builder.messages;
         this.tools = Objects.isNull(builder.tools) ? new ArrayList<>() : builder.tools;
         this.context = Objects.isNull(builder.context) ? new ArrayList<>() : builder.context;
         this.forwardedProps = builder.forwardedProps;
     }
 
+    /**
+     * Gets the unique identifier for this thread.
+     *
+     * @return the thread ID, or null if not specified
+     */
+    public String getThreadId() {
+        return this.threadId;
+    }
     /**
      * Gets the unique identifier for this agent run.
      *
@@ -54,6 +67,15 @@ public class RunAgentParameters {
      */
     public String getRunId() {
         return runId;
+    }
+
+    /**
+     * Gets the list of messages available to the agent during execution.
+     *
+     * @return the list of messages
+     */
+    public List<BaseMessage> getMessages() {
+        return this.messages;
     }
 
     /**
@@ -90,10 +112,23 @@ public class RunAgentParameters {
      * being optional and defaulting to null if not specified.
      */
     public static class Builder {
+        private String threadId;
         private String runId;
+        private List<BaseMessage> messages;
         private List<Tool> tools;
         private List<Context> context;
         private Object forwardedProps;
+
+        /**
+         * Sets the unique identifier for this thread.
+         *
+         * @param threadId the unique thread identifier
+         * @return this builder instance for method chaining
+         */
+        public Builder threadId(String threadId) {
+            this.threadId = threadId;
+            return this;
+        }
 
         /**
          * Sets the unique identifier for this agent run.
@@ -103,6 +138,17 @@ public class RunAgentParameters {
          */
         public Builder runId(String runId) {
             this.runId = runId;
+            return this;
+        }
+
+        /**
+         * Sets the messages for this agent run
+         *
+         * @param messages the list of messages
+         * @return this builder instance for method chaining
+         */
+        public Builder messages(final List<BaseMessage> messages) {
+            this.messages = messages;
             return this;
         }
 

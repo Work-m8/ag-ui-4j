@@ -1,5 +1,6 @@
 package io.workm8.agui4j.core.event;
 
+import io.workm8.agui4j.core.message.Role;
 import io.workm8.agui4j.core.type.EventType;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.DisplayName;
@@ -48,9 +49,7 @@ class ToolCallResultEventTest {
     @Test
     void shouldSetRole() {
         var event = new ToolCallResultEvent();
-        var role = "user";
-        event.setRole(role);
-
+        var role = Role.User;
         assertThat(event.getRole()).isEqualTo(role);
     }
 

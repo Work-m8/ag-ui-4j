@@ -120,13 +120,14 @@ public class AgUiService {
      */
     public SseEmitter runAgent(final LocalAgent agent, final AgUiParameters agUiParameters) {
         var parameters = RunAgentParameters.builder()
+            .threadId(agUiParameters.getThreadId())
             .runId(agUiParameters.getRunId())
+            .messages(agUiParameters.getMessages())
             .tools(agUiParameters.getTools())
             .context(agUiParameters.getContext())
             .forwardedProps(agUiParameters.getForwardedProps())
             .build();
 
-        agent.setThreadId(agUiParameters.getThreadId());
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
         var eventStream = new EventStream<BaseEvent>(
@@ -134,7 +135,7 @@ public class AgUiService {
                 try {
                     emitter.send(SseEmitter.event().data(" " + objectMapper.writeValueAsString(event)).build());
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    emitter.completeWithError(e);
                 }
             },
             emitter::completeWithError,

@@ -23,4 +23,8 @@ public record Context(@NotNull String description, @NotNull String value) {
         Objects.requireNonNull(description, "description cannot be null");
         Objects.requireNonNull(value, "value cannot be null");
     }
+
+    public String toString() {
+        return "%s: %s".formatted(description, value);
+    }
 }

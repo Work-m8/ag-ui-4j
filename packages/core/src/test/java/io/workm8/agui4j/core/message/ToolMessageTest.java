@@ -14,7 +14,7 @@ class ToolMessageTest {
     void shouldSetRole() {
         var message = new ToolMessage();
 
-        assertThat(message.getRole()).isEqualTo("tool");
+        assertThat(message.getRole()).isEqualTo(Role.Tool);
     }
 
     @Test

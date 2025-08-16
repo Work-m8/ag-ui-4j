@@ -57,7 +57,7 @@ public abstract class BaseMessage {
      *
      * @return the role of this message, never null
      */
-    public abstract String getRole();
+    public abstract Role getRole();
 
     /**
      * Sets the unique identifier for this message.

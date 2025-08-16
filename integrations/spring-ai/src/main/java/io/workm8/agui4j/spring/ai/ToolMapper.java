@@ -53,10 +53,9 @@ public class ToolMapper {
      * The ObjectMapper is used to serialize tool parameters into JSON schema format
      * as required by Spring AI's tool definition system.
      *
-     * @param objectMapper the Jackson ObjectMapper for JSON serialization operations
      */
-    public ToolMapper(final ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public ToolMapper() {
+        this.objectMapper = new ObjectMapper();
     }
 
     /**

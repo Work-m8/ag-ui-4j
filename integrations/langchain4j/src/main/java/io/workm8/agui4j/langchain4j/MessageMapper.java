@@ -2,6 +2,7 @@ package io.workm8.agui4j.langchain4j;
 
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.data.message.TextContent;
+import io.workm8.agui4j.core.message.Role;
 
 /**
  * Utility class for converting agui4j message formats to LangChain4j message formats.
@@ -56,13 +57,13 @@ public class MessageMapper {
      */
     public dev.langchain4j.data.message.ChatMessage toLangchainMessage(final io.workm8.agui4j.core.message.BaseMessage message) {
         switch (message.getRole()) {
-            case "assistant" -> {
+            case Assistant -> {
                 return this.toLangchainAiMessage((io.workm8.agui4j.core.message.AssistantMessage) message);
             }
-            case "system" -> {
+            case System -> {
                 return this.toLangchainSystemMessage((io.workm8.agui4j.core.message.SystemMessage) message);
             }
-            case "tool" -> {
+            case Tool -> {
                 return this.toLangchainToolMessage((io.workm8.agui4j.core.message.ToolMessage) message);
             }
             default -> {

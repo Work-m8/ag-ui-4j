@@ -5,6 +5,7 @@ import io.workm8.agui4j.core.agent.*;
 import io.workm8.agui4j.core.event.*;
 import io.workm8.agui4j.core.exception.AGUIException;
 import io.workm8.agui4j.core.message.BaseMessage;
+import io.workm8.agui4j.core.message.Role;
 import io.workm8.agui4j.core.state.State;
 import io.workm8.agui4j.core.stream.IEventStream;
 import io.workm8.agui4j.core.stream.EventStream;
@@ -302,7 +303,7 @@ public abstract class AbstractAgent implements Agent {
      * @throws AGUIException if message creation fails
      */
     protected void handleTextMessageStart(TextMessageStartEvent event, AgentSubscriber subscriber) throws AGUIException {
-        messageFactory.createMessage(event.getMessageId(), "assistant");
+        messageFactory.createMessage(event.getMessageId(), Role.Assistant);
         subscriber.onTextMessageStartEvent(event);
     }
 
@@ -465,7 +466,9 @@ public abstract class AbstractAgent implements Agent {
      */
     protected RunAgentInput prepareRunAgentInput(RunAgentParameters parameters) {
         return new RunAgentInput(
-            this.threadId,
+            Objects.nonNull(parameters.getThreadId())
+                ? parameters.getThreadId()
+                : this.threadId,
             Optional.ofNullable(parameters.getRunId()).orElse(UUID.randomUUID().toString()),
             this.state,
             this.messages,

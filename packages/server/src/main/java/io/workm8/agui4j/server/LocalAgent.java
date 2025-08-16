@@ -4,99 +4,81 @@ import io.workm8.agui4j.core.agent.Agent;
 import io.workm8.agui4j.core.agent.AgentSubscriber;
 import io.workm8.agui4j.core.agent.RunAgentInput;
 import io.workm8.agui4j.core.agent.RunAgentParameters;
+import io.workm8.agui4j.core.context.Context;
 import io.workm8.agui4j.core.event.*;
+import io.workm8.agui4j.core.exception.AGUIException;
 import io.workm8.agui4j.core.message.BaseMessage;
+import io.workm8.agui4j.core.message.Role;
+import io.workm8.agui4j.core.message.SystemMessage;
+import io.workm8.agui4j.core.message.UserMessage;
 import io.workm8.agui4j.core.state.State;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Abstract base class for local agent implementations that provides common functionality
- * for agent execution, message management, and event handling.
- * <p>
- * LocalAgent serves as the foundation for server-side agent implementations, providing
- * essential infrastructure for managing conversation state, executing agent logic, and
- * handling event emission to subscribers. It implements the Agent interface and provides
- * concrete implementations for common operations while leaving the core agent logic
- * to be defined by subclasses.
- * <p>
- * Key features:
- * <ul>
- * <li>Conversation thread and state management with dynamic updates</li>
- * <li>Message history management with incremental updates</li>
- * <li>Centralized event emission with type-specific dispatching</li>
- * <li>Asynchronous agent execution with proper lifecycle management</li>
- * <li>Mutable properties for flexible agent configuration</li>
- * </ul>
- * <p>
- * Unlike client-side agent implementations, LocalAgent allows for mutable state
- * including thread ID, messages, and internal state. This makes it suitable for
- * server-side scenarios where agents may be reused across different conversations
- * or need to be dynamically reconfigured.
- * <p>
- * Subclasses must implement the {@link #run(RunAgentInput, AgentSubscriber)} method
- * to define their specific agent logic, such as integration with language models,
- * tool execution, or other AI services.
- * <p>
- * Example subclass implementation:
- * <pre>{@code
- * public class MyAgent extends LocalAgent {
- *     public MyAgent(String agentId, String instructions) {
- *         super(agentId, instructions);
- *     }
+ * for running agents in the AG-UI framework.
  *
- *     @Override
- *     protected void run(RunAgentInput input, AgentSubscriber subscriber) {
- *         // Implement agent-specific logic here
- *         emitEvent(EventFactory.runStartedEvent(threadId, input.runId()), subscriber);
- *         // ... process input and generate responses
- *         emitEvent(EventFactory.runFinishedEvent(threadId, input.runId()), subscriber);
- *     }
- * }
- * }</pre>
+ * This class implements the {@link Agent} interface and provides a foundation for creating
+ * agents that can process messages, maintain state, and emit events during execution.
+ * The agent supports both static system messages and dynamic system message providers.
  *
  * @author Pascal Wilbrink
  */
 public abstract class LocalAgent implements Agent {
 
+    /**
+     * Unique identifier for this agent instance.
+     */
     protected final String agentId;
-    protected final String instructions;
-    protected String threadId;
-    protected State state;
-    protected List<BaseMessage> messages = new ArrayList<>();
 
     /**
-     * Constructs a new LocalAgent with complete configuration.
-     * <p>
-     * This constructor allows full control over agent initialization, including
-     * conversation thread context and initial message history. This is useful
-     * for creating agents with pre-existing conversation context.
+     * Current state of the agent, containing persistent data and configuration.
+     */
+    protected State state;
+
+    /**
+     * Static system message content used when no system message provider is specified.
+     */
+    protected String systemMessage;
+
+    /**
+     * Function that dynamically generates system messages based on the current agent state.
+     * Takes precedence over the static system message if both are provided.
+     */
+    protected Function<LocalAgent, String> systemMessageProvider;
+
+    /**
+     * Constructs a new LocalAgent with the specified configuration.
      *
-     * @param agentId         unique identifier for this agent instance
-     * @param threadId        identifier for the conversation thread
-     * @param instructions    system instructions that define the agent's behavior and role
-     * @param initialMessages initial conversation history, will be copied to avoid external modification
+     * @param agentId unique identifier for this agent instance
+     * @param state initial state for the agent
+     * @param systemMessageProvider function to dynamically generate system messages (can be null)
+     * @param systemMessage static system message content (can be null if systemMessageProvider is provided)
+     * @throws AGUIException if both systemMessage and systemMessageProvider are null
      */
     public LocalAgent(
-        final String agentId,
-        final String threadId,
-        final String instructions,
-        final List<BaseMessage> initialMessages
-    ) {
+            final String agentId,
+            final State state,
+            final Function<LocalAgent, String> systemMessageProvider,
+            final String systemMessage
+    ) throws AGUIException {
         this.agentId = agentId;
-        this.instructions = instructions;
 
-        this.threadId = threadId;
+        this.state = state;
 
-        this.messages.addAll(initialMessages);
+        if (Objects.isNull(systemMessage) && Objects.isNull(systemMessageProvider)) {
+            throw new AGUIException("Either SystemMessage or SystemMessageProvider should be set.");
+        }
+
+        this.systemMessage = systemMessage;
+        this.systemMessageProvider = systemMessageProvider;
     }
 
     /**
-     * Gets the unique identifier for this agent instance.
+     * Returns the unique identifier for this agent.
      *
      * @return the agent ID
      */
@@ -105,93 +87,34 @@ public abstract class LocalAgent implements Agent {
     }
 
     /**
-     * Sets the thread identifier for this agent.
-     * <p>
-     * This method allows for dynamic updates to the conversation thread,
-     * enabling the agent to be reused across different conversation contexts.
+     * Updates the current state of the agent.
      *
-     * @param threadId the new thread identifier
-     */
-    public void setThreadId(final String threadId) {
-        this.threadId = threadId;
-    }
-
-    /**
-     * Sets the agent's internal state.
-     * <p>
-     * This method allows for dynamic state updates, enabling the agent to
-     * maintain and update context information across interactions.
-     *
-     * @param state the new agent state
+     * @param state the new state to set for this agent
      */
     public void setState(final State state) {
         this.state = state;
     }
 
     /**
-     * Replaces the entire conversation history with new messages.
-     * <p>
-     * This method allows for complete replacement of the conversation context,
-     * useful for resetting conversations or loading different conversation histories.
+     * {@inheritDoc}
      *
-     * @param messages the new conversation history
-     */
-    public void setMessages(final List<BaseMessage> messages) {
-        this.messages = messages;
-    }
-
-    /**
-     * Adds a single message to the conversation history.
-     * <p>
-     * This method appends a new message to the existing conversation, creating
-     * the message list if it doesn't exist. This is useful for incrementally
-     * building conversation history.
-     *
-     * @param message the message to add to the conversation
-     */
-    public void addMessage(final BaseMessage message) {
-        if (Objects.isNull(this.messages)) {
-            this.messages = new ArrayList<>();
-        }
-        this.messages.add(message);
-    }
-
-    /**
-     * Executes the agent asynchronously with the specified parameters and subscriber.
-     * <p>
-     * This method implements the Agent interface by creating a RunAgentInput from
-     * the provided parameters and initiating asynchronous execution. The agent will
-     * use Spring AI's ChatClient to process the conversation and emit events through
-     * the provided subscriber.
-     * <p>
-     * The execution includes:
-     * <ul>
-     * <li>Message format conversion from agui4j to Spring AI</li>
-     * <li>Tool definition creation with JSON schema generation</li>
-     * <li>Reactive streaming response handling with real-time event emission</li>
-     * <li>Deferred tool call event processing for proper ordering</li>
-     * </ul>
-     *
-     * @param parameters the configuration parameters for this agent execution,
-     *                  including tools, context, and other execution settings
-     * @param subscriber the callback interface for receiving real-time updates
-     *                  about agent execution progress, events, and state changes
-     * @return a CompletableFuture that completes when the agent execution finishes
+     * Executes the agent asynchronously with the provided parameters and notifies
+     * the subscriber of events during execution.
      */
     @Override
     public CompletableFuture<Void> runAgent(RunAgentParameters parameters, AgentSubscriber subscriber) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         var input = new RunAgentInput(
-            this.threadId,
-            Objects.isNull(parameters.getRunId())
-                ? UUID.randomUUID().toString()
-                : parameters.getRunId(),
-            this.state,
-            this.messages,
-            parameters.getTools(),
-            parameters.getContext(),
-            parameters.getForwardedProps()
+                parameters.getThreadId(),
+                Objects.isNull(parameters.getRunId())
+                        ? UUID.randomUUID().toString()
+                        : parameters.getRunId(),
+                this.state,
+                parameters.getMessages(),
+                parameters.getTools(),
+                parameters.getContext(),
+                parameters.getForwardedProps()
         );
 
         CompletableFuture.runAsync(() -> this.run(input, subscriber));
@@ -200,43 +123,23 @@ public abstract class LocalAgent implements Agent {
     }
 
     /**
-     * Abstract method that subclasses must implement to define their specific agent logic.
-     * <p>
-     * This method is called when the agent is executed and should contain the core
-     * implementation of the agent's functionality. Implementations should:
-     * <ul>
-     * <li>Process the input parameters and context</li>
-     * <li>Perform agent-specific operations (e.g., language model interaction)</li>
-     * <li>Emit appropriate events using {@link #emitEvent(BaseEvent, AgentSubscriber)}</li>
-     * <li>Handle any errors and emit error events as needed</li>
-     * </ul>
-     * <p>
-     * The method is called asynchronously and should not block for extended periods.
-     * Long-running operations should be handled appropriately to maintain responsiveness.
+     * Abstract method that must be implemented by subclasses to define the agent's
+     * execution logic.
      *
-     * @param input      the input parameters containing context, messages, tools, and configuration
-     * @param subscriber the subscriber to receive events during agent execution
+     * @param input the input parameters for the agent run, including messages, tools, and context
+     * @param subscriber the event subscriber to notify of execution events
      */
     protected abstract void run(RunAgentInput input, AgentSubscriber subscriber);
 
     /**
-     * Emits an event to the subscriber using the appropriate event-specific method.
-     * <p>
-     * This protected utility method handles the dual emission pattern used throughout
-     * the ag-ui-4j framework:
-     * <ul>
-     * <li>First calls the generic onEvent method for universal event handling</li>
-     * <li>Then calls the specific event type method for targeted processing</li>
-     * </ul>
-     * <p>
-     * The method includes special handling for TEXT_MESSAGE_CHUNK events, converting
-     * them to TEXT_MESSAGE_CONTENT events for compatibility with the subscriber interface.
-     * <p>
-     * This centralized emission method ensures consistent event handling and makes it
-     * easier to maintain the event dispatching logic.
+     * Emits an event to the subscriber and routes it to the appropriate specific event handler
+     * based on the event type.
      *
-     * @param event      the event to emit to the subscriber
-     * @param subscriber the subscriber that should receive the event
+     * This method handles the polymorphic dispatch of events to their corresponding
+     * handler methods on the subscriber.
+     *
+     * @param event the event to emit
+     * @param subscriber the subscriber to notify of the event
      */
     protected void emitEvent(final BaseEvent event, final AgentSubscriber subscriber) {
         subscriber.onEvent(event);
@@ -266,6 +169,67 @@ public abstract class LocalAgent implements Agent {
             case TOOL_CALL_RESULT -> subscriber.onToolCallResultEvent((ToolCallResultEvent) event);
             case TOOL_CALL_END -> subscriber.onToolCallEndEvent((ToolCallEndEvent) event);
         }
+    }
+
+    /**
+     * Creates a system message that includes the agent's system prompt, current state,
+     * and provided context information.
+     *
+     * The system message is constructed by combining:
+     * <ul>
+     * <li>The system message content (either from the provider function or static message)</li>
+     * <li>The current agent state</li>
+     * <li>The provided context information</li>
+     * </ul>
+     *
+     * @param context list of context objects to include in the system message
+     * @return a new SystemMessage containing the formatted system prompt
+     */
+    protected SystemMessage createSystemMessage(final List<Context> context) {
+        var message = """
+%s
+
+State:
+%s
+
+Context:
+%s
+"""
+                .formatted(
+                        (Objects.nonNull(this.systemMessageProvider)
+                                ? this.systemMessageProvider.apply(this)
+                                : this.systemMessage
+                        ),
+                        this.state,
+                        String.join("\n",
+                                context.stream().map(Context::toString)
+                                        .toList()
+                        )
+                );
+
+        var systemMessage = new SystemMessage();
+
+        systemMessage.setId(UUID.randomUUID().toString());
+        systemMessage.setContent(message);
+
+        return systemMessage;
+    }
+
+    /**
+     * Retrieves the most recent user message from a list of messages.
+     *
+     * This method filters the message list to find messages with the User role
+     * and returns the last one in the list.
+     *
+     * @param messages list of messages to search through
+     * @return the most recent UserMessage in the list
+     * @throws AGUIException if no user message is found in the list
+     */
+    protected UserMessage getLatestUserMessage(List<BaseMessage> messages) throws AGUIException {
+        return (UserMessage)messages.stream()
+                .filter(m -> m.getRole().equals(Role.User))
+                .reduce((a, b) -> b)
+                .orElseThrow(() -> new AGUIException("No User Message found"));
     }
 
 }
