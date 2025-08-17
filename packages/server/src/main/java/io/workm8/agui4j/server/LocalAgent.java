@@ -60,10 +60,10 @@ public abstract class LocalAgent implements Agent {
      * @throws AGUIException if both systemMessage and systemMessageProvider are null
      */
     public LocalAgent(
-            final String agentId,
-            final State state,
-            final Function<LocalAgent, String> systemMessageProvider,
-            final String systemMessage
+        final String agentId,
+        final State state,
+        final Function<LocalAgent, String> systemMessageProvider,
+        final String systemMessage
     ) throws AGUIException {
         this.agentId = agentId;
 

@@ -28,6 +28,11 @@
             <version>${langchain.version}</version>
         </dependency>
         <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai</artifactId>
+            <version>${langchain.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>core</artifactId>
             <version>${ag-ui.version}</version>

@@ -113,6 +113,8 @@ public class SpringAIAgent extends LocalAgent {
      */
     protected void run(RunAgentInput input, AgentSubscriber subscriber) {
         var messageId = UUID.randomUUID().toString();
+        var threadId = input.threadId();
+        var runId = input.runId();
 
         String content;
 
@@ -125,13 +127,13 @@ public class SpringAIAgent extends LocalAgent {
         }
 
         this.emitEvent(
-                runStartedEvent(input.threadId(), input.runId()),
-                subscriber
+            runStartedEvent(threadId, runId),
+            subscriber
         );
 
         this.emitEvent(
-                textMessageStartEvent(messageId, "assistant"),
-                subscriber
+            textMessageStartEvent(messageId, "assistant"),
+            subscriber
         );
 
         final List<BaseEvent> deferredToolCallEvents = new ArrayList<>();
@@ -140,9 +142,9 @@ public class SpringAIAgent extends LocalAgent {
                 .stream()
                 .chatResponse()
                 .subscribe(
-                        evt -> onEvent(subscriber, evt, messageId),
-                        err -> this.emitEvent(runErrorEvent(err.getMessage()), subscriber),
-                        () -> onComplete(input, subscriber, messageId, deferredToolCallEvents)
+                    evt -> onEvent(subscriber, evt, messageId),
+                    err -> this.emitEvent(runErrorEvent(err.getMessage()), subscriber),
+                    () -> onComplete(input, subscriber, messageId, deferredToolCallEvents)
                 );
     }
 
@@ -210,21 +212,21 @@ public class SpringAIAgent extends LocalAgent {
      */
     private ChatClient.ChatClientRequestSpec getChatRequest(RunAgentInput input, String content, String messageId, List<BaseEvent> deferredToolCallEvents, SystemMessage systemMessage) {
         ChatClient.ChatClientRequestSpec chatRequest = this.chatClient.prompt(
-                        Prompt
-                                .builder()
-                                .content(content)
-                                .build()
-                )
-                .system(systemMessage.getContent());
+            Prompt
+                .builder()
+                .content(content)
+                .build()
+            )
+            .system(systemMessage.getContent());
 
         if (!input.tools().isEmpty()) {
             List<ToolCallback> toolCallbacks = input.tools()
-                    .stream()
-                    .map((tool) -> this.toolMapper.toSpringTool(
-                            tool,
-                            messageId,
-                            deferredToolCallEvents::add
-                    )).toList();
+                .stream()
+                .map((tool) -> this.toolMapper.toSpringTool(
+                    tool,
+                    messageId,
+                    deferredToolCallEvents::add
+                )).toList();
 
             chatRequest = chatRequest.toolCallbacks(toolCallbacks);
         }

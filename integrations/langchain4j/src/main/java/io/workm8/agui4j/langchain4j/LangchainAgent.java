@@ -1,22 +1,26 @@
 package io.workm8.agui4j.langchain4j;
 
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
-import dev.langchain4j.data.message.ChatMessageType;
+import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
-import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.TokenStream;
+import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.tool.ToolExecution;
+import dev.langchain4j.service.tool.ToolExecutor;
 import dev.langchain4j.service.tool.ToolProvider;
 import io.workm8.agui4j.core.agent.AgentSubscriber;
 import io.workm8.agui4j.core.agent.AgentSubscriberParams;
 import io.workm8.agui4j.core.agent.RunAgentInput;
-import io.workm8.agui4j.core.event.ToolCallResultEvent;
-import io.workm8.agui4j.core.message.BaseMessage;
+import io.workm8.agui4j.core.context.Context;
+import io.workm8.agui4j.core.event.BaseEvent;
+import io.workm8.agui4j.core.exception.AGUIException;
+import io.workm8.agui4j.core.state.State;
+import io.workm8.agui4j.core.tool.Tool;
 import io.workm8.agui4j.server.EventFactory;
 import io.workm8.agui4j.server.LocalAgent;
 
@@ -26,95 +30,167 @@ import java.util.function.Function;
 import static io.workm8.agui4j.server.EventFactory.*;
 
 /**
- * Advanced agent implementation that integrates with LangChain4j's AiServices framework.
- * <p>
- * LangchainAgent provides a more sophisticated integration with LangChain4j compared to the
- * basic Langchain4jAgent. It leverages LangChain4j's AiServices builder pattern to create
- * a fully-featured assistant with comprehensive tool support, memory management, and flexible
- * model configuration options.
- * <p>
+ * A concrete implementation of {@link LocalAgent} that integrates with the LangChain4j framework
+ * to provide AI-powered agent capabilities.
+ *
+ * This agent leverages LangChain4j's AiServices to create a conversational assistant that can
+ * handle streaming responses, tool execution, and memory management. It supports both regular
+ * and streaming chat models, making it suitable for various AI interaction patterns.
+ *
  * Key features:
  * <ul>
+ * <li>Integration with LangChain4j AiServices and chat models</li>
  * <li>Support for both streaming and non-streaming chat models</li>
- * <li>Built-in chat memory management for conversation persistence</li>
- * <li>Comprehensive tool integration with automatic execution and result handling</li>
- * <li>Custom tool provider support for dynamic tool discovery</li>
- * <li>Hallucinated tool name strategy for error handling</li>
- * <li>Real-time event streaming with detailed tool call lifecycle tracking</li>
+ * <li>Tool execution with custom tool providers and individual tools</li>
+ * <li>Chat memory management for conversation persistence</li>
+ * <li>Streaming response handling with real-time token updates</li>
+ * <li>Custom handling of hallucinated tool names</li>
+ * <li>Deferred tool call event processing</li>
  * </ul>
- * <p>
- * The agent uses LangChain4j's AiServices framework to build a complete AI assistant
- * that can handle complex conversational flows, tool interactions, and state management.
- * It automatically manages the conversation history, executes tool calls, and emits
- * detailed events for monitoring and user interface updates.
- * <p>
- * Architecture highlights:
- * <ul>
- * <li>Utilizes LangChain4j's service abstraction for clean separation of concerns</li>
- * <li>Supports flexible tool configuration through both direct tools and tool providers</li>
- * <li>Implements proper error handling for tool execution failures</li>
- * <li>Provides real-time progress updates through event emission</li>
- * <li>Maintains conversation context across multiple interactions</li>
- * </ul>
- * <p>
- * This agent is ideal for complex conversational AI scenarios that require:
- * <ul>
- * <li>Persistent conversation memory</li>
- * <li>Extensive tool integration capabilities</li>
- * <li>Robust error handling and recovery</li>
- * <li>Real-time monitoring and feedback</li>
- * </ul>
- * <p>
- * Example usage:
- * <pre>{@code
- * ChatMemory memory = MessageWindowChatMemory.withMaxMessages(100);
- * StreamingChatModel model = OpenAiStreamingChatModel.builder()
- *     .apiKey("your-api-key")
- *     .build();
- *
- * LangchainAgent agent = LangchainAgent.builder()
- *     .agentId("agent-123")
- *     .threadId("thread-456")
- *     .instructions("You are a helpful assistant with access to tools.")
- *     .streamingChatModel(model)
- *     .chatMemory(memory)
- *     .tools(List.of(calculatorTool, weatherTool))
- *     .build();
- * }</pre>
  *
  * @author Pascal Wilbrink
+ * @since 1.0
  */
 public class LangchainAgent extends LocalAgent {
 
+    /**
+     * The LangChain4j streaming chat model for real-time token streaming.
+     */
     private StreamingChatModel streamingChatModel;
+
+    /**
+     * The LangChain4j chat model for non-streaming interactions.
+     */
     private ChatModel chatModel;
 
+    /**
+     * Chat memory implementation for maintaining conversation history.
+     */
     private ChatMemory chatMemory;
 
-    private final MessageMapper messageMapper;
-
+    /**
+     * List of tool objects that the agent can use during conversations.
+     */
     private List<Object> tools;
 
+    /**
+     * Tool provider for dynamic tool discovery and management.
+     */
     private ToolProvider toolProvider;
 
-    private Function<ToolExecutionRequest, ToolExecutionResultMessage>  hallucinatedToolNameStrategy;
+    /**
+     * Strategy function for handling cases where the model hallucinates tool names
+     * that don't exist in the available tool set.
+     */
+    private Function<ToolExecutionRequest, ToolExecutionResultMessage> hallucinatedToolNameStrategy;
 
-    private LangchainAgent(final Builder builder) {
-        super(builder.agentId, builder.threadId, builder.instructions, builder.messages);
+    private ToolMapper toolMapper;
+
+    /**
+     * Private constructor that initializes the LangchainAgent using the builder pattern.
+     *
+     * @param builder the Builder instance containing all configuration parameters
+     * @throws AGUIException if the parent LocalAgent constructor validation fails
+     */
+    private LangchainAgent(final Builder builder) throws AGUIException {
+        super(
+            builder.agentId,
+            builder.state,
+            builder.systemMessageProvider,
+            builder.systemMessage
+        );
 
         this.streamingChatModel = builder.streamingChatModel;
         this.chatModel = builder.chatModel;
 
         this.chatMemory = builder.chatMemory;
 
-        this.messageMapper = new MessageMapper();
-
         this.tools = builder.tools;
         this.toolProvider = builder.toolProvider;
+
+        this.hallucinatedToolNameStrategy = builder.hallucinatedToolNameStrategy;
+
+        this.toolMapper = new ToolMapper();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * Executes the agent by processing the latest user message through LangChain4j's AiServices.
+     * The method handles the complete conversation lifecycle including:
+     * <ul>
+     * <li>Extracting the user message from input</li>
+     * <li>Building the LangChain4j Assistant with configured tools and memory</li>
+     * <li>Streaming the response with real-time token updates</li>
+     * <li>Processing tool executions and emitting appropriate events</li>
+     * <li>Managing conversation state and memory</li>
+     * </ul>
+     *
+     * Events are emitted throughout the process to provide real-time updates to subscribers.
+     * Tool executions are deferred and processed after the main response is complete.
+     */
     @Override
     protected void run(RunAgentInput input, AgentSubscriber subscriber) {
+        var messageId = UUID.randomUUID().toString();
+
+        var threadId = input.threadId();
+
+        var runId = input.runId();
+
+        String content;
+
+        try {
+            var lastUserMessage = this.getLatestUserMessage(input.messages());
+            content = lastUserMessage.getContent();
+        } catch (AGUIException e) {
+            this.emitEvent(runErrorEvent(e.getMessage()), subscriber);
+            return;
+        }
+
+        var deferredToolCalls = new ArrayList<ToolExecution>();
+
+        var assistant = this.buildAssistant(input);
+
+        this.emitEvent(runStartedEvent(threadId, runId), subscriber);
+        this.emitEvent(textMessageStartEvent(messageId, "assistant"), subscriber);
+
+        assistant.chat(content)
+                .onToolExecuted(deferredToolCalls::add)
+                .onCompleteResponse((res) -> {
+                    this.emitEvent(textMessageEndEvent(messageId), subscriber);
+
+                    deferredToolCalls.forEach(toolCall -> {
+                        var toolCallId = UUID.randomUUID().toString();
+                        this.emitEvent(EventFactory.toolCallStartEvent(messageId, toolCall.request().name(), toolCallId), subscriber);
+                        this.emitEvent(EventFactory.toolCallArgsEvent(toolCall.request().arguments(), toolCallId), subscriber);
+                        this.emitEvent(EventFactory.toolCallEndEvent(toolCallId), subscriber);
+                     //   this.emitEvent(EventFactory.toolCallResultEvent(toolCallId, toolCall.result(), messageId, "tool"), subscriber);
+                    });
+
+                    this.emitEvent(runFinishedEvent(threadId, runId), subscriber);
+
+                    subscriber.onRunFinalized(new AgentSubscriberParams(input.messages(), state, this, input));
+                })
+                .onError((err) -> this.emitEvent(runErrorEvent(err.getMessage()), subscriber))
+                .onPartialResponse((res) -> this.emitEvent(textMessageContentEvent(messageId, res), subscriber))
+                .start();
+    }
+
+    /**
+     * Builds a LangChain4j Assistant instance configured with all the agent's settings.
+     *
+     * This method creates an AiServices builder and configures it with:
+     * <ul>
+     * <li>Chat model (streaming or non-streaming)</li>
+     * <li>Chat memory for conversation persistence</li>
+     * <li>Available tools and tool providers</li>
+     * <li>Hallucinated tool name strategy</li>
+     * <li>System message provider that includes current context and state</li>
+     * </ul>
+     *
+     * @return a configured Assistant instance ready for conversation
+     */
+    private Assistant buildAssistant(final RunAgentInput input) {
         AiServices<Assistant> builder = AiServices.builder(Assistant.class);
 
         if (Objects.nonNull(this.streamingChatModel)) {
@@ -129,12 +205,21 @@ public class LangchainAgent extends LocalAgent {
             builder = builder.chatMemory(chatMemory);
         }
 
-        if (Objects.nonNull(this.instructions)) {
-            builder = builder.systemMessageProvider(chatMemoryId -> instructions);
-        }
-
         if (Objects.nonNull(this.tools) && !this.tools.isEmpty()) {
             builder = builder.tools(this.tools);
+        }
+
+        if (Objects.nonNull(tools) && !tools.isEmpty()) {
+            ToolExecutor toolExecutor = (toolExecutionRequest, memoryId) -> "Tool executed";
+
+            Map<ToolSpecification, ToolExecutor> toolSpecifications = new HashMap<>();
+
+            input.tools()
+                .stream()
+                .map(this.toolMapper::toLangchainTool)
+                .forEach(toolSpecification -> toolSpecifications.put(toolSpecification, toolExecutor));
+
+            builder = builder.tools(toolSpecifications);
         }
 
         if (Objects.nonNull(this.toolProvider)) {
@@ -145,216 +230,243 @@ public class LangchainAgent extends LocalAgent {
             builder = builder.hallucinatedToolNameStrategy(this.hallucinatedToolNameStrategy);
         }
 
-        var assistant = builder.build();
+        builder = builder.systemMessageProvider(memoryId -> this.createSystemMessage(input.context()).getContent());
 
-        var messages = input.messages().stream().map(this.messageMapper::toLangchainMessage).toList();
-
-        UserMessage lastUserMessage = (UserMessage) messages.stream()
-            .filter(m -> m.type().equals(ChatMessageType.USER))
-            .reduce((first, second) -> second)
-            .orElse(null);
-
-        var otherMessages = messages.stream().filter(m -> m != lastUserMessage).toList();
-
-        chatMemory.add(otherMessages);
-
-        var messageId = UUID.randomUUID().toString();
-
-        var runId = input.runId();
-
-        this.emitEvent(runStartedEvent(threadId, runId), subscriber);
-
-        var deferredToolCalls = new ArrayList<ToolExecution>();
-
-        if (Objects.nonNull(lastUserMessage)) {
-            this.emitEvent(textMessageStartEvent(messageId, "assistant"), subscriber);
-            try {
-                assistant.chat(lastUserMessage.singleText())
-                        .onToolExecuted(deferredToolCalls::add)
-                        .onCompleteResponse((res) -> {
-                            this.emitEvent(textMessageEndEvent(messageId), subscriber);
-
-                            deferredToolCalls.forEach(toolCall -> {
-                                var toolCallId = UUID.randomUUID().toString();
-                                this.emitEvent(EventFactory.toolCallStartEvent(messageId, toolCall.request().name(), toolCallId), subscriber);
-                                this.emitEvent(EventFactory.toolCallArgsEvent(toolCall.request().arguments(), toolCallId), subscriber);
-                                this.emitEvent(EventFactory.toolCallEndEvent(toolCallId), subscriber);
-
-                                var result = toolCall.result();
-
-                                var event = new ToolCallResultEvent();
-                                event.setToolCallId(toolCallId);
-                                event.setRole("tool");
-                                event.setMessageId(messageId);
-                                event.setContent(result);
-
-                                this.emitEvent(event, subscriber);
-                            });
-                            this.emitEvent(runFinishedEvent(threadId, runId), subscriber);
-
-                            subscriber.onRunFinalized(new AgentSubscriberParams(input.messages(), state, this, input));
-                        })
-                        .onError((err) -> this.emitEvent(runErrorEvent(err.getMessage()), subscriber))
-                        .onPartialResponse((res) -> this.emitEvent(textMessageContentEvent(messageId, res), subscriber))
-                        .start();
-            } catch (Exception e) {
-                this.emitEvent(runErrorEvent(e.getMessage()), subscriber);
-            }
-        }
+        return builder.build();
     }
 
+    /**
+     * Creates a new Builder instance for constructing LangchainAgent instances.
+     *
+     * @return a new Builder instance
+     */
     public static Builder builder() {
         return new Builder();
     }
 
     /**
-     * Builder class for constructing LangchainAgent instances with flexible configuration.
-     * <p>
-     * The Builder provides a fluent interface for configuring all aspects of a LangchainAgent,
-     * including model selection, memory management, tool configuration, and conversation settings.
-     * It supports method chaining for convenient and readable agent construction.
-     * <p>
-     * Configuration options include:
-     * <ul>
-     * <li>Agent identification and threading</li>
-     * <li>Chat model selection (streaming or non-streaming)</li>
-     * <li>Memory management for conversation persistence</li>
-     * <li>Tool integration (direct tools or tool providers)</li>
-     * <li>Error handling strategies for tool execution</li>
-     * <li>Initial conversation messages and system instructions</li>
-     * </ul>
+     * Builder class for constructing LangchainAgent instances using the builder pattern.
+     *
+     * This builder provides a fluent API for configuring all aspects of the LangchainAgent
+     * including chat models, tools, memory, and agent-specific settings. It supports both
+     * streaming and non-streaming chat models, allowing for flexible configuration based
+     * on the specific use case requirements.
      */
     public static class Builder {
 
-        private String threadId;
-
+        /**
+         * Unique identifier for the agent being built.
+         */
         private String agentId;
-        private String instructions;
+
+        /**
+         * Static system message content for the agent.
+         */
+        private String systemMessage;
+
+        /**
+         * Dynamic system message provider function.
+         */
+        private Function<LocalAgent, String> systemMessageProvider;
+
+        /**
+         * Initial state for the agent being built.
+         */
+        private State state;
+
+        /**
+         * LangChain4j streaming chat model for real-time interactions.
+         */
         private StreamingChatModel streamingChatModel;
+
+        /**
+         * LangChain4j chat model for standard interactions.
+         */
         private ChatModel chatModel;
+
+        /**
+         * Strategy for handling hallucinated tool names.
+         */
         private Function<ToolExecutionRequest, ToolExecutionResultMessage> hallucinatedToolNameStrategy;
 
+        /**
+         * Chat memory implementation for conversation persistence.
+         */
         private ChatMemory chatMemory;
 
+        /**
+         * Tool provider for dynamic tool management.
+         */
         private ToolProvider toolProvider;
 
-        private final List<BaseMessage> messages = new ArrayList<>();
-
+        /**
+         * List of available tools for the agent.
+         */
         private final List<Object> tools = new ArrayList<>();
 
-        public Builder threadId(final String threadId) {
-            this.threadId = threadId;
-
-            return this;
-        }
-
+        /**
+         * Sets the unique identifier for the agent.
+         *
+         * @param agentId the unique agent identifier
+         * @return this builder instance for method chaining
+         */
         public Builder agentId(final String agentId) {
             this.agentId = agentId;
-
             return this;
         }
 
-        public Builder instructions(final String instructions) {
-            this.instructions = instructions;
-
+        /**
+         * Sets the static system message for the agent.
+         *
+         * @param systemMessage the static system message content
+         * @return this builder instance for method chaining
+         */
+        public Builder systemMessage(final String systemMessage) {
+            this.systemMessage = systemMessage;
             return this;
         }
 
+        /**
+         * Sets the dynamic system message provider for the agent.
+         *
+         * @param systemMessageProvider function that generates system messages dynamically
+         * @return this builder instance for method chaining
+         */
+        public Builder systemMessageProvider(final Function<LocalAgent, String> systemMessageProvider) {
+            this.systemMessageProvider = systemMessageProvider;
+            return this;
+        }
+
+        /**
+         * Sets the initial state for the agent.
+         *
+         * @param state the initial agent state
+         * @return this builder instance for method chaining
+         */
+        public Builder state(final State state) {
+            this.state = state;
+            return this;
+        }
+
+        /**
+         * Sets the LangChain4j ChatModel for standard (non-streaming) interactions.
+         *
+         * @param chatModel the LangChain4j ChatModel to use
+         * @return this builder instance for method chaining
+         */
         public Builder chatModel(final ChatModel chatModel) {
             this.chatModel = chatModel;
 
             return this;
         }
 
+        /**
+         * Sets the LangChain4j StreamingChatModel for real-time streaming interactions.
+         *
+         * @param streamingChatModel the LangChain4j StreamingChatModel to use
+         * @return this builder instance for method chaining
+         */
         public Builder streamingChatModel(final StreamingChatModel streamingChatModel) {
             this.streamingChatModel = streamingChatModel;
 
             return this;
         }
 
+        /**
+         * Sets the strategy for handling hallucinated tool names.
+         *
+         * This strategy is invoked when the model attempts to call a tool that doesn't
+         * exist in the available tool set, allowing for custom error handling or
+         * fallback behavior.
+         *
+         * @param hallucinatedToolNameStrategy function to handle hallucinated tool execution requests
+         * @return this builder instance for method chaining
+         */
         public Builder hallucinatedToolNameStrategy(Function<ToolExecutionRequest, ToolExecutionResultMessage> hallucinatedToolNameStrategy) {
             this.hallucinatedToolNameStrategy = hallucinatedToolNameStrategy;
 
             return this;
         }
 
+        /**
+         * Sets the chat memory implementation for conversation persistence.
+         *
+         * @param chatMemory the LangChain4j ChatMemory implementation
+         * @return this builder instance for method chaining
+         */
         public Builder chatMemory(final ChatMemory chatMemory) {
             this.chatMemory = chatMemory;
 
             return this;
         }
 
-        public Builder message(final BaseMessage message) {
-            this.messages.add(message);
-
-            return this;
-        }
-
-        public Builder messages(final List<BaseMessage> messages) {
-            this.messages.addAll(messages);
-
-            return this;
-        }
-
+        /**
+         * Adds multiple tools to the agent configuration.
+         *
+         * @param tools list of tool objects to add
+         * @return this builder instance for method chaining
+         */
         public Builder tools(final List<Object> tools) {
             this.tools.addAll(tools);
 
             return this;
         }
 
+        /**
+         * Adds a single tool to the agent configuration.
+         *
+         * @param tool the tool object to add
+         * @return this builder instance for method chaining
+         */
         public Builder tool(final Object tool) {
             this.tools.add(tool);
 
             return this;
         }
 
+        /**
+         * Sets the tool provider for dynamic tool discovery and management.
+         *
+         * @param toolProvider the LangChain4j ToolProvider implementation
+         * @return this builder instance for method chaining
+         */
         public Builder toolProvider(final ToolProvider toolProvider) {
             this.toolProvider = toolProvider;
 
             return this;
         }
 
-
-        public LangchainAgent build() {
+        /**
+         * Builds and returns a new LangchainAgent instance with the configured parameters.
+         *
+         * @return a new LangchainAgent instance
+         * @throws AGUIException if the configuration is invalid or required parameters are missing
+         */
+        public LangchainAgent build() throws AGUIException {
             return new LangchainAgent(this);
         }
     }
 
     /**
-     * Internal interface for LangChain4j AI service integration.
-     * <p>
-     * This interface defines the contract for the AI assistant service created through
-     * LangChain4j's AiServices framework. It provides both streaming and direct chat
-     * capabilities, allowing for flexible interaction patterns based on use case requirements.
-     * <p>
-     * The interface is used internally by the agent to interact with the configured
-     * LangChain4j models and tools, abstracting the complexity of the AiServices
-     * configuration and providing a clean interface for conversation management.
+     * Internal interface that defines the contract for the LangChain4j Assistant.
+     *
+     * This interface is used by LangChain4j's AiServices to create a proxy that handles
+     * the conversation flow, tool execution, and response streaming. The interface
+     * abstracts the complexity of the underlying AI service interactions.
      */
     interface Assistant {
 
         /**
-         * Initiates a streaming chat conversation with the given message.
-         * <p>
-         * This method returns a TokenStream that provides real-time access to the
-         * AI model's response as it generates tokens. The stream supports event
-         * callbacks for partial responses, tool executions, completion, and error handling.
+         * Initiates a chat conversation with the given user message.
          *
-         * @param message the user message to send to the AI assistant
-         * @return a TokenStream for receiving streaming response tokens and events
+         * This method returns a TokenStream that allows for real-time processing
+         * of the AI response, including partial responses, tool executions, and
+         * completion callbacks.
+         *
+         * @param message the user message to send to the AI model
+         * @return a TokenStream for handling the streaming response
          */
-        TokenStream chat(final String message);
+        TokenStream chat(@UserMessage final String message);
 
-        /**
-         * Performs a direct (non-streaming) chat interaction with the given message.
-         * <p>
-         * This method provides a synchronous chat interaction that returns the complete
-         * response after the AI model finishes generating it. Useful for scenarios where
-         * streaming is not required or where a complete response is needed before proceeding.
-         *
-         * @param message the user message to send to the AI assistant
-         * @return a Response containing the complete AI assistant response
-         */
-        Response<String> directChat(final String message);
     }
 }

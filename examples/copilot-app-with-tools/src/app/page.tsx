@@ -11,6 +11,7 @@ export default function Page() {
           { name: "draft", type: "string", description: "The draft of the essay", required: true },
         ],
         renderAndWaitForResponse: ({ args, respond, status }) => {
+         console.log(args, respond, status);
           return (
             <div>
               <Markdown content={args.draft || 'Preparing your draft...'} />

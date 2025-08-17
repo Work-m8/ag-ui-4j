@@ -213,4 +213,14 @@ public class EventFactory {
 
         return event;
     }
+
+    public static ToolCallResultEvent toolCallResultEvent(String toolCallId, String content, String messageId, String role) {
+        var event = new ToolCallResultEvent();
+        event.setToolCallId(toolCallId);
+        event.setMessageId(messageId);
+        event.setRole(role);
+        event.setContent(content);
+
+        return event;
+    }
 }
