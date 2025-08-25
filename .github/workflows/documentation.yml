@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 0  # Fetch full history for better Jekyll build
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '17'  # Adjust Java version as needed
           distribution: 'temurin'
