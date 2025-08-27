@@ -21,8 +21,6 @@
         <module>packages/server</module>
         <module>examples/langchain4j-example</module>
         <module>servers/spring</module>
-        <module>integrations/langgraph4j</module>
-        <module>examples/langgraph4j-example</module>
     </modules>
 
     <properties>
