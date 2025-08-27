@@ -236,16 +236,16 @@ public class MessageMapper {
      */
     public org.springframework.ai.chat.messages.AbstractMessage toSpringMessage(final io.workm8.agui4j.core.message.BaseMessage baseMessage) {
         switch (baseMessage.getRole()) {
-            case "assistant" -> {
+            case Assistant -> {
                 return this.toSpringMessage((io.workm8.agui4j.core.message.AssistantMessage) baseMessage);
             }
-            case "system" -> {
+            case System-> {
                 return this.toSpringMessage((io.workm8.agui4j.core.message.SystemMessage) baseMessage);
             }
-            case "developer" -> {
+            case Developer -> {
                 return this.toSpringMessage((io.workm8.agui4j.core.message.DeveloperMessage) baseMessage);
             }
-            case "tool" -> {
+            case Tool -> {
                 return this.toSpringMessage((io.workm8.agui4j.core.message.ToolMessage) baseMessage);
             }
             default -> {

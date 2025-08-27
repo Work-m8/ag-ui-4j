@@ -30,7 +30,7 @@ public class SystemMessage extends BaseMessage {
      *
      * @return "system" - the fixed role for system messages
      */
-    public String getRole() {
-        return "system";
+    public Role getRole() {
+        return Role.System;
     }
 }

@@ -15,7 +15,23 @@ const HTTP_URL = process.env.HTTP_URL || "http://localhost:8080/sse/1";
 const serviceAdapter = new ExperimentalEmptyAdapter();
 
 const httpAgent = new HttpAgent({
-    url: HTTP_URL
+    url: HTTP_URL,
+    initialState: {
+      'language': 'NL'
+    },
+    initialMessages: [
+      {
+        id: '1',
+        role: 'user',
+        content: 'Initial message of the user'
+      },
+      {
+        id: '2',
+        role: 'assistant',
+        content: 'Hi user!'
+      }
+    ]
+    
 });
 
 const runtime = new CopilotRuntime({

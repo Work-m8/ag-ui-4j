@@ -74,4 +74,16 @@ public class State {
     public Object get(final String key) {
         return this.stateMap.get(key);
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Object> entry : stateMap.entrySet()) {
+            if (!sb.isEmpty()) {
+                sb.append("\n");
+            }
+            sb.append(entry.getKey()).append(": ").append(entry.getValue());
+        }
+        return sb.toString();
+    }
+
 }

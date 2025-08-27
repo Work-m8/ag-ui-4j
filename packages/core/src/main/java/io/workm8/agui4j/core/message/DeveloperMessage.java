@@ -29,7 +29,7 @@ public class DeveloperMessage extends BaseMessage {
      *
      * @return "developer" - the fixed role for developer messages
      */
-    public String getRole() {
-        return "developer";
+    public Role getRole() {
+        return Role.Developer;
     }
 }
