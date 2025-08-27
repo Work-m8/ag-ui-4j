@@ -106,15 +106,15 @@ public abstract class LocalAgent implements Agent {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         var input = new RunAgentInput(
-                parameters.getThreadId(),
-                Objects.isNull(parameters.getRunId())
-                        ? UUID.randomUUID().toString()
-                        : parameters.getRunId(),
-                this.state,
-                parameters.getMessages(),
-                parameters.getTools(),
-                parameters.getContext(),
-                parameters.getForwardedProps()
+            parameters.getThreadId(),
+            Objects.isNull(parameters.getRunId())
+                ? UUID.randomUUID().toString()
+                : parameters.getRunId(),
+            this.state,
+            parameters.getMessages(),
+            parameters.getTools(),
+            parameters.getContext(),
+            parameters.getForwardedProps()
         );
 
         CompletableFuture.runAsync(() -> this.run(input, subscriber));
