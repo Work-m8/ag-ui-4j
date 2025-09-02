@@ -151,14 +151,18 @@ public class SpringAIAgent extends LocalAgent {
 
         final List<BaseEvent> deferredToolCallEvents = new ArrayList<>();
 
-        getChatRequest(input, content, messageId, deferredToolCallEvents, this.createSystemMessage(input.context()), subscriber)
-            .stream()
-            .chatResponse()
-            .subscribe(
-                evt -> onEvent(subscriber, evt, messageId, deferredToolCallEvents),
-                err -> this.emitEvent(runErrorEvent(err.getMessage()), subscriber),
-                () -> onComplete(input, subscriber, messageId, deferredToolCallEvents)
-            );
+        try {
+            getChatRequest(input, content, messageId, deferredToolCallEvents, this.createSystemMessage(input.context()), subscriber)
+                .stream()
+                .chatResponse()
+                .subscribe(
+                    evt -> onEvent(subscriber, evt, messageId, deferredToolCallEvents),
+                    err -> this.emitEvent(runErrorEvent(err.getMessage()), subscriber),
+                    () -> onComplete(input, subscriber, messageId, deferredToolCallEvents)
+                );
+        } catch (AGUIException e) {
+            this.emitEvent(runErrorEvent(e.getMessage()), subscriber);
+        }
     }
 
     /**
@@ -192,7 +196,6 @@ public class SpringAIAgent extends LocalAgent {
 
     /**
      * Handles the completion of the chat response stream.
-     *
      * This method is called when the streaming response is complete and handles:
      * <ul>
      * <li>Emitting the text message end event</li>
@@ -234,7 +237,7 @@ public class SpringAIAgent extends LocalAgent {
      * @param systemMessage the formatted system message including state and context
      * @return configured ChatClient request specification ready for execution
      */
-    private ChatClient.ChatClientRequestSpec getChatRequest(RunAgentInput input, String content, String messageId, List<BaseEvent> deferredToolCallEvents, SystemMessage systemMessage, AgentSubscriber subscriber) {
+    private ChatClient.ChatClientRequestSpec getChatRequest(RunAgentInput input, String content, String messageId, List<BaseEvent> deferredToolCallEvents, SystemMessage systemMessage, AgentSubscriber subscriber) throws AGUIException {
         ChatClient.ChatClientRequestSpec chatRequest = this.chatClient.prompt(
             Prompt
                 .builder()
@@ -245,49 +248,67 @@ public class SpringAIAgent extends LocalAgent {
         );
 
         if (!this.tools.isEmpty()) {
-            chatRequest = chatRequest.tools(this.tools);
+            try {
+                chatRequest = chatRequest.tools(this.tools.toArray(new Object[0]));
+            } catch (RuntimeException e) {
+                throw new AGUIException("Could not add tools", e);
+            }
         }
 
         if (!input.tools().isEmpty()) {
-            List<ToolCallback> toolCallbacks = input.tools()
-                .stream()
-                .map((tool) -> this.toolMapper.toSpringTool(
-                    tool,
-                    messageId,
-                    deferredToolCallEvents::add
-                )).toList();
-
-            chatRequest = chatRequest.toolCallbacks(toolCallbacks);
+            try {
+                chatRequest = chatRequest.toolCallbacks(
+                    input.tools()
+                        .stream()
+                        .map((tool) -> this.toolMapper.toSpringTool(
+                            tool,
+                            messageId,
+                            deferredToolCallEvents::add
+                        )).toList()
+                );
+            } catch (RuntimeException e) {
+                throw new AGUIException("Could not add Tools", e);
+            }
         }
 
-
-
         if (!this.toolCallbacks.isEmpty()) {
-            chatRequest = chatRequest.toolCallbacks(
-                this.toolCallbacks
-                    .stream()
-                    .map(toolCallback -> new AgUiFunctionToolCallback(toolCallback, (AgUiToolCallbackParams params) -> {
-                        var toolCallId = UUID.randomUUID().toString();
-                        deferredToolCallEvents.add(toolCallStartEvent(messageId, toolCallback.getToolDefinition().name(), toolCallId));
-                        deferredToolCallEvents.add(toolCallArgsEvent(params.arguments(), toolCallId));
-                        deferredToolCallEvents.add(toolCallEndEvent(toolCallId));
-                        deferredToolCallEvents.add(toolCallResultEvent(toolCallId, params.result(), messageId, "tool"));
+            try {
+                chatRequest = chatRequest.toolCallbacks(
+                    this.toolCallbacks
+                        .stream()
+                        .map(toolCallback -> new AgUiFunctionToolCallback(toolCallback, (AgUiToolCallbackParams params) -> {
+                            var toolCallId = UUID.randomUUID().toString();
+                            deferredToolCallEvents.add(toolCallStartEvent(messageId, toolCallback.getToolDefinition().name(), toolCallId));
+                            deferredToolCallEvents.add(toolCallArgsEvent(params.arguments(), toolCallId));
+                            deferredToolCallEvents.add(toolCallEndEvent(toolCallId));
+                            deferredToolCallEvents.add(toolCallResultEvent(toolCallId, params.result(), messageId, "tool"));
 
-                    }))
-                    .collect(Collectors.toList())
-            );
+                        }))
+                        .collect(Collectors.toList())
+                );
+            } catch (RuntimeException e) {
+                throw new AGUIException("Could not add Tool Callbacks", e);
+            }
         }
 
         if (!this.advisors.isEmpty()) {
-            chatRequest = chatRequest.advisors(this.advisors);
+            try {
+                chatRequest = chatRequest.advisors(this.advisors);
+            } catch (RuntimeException e) {
+                throw new AGUIException("Could not add advisors", e);
+            }
         }
 
         if (Objects.nonNull(this.chatMemory)) {
-            chatRequest.advisors(
-                PromptChatMemoryAdvisor.builder(chatMemory).build()
-            );
+            try {
+                chatRequest.advisors(
+                    PromptChatMemoryAdvisor.builder(chatMemory).build()
+                );
 
-            chatRequest.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, input.threadId()));
+                chatRequest.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, input.threadId()));
+            } catch (RuntimeException e) {
+                throw new AGUIException("Could not add chat memory", e);
+            }
         }
 
         return chatRequest;
