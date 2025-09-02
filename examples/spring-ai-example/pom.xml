@@ -40,10 +40,23 @@
             <artifactId>server</artifactId>
             <version>${ag-ui.version}</version>
         </dependency>
+
+        <!-- Figlet (needed for the tool) !-->
+        <dependency>
+            <groupId>com.github.lalyos</groupId>
+            <artifactId>jfiglet</artifactId>
+            <version>0.0.9</version>
+        </dependency>
+
         <dependency>
             <groupId>io.workm8.agui4j</groupId>
             <artifactId>spring</artifactId>
             <version>${ag-ui.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

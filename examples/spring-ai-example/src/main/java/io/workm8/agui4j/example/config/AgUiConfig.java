@@ -2,6 +2,7 @@ package io.workm8.agui4j.example.config;
 
 import io.workm8.agui4j.core.exception.AGUIException;
 import io.workm8.agui4j.core.state.State;
+import io.workm8.agui4j.example.tools.AsciiTool;
 import io.workm8.agui4j.example.tools.WeatherRequest;
 import io.workm8.agui4j.example.tools.WeatherTool;
 import io.workm8.agui4j.spring.ai.SpringAIAgent;
@@ -27,7 +28,7 @@ public class AgUiConfig {
     }
 
     @Bean
-    public SpringAIAgent agent(@Value("${spring.ai.openai.api-key}") final String apiKey) throws AGUIException {
+    public SpringAIAgent agent(@Value("${spring.ai.openai.api-key}") final String apiKey, final AsciiTool asciiTool) throws AGUIException {
         var openai = OpenAiChatModel.builder()
             .defaultOptions(OpenAiChatOptions.builder()
                 .model("gpt-4o")
@@ -59,6 +60,7 @@ public class AgUiConfig {
             .systemMessage("You are a helpful AI assistant, called Moira.")
             .state(state)
             .toolCallback(toolCallback)
+            .tool(asciiTool)
             .build();
     }
 }
