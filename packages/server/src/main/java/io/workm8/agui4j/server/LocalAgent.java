@@ -195,17 +195,17 @@ State:
 Context:
 %s
 """
-                .formatted(
-                        (Objects.nonNull(this.systemMessageProvider)
-                                ? this.systemMessageProvider.apply(this)
-                                : this.systemMessage
-                        ),
-                        this.state,
-                        String.join("\n",
-                                context.stream().map(Context::toString)
-                                        .toList()
-                        )
-                );
+            .formatted(
+                (Objects.nonNull(this.systemMessageProvider)
+                    ? this.systemMessageProvider.apply(this)
+                    : this.systemMessage
+                ),
+                this.state,
+                String.join("\n",
+                    context.stream().map(Context::toString)
+                    .toList()
+                )
+            );
 
         var systemMessage = new SystemMessage();
 
@@ -229,7 +229,7 @@ Context:
         return (UserMessage)messages.stream()
                 .filter(m -> m.getRole().equals(Role.User))
                 .reduce((a, b) -> b)
-                .orElseThrow(() -> new AGUIException("No User Message found"));
+                .orElseThrow(() -> new AGUIException("No User Message found."));
     }
 
 }
