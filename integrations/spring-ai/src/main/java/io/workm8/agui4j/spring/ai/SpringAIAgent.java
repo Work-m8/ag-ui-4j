@@ -283,7 +283,6 @@ public class SpringAIAgent extends LocalAgent {
                             deferredToolCallEvents.add(toolCallArgsEvent(params.arguments(), toolCallId));
                             deferredToolCallEvents.add(toolCallEndEvent(toolCallId));
                             deferredToolCallEvents.add(toolCallResultEvent(toolCallId, params.result(), messageId, Role.Tool));
-
                         }))
                         .collect(Collectors.toList())
                 );
