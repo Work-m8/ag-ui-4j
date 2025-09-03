@@ -1,0 +1,55 @@
+name: Release Module
+
+on:
+  workflow_dispatch:
+    inputs:
+      module:
+        description: 'Module to release'
+        required: true
+        type: choice
+        options:
+          - core
+          - client
+          - http
+          - server
+          - spring-ai
+          - langchain4j
+          - json
+          - ok-http
+          - spring-server
+      version:
+        description: 'Version to release'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Build and test module
+        run: mvn clean verify -pl packages/${{ inputs.module }} -am
+
+      - name: Create release tag
+        run: |
+          git tag ${{ inputs.module }}/v${{ inputs.version }}
+          git push origin ${{ inputs.module }}/v${{ inputs.version }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.module }}/v${{ inputs.version }}
+          name: "${{ inputs.module }} v${{ inputs.version }}"
+          files: packages/${{ inputs.module }}/target/*.jar
+
+      - name: Publish to GitHub Packages
+        run: mvn deploy -pl packages/${{ inputs.module }} -am
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

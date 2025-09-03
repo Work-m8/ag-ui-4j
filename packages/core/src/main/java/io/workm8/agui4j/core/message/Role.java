@@ -1,11 +1,11 @@
 package io.workm8.agui4j.core.message;
 
 public enum Role {
-    Assistant("assistant"),
-    Developer("developer"),
-    System("system"),
-    Tool("tool"),
-    User("user")
+    Assistant("Assistant"),
+    Developer("Developer"),
+    System("System"),
+    Tool("Tool"),
+    User("User")
     ;
 
     private String name;
@@ -13,4 +13,5 @@ public enum Role {
     Role(final String name) {
         this.name = name;
     }
+
 }
