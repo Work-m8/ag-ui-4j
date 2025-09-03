@@ -21,6 +21,8 @@
         <module>packages/server</module>
         <module>examples/langchain4j-example</module>
         <module>servers/spring</module>
+        <module>clients/spring-client</module>
+        <module>examples/spring-cli-client</module>
     </modules>
 
     <properties>
