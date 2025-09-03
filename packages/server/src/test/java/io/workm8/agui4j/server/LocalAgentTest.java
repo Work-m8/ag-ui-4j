@@ -1,213 +1,243 @@
 package io.workm8.agui4j.server;
 
 import io.workm8.agui4j.core.agent.AgentSubscriber;
+import io.workm8.agui4j.core.agent.AgentSubscriberParams;
 import io.workm8.agui4j.core.agent.RunAgentInput;
 import io.workm8.agui4j.core.agent.RunAgentParameters;
 import io.workm8.agui4j.core.event.*;
+import io.workm8.agui4j.core.exception.AGUIException;
 import io.workm8.agui4j.core.message.BaseMessage;
 import io.workm8.agui4j.core.message.UserMessage;
 import io.workm8.agui4j.core.state.State;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("LocalAgent")
 class LocalAgentTest {
 
-    private TestLocalAgent agent;
-    private AgentSubscriber subscriber;
+    @Test
+    public void shouldCreateAgentWithSystemMessage() throws AGUIException {
+        var agentId = UUID.randomUUID().toString();
+        var systemMessage = "Static System Message";
+        var agent = new TestAgent(agentId, new State(), null, systemMessage);
 
-    @BeforeEach
-    void setUp() {
-        var messages = List.of(new UserMessage("1", "Hello", "user"));
-        agent = new TestLocalAgent("agent-1", "thread-1", "You are helpful", messages);
-        subscriber = mock(AgentSubscriber.class);
+        assertThat(agent.getSystemMessage())
+            .contains(systemMessage);
     }
 
     @Test
-    void shouldInitializeWithParameters() {
-        assertThat(agent.getAgentId()).isEqualTo("agent-1");
-        assertThat(agent.threadId).isEqualTo("thread-1");
-        assertThat(agent.instructions).isEqualTo("You are helpful");
-        assertThat(agent.messages).hasSize(1);
-        assertThat(agent.messages.get(0).getContent()).isEqualTo("Hello");
+    public void shouldCreateAgentWithSystemMessageFromProvider() throws AGUIException {
+        var agentId = UUID.randomUUID().toString();
+        var systemMessage = "Dynamic system message";
+        var systemMessageProvider = new Function<LocalAgent, String>() {
+            @Override
+            public String apply(LocalAgent localAgent) {
+                return systemMessage;
+            }
+        };
+
+        var agent = new TestAgent(agentId, new State(), systemMessageProvider, null);
+
+        assertThat(agent.getSystemMessage())
+                .contains(systemMessage);
     }
 
     @Test
-    void shouldSetThreadId() {
-        agent.setThreadId("new-thread");
-        
-        assertThat(agent.threadId).isEqualTo("new-thread");
+    public void shouldThrowExceptionOnNullSystemMessageAndProvider() throws AGUIException {
+        assertThatExceptionOfType(AGUIException.class)
+            .isThrownBy(() -> new TestAgent(null, new State(), null, null))
+            .withMessage("Either SystemMessage or SystemMessageProvider should be set.");
     }
 
     @Test
-    void shouldSetState() {
-        var state = new State(Map.of("key", "value"));
-        
+    public void shouldGetLatestUserMessage() throws AGUIException {
+        var message1 = new UserMessage();
+        message1.setContent("Hi");
+        var message2 = new UserMessage();
+        message2.setContent("Bye");
+
+        var agent = new TestAgent(null, null, null, "System");
+
+        assertThat(agent.getLatestUserMessageContent(asList(message1, message2)))
+            .isEqualTo("Bye");
+    }
+
+    @Test
+    public void shouldThrowExceptionOnNoUserMessage() throws AGUIException {
+        var agent = new TestAgent(null, null, null,"System");
+
+        assertThatExceptionOfType(AGUIException.class)
+            .isThrownBy(() -> agent.getLatestUserMessageContent(emptyList()))
+            .withMessage("No User Message found.");
+    }
+
+    @Test
+    public void shouldSetAgentId() throws AGUIException {
+        var agentId = UUID.randomUUID().toString();
+        var agent = new TestAgent(agentId, new State(), null, "Message");
+
+        assertThat(agent.getAgentId()).isEqualTo(agentId);
+    }
+
+    @Test
+    public void shouldRunAgent() throws AGUIException {
+        var message = new UserMessage();
+        message.setContent("Hi");
+        var agent = new TestAgent(null, null, null, "System");
+        var runId = UUID.randomUUID().toString();
+
+        agent.runAgent(
+            RunAgentParameters.builder()
+                .runId(runId)
+                .messages(List.of(message))
+                .tools(emptyList())
+                .threadId("thread-1")
+                .build(),
+            new AgentSubscriber() {
+                @Override
+                public void onRunFinalized(AgentSubscriberParams params) {
+                    assertThat(agent.input.messages()).containsExactly(message);
+                }
+                @Override
+                public void onRunFailed(AgentSubscriberParams params, Throwable error) {
+                    AgentSubscriber.super.onRunFailed(params, error);
+                }
+            }
+        ).whenComplete((unused, throwable) -> {
+            assertThat(agent.input.messages()).containsExactly(message);
+        });
+    }
+
+    @Test
+    public void shouldEmitEvents() throws AGUIException {
+        var agent = new TestAgent(null, null, null, "Message");
+
+        var agentSubscriber = new AgentSubscriber(){
+            private List<BaseEvent> events = new ArrayList<>();
+
+            @Override
+            public void onEvent(BaseEvent event) {
+                events.add(event);
+            }
+
+            public BaseEvent getLastEvent() {
+                return this.events
+                    .stream()
+                    .reduce((first, second) -> second)
+                    .orElse(null);
+            }
+        };
+
+        var runStartedEvent = new RunStartedEvent();
+        agent.emitEvent(runStartedEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(runStartedEvent);
+
+        var runErrorEvent = new RunErrorEvent();
+        agent.emitEvent(runErrorEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(runErrorEvent);
+
+        var runFinishedEvent = new RunFinishedEvent();
+        agent.emitEvent(runFinishedEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(runFinishedEvent);
+
+        var customEvent = new CustomEvent();
+        agent.emitEvent(customEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(customEvent);
+
+        var rawEvent = new RawEvent();
+        agent.emitEvent(rawEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(rawEvent);
+
+        var stepStartedEvent = new StepStartedEvent();
+        agent.emitEvent(stepStartedEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(stepStartedEvent);
+
+        var stepFinishedEvent = new StepFinishedEvent();
+        agent.emitEvent(stepFinishedEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(stepFinishedEvent);
+
+        var textMessageStartEvent = new TextMessageStartEvent();
+        agent.emitEvent(textMessageStartEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(textMessageStartEvent);
+
+        var textMessageChunkEvent = new TextMessageChunkEvent();
+        agent.emitEvent(textMessageChunkEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(textMessageChunkEvent);
+
+        var textMessageContentEvent = new TextMessageContentEvent();
+        agent.emitEvent(textMessageContentEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(textMessageContentEvent);
+
+        var textMessageEndEvent = new TextMessageEndEvent();
+        agent.emitEvent(textMessageEndEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(textMessageEndEvent);
+
+        var toolCallStartEvent = new ToolCallStartEvent();
+        agent.emitEvent(toolCallStartEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(toolCallStartEvent);
+
+        var toolCallArgsEvent = new ToolCallArgsEvent();
+        agent.emitEvent(toolCallArgsEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(toolCallArgsEvent);
+
+        var toolCallChunkEvent = new ToolCallChunkEvent();
+        agent.emitEvent(toolCallChunkEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(toolCallChunkEvent);
+
+        var toolCallResultEvent = new ToolCallResultEvent();
+        agent.emitEvent(toolCallResultEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(toolCallResultEvent);
+
+        var toolCallEndEvent = new ToolCallEndEvent();
+        agent.emitEvent(toolCallEndEvent, agentSubscriber);
+        assertThat(agentSubscriber.getLastEvent()).isEqualTo(toolCallEndEvent);
+    }
+
+
+    @Test
+    public void shouldSetState() throws AGUIException {
+        var agent = new TestAgent(null, null, null, "Message");
+
+        var state = new State();
+
+        assertThat(agent.state).isNull();
+
         agent.setState(state);
-        
+
         assertThat(agent.state).isEqualTo(state);
     }
 
-    @Test
-    void shouldSetMessages() {
-        var newMessages = List.of(
-            new UserMessage("2", "Hi", "user"),
-            new UserMessage("3", "How are you?", "user")
-        );
-        
-        agent.setMessages(newMessages);
-        
-        assertThat(agent.messages).hasSize(2);
-        assertThat(agent.messages.get(0).getContent()).isEqualTo("Hi");
-        assertThat(agent.messages.get(1).getContent()).isEqualTo("How are you?");
-    }
+    public static class TestAgent extends LocalAgent {
 
-    @Test
-    void shouldAddMessage() {
-        var newMessage = new UserMessage("2", "Hi there", "user");
-        
-        agent.addMessage(newMessage);
-        
-        assertThat(agent.messages).hasSize(2);
-        assertThat(agent.messages.get(1).getContent()).isEqualTo("Hi there");
-    }
+        RunAgentInput input;
 
-    @Test
-    void shouldAddMessageToEmptyList() {
-        agent.setMessages(null);
-        var newMessage = new UserMessage("1", "First message", "user");
-        
-        agent.addMessage(newMessage);
-        
-        assertThat(agent.messages).hasSize(1);
-        assertThat(agent.messages.get(0).getContent()).isEqualTo("First message");
-    }
-
-    @Test
-    void shouldRunAgent() {
-        var parameters = new RunAgentParameters("run-123");
-        
-        var future = agent.runAgent(parameters, subscriber);
-        
-        assertThat(future).isNotNull();
-        assertThat(agent.lastRunInput).isNotNull();
-        assertThat(agent.lastRunInput.threadId()).isEqualTo("thread-1");
-        assertThat(agent.lastRunInput.runId()).isEqualTo("run-123");
-        assertThat(agent.lastRunInput.messages()).hasSize(1);
-    }
-
-    @Test
-    void shouldGenerateRunIdIfNotProvided() {
-        var parameters = new RunAgentParameters(null);
-        
-        agent.runAgent(parameters, subscriber);
-        
-        assertThat(agent.lastRunInput.runId()).isNotNull();
-        assertThat(agent.lastRunInput.runId()).isNotEmpty();
-    }
-
-    @Test
-    void shouldEmitRunStartedEvent() {
-        var event = new RunStartedEvent();
-        event.setThreadId("thread-1");
-        event.setRunId("run-123");
-        
-        agent.emitEvent(event, subscriber);
-        
-        verify(subscriber).onEvent(event);
-        verify(subscriber).onRunStartedEvent(event);
-    }
-
-    @Test
-    void shouldEmitTextMessageStartEvent() {
-        var event = new TextMessageStartEvent();
-        event.setMessageId("msg-1");
-        
-        agent.emitEvent(event, subscriber);
-        
-        verify(subscriber).onEvent(event);
-        verify(subscriber).onTextMessageStartEvent(event);
-    }
-
-    @Test
-    void shouldEmitTextMessageContentEvent() {
-        var event = new TextMessageContentEvent();
-        event.setDelta("Hello");
-        
-        agent.emitEvent(event, subscriber);
-        
-        verify(subscriber).onEvent(event);
-        verify(subscriber).onTextMessageContentEvent(event);
-    }
-
-    @Test
-    void shouldConvertTextMessageChunkToContentEvent() {
-        var chunkEvent = new TextMessageChunkEvent();
-        chunkEvent.setMessageId("msg-1");
-        chunkEvent.setDelta("Hello");
-        chunkEvent.setTimestamp(12345L);
-        chunkEvent.setRawEvent("raw");
-        
-        agent.emitEvent(chunkEvent, subscriber);
-        
-        verify(subscriber).onEvent(chunkEvent);
-        verify(subscriber).onTextMessageContentEvent(argThat(event -> 
-            event.getMessageId().equals("msg-1") &&
-            event.getDelta().equals("Hello") &&
-            event.getTimestamp() == 12345L &&
-            event.getRawEvent().equals("raw")
-        ));
-    }
-
-    @Test
-    void shouldEmitToolCallEvents() {
-        var startEvent = new ToolCallStartEvent();
-        var argsEvent = new ToolCallArgsEvent();
-        var endEvent = new ToolCallEndEvent();
-        var resultEvent = new ToolCallResultEvent();
-        
-        agent.emitEvent(startEvent, subscriber);
-        agent.emitEvent(argsEvent, subscriber);
-        agent.emitEvent(endEvent, subscriber);
-        agent.emitEvent(resultEvent, subscriber);
-        
-        verify(subscriber).onToolCallStartEvent(startEvent);
-        verify(subscriber).onToolCallArgsEvent(argsEvent);
-        verify(subscriber).onToolCallEndEvent(endEvent);
-        verify(subscriber).onToolCallResultEvent(resultEvent);
-    }
-
-    @Test
-    void shouldEmitCustomAndRawEvents() {
-        var customEvent = new CustomEvent();
-        var rawEvent = new RawEvent();
-        
-        agent.emitEvent(customEvent, subscriber);
-        agent.emitEvent(rawEvent, subscriber);
-        
-        verify(subscriber).onCustomEvent(customEvent);
-        verify(subscriber).onRawEvent(rawEvent);
-    }
-
-    static class TestLocalAgent extends LocalAgent {
-        RunAgentInput lastRunInput;
-
-        public TestLocalAgent(String agentId, String threadId, String instructions, List<BaseMessage> messages) {
-            super(agentId, threadId, instructions, messages);
+        public TestAgent(String agentId, State state, Function<LocalAgent, String> systemMessageProvider, String systemMessage) throws AGUIException {
+            super(agentId, state, systemMessageProvider, systemMessage);
         }
 
         @Override
         protected void run(RunAgentInput input, AgentSubscriber subscriber) {
-            this.lastRunInput = input;
-            // Test implementation - just store the input for verification
+            this.input = input;
+        }
+
+        public String getSystemMessage() {
+            return super.createSystemMessage(emptyList()).getContent();
+        }
+
+        public String getLatestUserMessageContent(List<BaseMessage> messages) throws AGUIException {
+            return super.getLatestUserMessage(messages).getContent();
         }
     }
 }
