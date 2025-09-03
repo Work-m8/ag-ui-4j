@@ -3,6 +3,7 @@ package io.workm8.agui4j.spring.ai;
 import io.workm8.agui4j.core.agent.*;
 import io.workm8.agui4j.core.event.*;
 import io.workm8.agui4j.core.exception.AGUIException;
+import io.workm8.agui4j.core.message.Role;
 import io.workm8.agui4j.core.message.SystemMessage;
 import io.workm8.agui4j.core.state.State;
 import io.workm8.agui4j.server.EventFactory;
@@ -281,7 +282,7 @@ public class SpringAIAgent extends LocalAgent {
                             deferredToolCallEvents.add(toolCallStartEvent(messageId, toolCallback.getToolDefinition().name(), toolCallId));
                             deferredToolCallEvents.add(toolCallArgsEvent(params.arguments(), toolCallId));
                             deferredToolCallEvents.add(toolCallEndEvent(toolCallId));
-                            deferredToolCallEvents.add(toolCallResultEvent(toolCallId, params.result(), messageId, "tool"));
+                            deferredToolCallEvents.add(toolCallResultEvent(toolCallId, params.result(), messageId, Role.Tool));
 
                         }))
                         .collect(Collectors.toList())

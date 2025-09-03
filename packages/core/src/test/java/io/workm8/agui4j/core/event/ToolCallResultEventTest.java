@@ -50,6 +50,7 @@ class ToolCallResultEventTest {
     void shouldSetRole() {
         var event = new ToolCallResultEvent();
         var role = Role.User;
+        event.setRole(role);
         assertThat(event.getRole()).isEqualTo(role);
     }
 
