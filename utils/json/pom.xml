@@ -15,6 +15,7 @@
 
     <properties>
         <jackson.version>2.19.2</jackson.version>
+        <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
     <dependencies>
