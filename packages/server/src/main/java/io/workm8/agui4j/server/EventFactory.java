@@ -1,6 +1,7 @@
 package io.workm8.agui4j.server;
 
 import io.workm8.agui4j.core.event.*;
+import io.workm8.agui4j.core.message.Role;
 
 /**
  * Utility factory class for creating commonly used event instances with proper configuration.
@@ -214,7 +215,7 @@ public class EventFactory {
         return event;
     }
 
-    public static ToolCallResultEvent toolCallResultEvent(String toolCallId, String content, String messageId, String role) {
+    public static ToolCallResultEvent toolCallResultEvent(String toolCallId, String content, String messageId, Role role) {
         var event = new ToolCallResultEvent();
         event.setToolCallId(toolCallId);
         event.setMessageId(messageId);

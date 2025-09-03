@@ -1,5 +1,6 @@
 package io.workm8.agui4j.core.event;
 
+import io.workm8.agui4j.core.message.Role;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
@@ -29,7 +30,7 @@ public class ToolCallResultEvent extends BaseEvent {
     private String toolCallId;
     private String content;
     private String messageId;
-    private String role;
+    private Role role;
 
     /**
      * Creates a new ToolCallResultEvent with type set to {@link EventType#TOOL_CALL_RESULT}.
@@ -101,7 +102,7 @@ public class ToolCallResultEvent extends BaseEvent {
      *
      * @param role the role identifier. Can be null.
      */
-    public void setRole(final String role) {
+    public void setRole(final Role role) {
         this.role = role;
     }
 
@@ -110,7 +111,7 @@ public class ToolCallResultEvent extends BaseEvent {
      *
      * @return the role identifier, can be null
      */
-    public String getRole() {
+    public Role getRole() {
         return this.role;
     }
 }
