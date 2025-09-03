@@ -19,6 +19,7 @@
     <properties>
         <spring.version>6.2.7</spring.version>
         <ag-ui.version>0.0.1</ag-ui.version>
+        <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
     <dependencies>
