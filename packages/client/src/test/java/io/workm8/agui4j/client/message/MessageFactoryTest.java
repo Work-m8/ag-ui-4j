@@ -28,7 +28,7 @@ class MessageFactoryTest {
         assertThat(message).isInstanceOf(UserMessage.class);
         assertThat(message.getId()).isEqualTo(id);
         assertThat(message.getRole()).isEqualTo(Role.User);
-        assertThat(message.getName()).isEqualTo("user");
+        assertThat(message.getName()).isEqualTo("User");
     }
 
     @Test
@@ -42,7 +42,7 @@ class MessageFactoryTest {
         assertThat(message).isInstanceOf(SystemMessage.class);
         assertThat(message.getId()).isEqualTo(id);
         assertThat(message.getRole()).isEqualTo(Role.System);
-        assertThat(message.getName()).isEqualTo("system");
+        assertThat(message.getName()).isEqualTo("System");
     }
 
     @Test
@@ -56,7 +56,7 @@ class MessageFactoryTest {
         assertThat(message).isInstanceOf(AssistantMessage.class);
         assertThat(message.getId()).isEqualTo(id);
         assertThat(message.getRole()).isEqualTo(Role.Assistant);
-        assertThat(message.getName()).isEqualTo("assistant");
+        assertThat(message.getName()).isEqualTo("Assistant");
     }
 
     @Test
@@ -70,7 +70,7 @@ class MessageFactoryTest {
         assertThat(message).isInstanceOf(DeveloperMessage.class);
         assertThat(message.getId()).isEqualTo(id);
         assertThat(message.getRole()).isEqualTo(Role.Developer);
-        assertThat(message.getName()).isEqualTo("developer");
+        assertThat(message.getName()).isEqualTo("Developer");
     }
 
     @Test
@@ -84,7 +84,7 @@ class MessageFactoryTest {
         assertThat(message).isInstanceOf(ToolMessage.class);
         assertThat(message.getId()).isEqualTo(id);
         assertThat(message.getRole()).isEqualTo(Role.Tool);
-        assertThat(message.getName()).isEqualTo("tool");
+        assertThat(message.getName()).isEqualTo("Tool");
     }
 
     @Test
@@ -157,7 +157,7 @@ class MessageFactoryTest {
 
         assertThatExceptionOfType(AGUIException.class)
             .isThrownBy(() -> sut.addToolCall(id, toolCall))
-            .withMessage("Cannot add tool call for message with role 'user'.");
+            .withMessage("Cannot add tool call for message with role 'User'.");
     }
 
     @Test
@@ -181,7 +181,7 @@ class MessageFactoryTest {
 
         assertThatExceptionOfType(AGUIException.class)
             .isThrownBy(() -> sut.setError(id, "error"))
-            .withMessage("Cannot set an error for message with role 'user'.");
+            .withMessage("Cannot set an error for message with role 'User'.");
     }
 
     @Test
@@ -205,7 +205,7 @@ class MessageFactoryTest {
 
         assertThatExceptionOfType(AGUIException.class)
             .isThrownBy(() -> sut.setToolCallId(id, "error"))
-            .withMessage("Cannot set tool call id for message with role 'user'.");
+            .withMessage("Cannot set tool call id for message with role 'User'.");
     }
 
 }
