@@ -81,7 +81,7 @@ public class EventVerifier {
             throw new AGUIException("Cannot send event type '%s': The run has already errored with 'RUN_ERROR'. No further events can be sent.".formatted(eventType));
         }
 
-        if (runFinished && !eventType.equals(EventType.RUN_ERROR)) {
+        if (runFinished) {
             throw new AGUIException("Cannot send event type '%s': The run has already finished with 'RUN_FINISHED'. Start a new run with 'RUN_STARTED'.".formatted(eventType));
         }
 

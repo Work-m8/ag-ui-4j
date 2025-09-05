@@ -154,7 +154,7 @@ public class HttpClient implements BaseHttpClient {
 
             Request request = new Request.Builder()
                 .url(url)
-                .header("Accept", "application/json")
+                .header("Accept", "text/event-stream")
                 .post(body)
                 .build();
 
