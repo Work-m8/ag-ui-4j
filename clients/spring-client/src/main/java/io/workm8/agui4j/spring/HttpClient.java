@@ -44,7 +44,7 @@ public class HttpClient implements BaseHttpClient {
         return webClient.post()
             .uri(url)
             .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(MediaType.TEXT_EVENT_STREAM)
             .body(BodyInserters.fromValue(input))
             .retrieve()
             .bodyToFlux(String.class)
