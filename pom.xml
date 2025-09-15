@@ -43,15 +43,15 @@
 
         <!-- JaCoCo configuration -->
         <jacoco.version>0.8.13</jacoco.version>
-        <maven.surefire.version>3.5.3</maven.surefire.version>
-        <maven.failsafe.version>3.5.3</maven.failsafe.version>
-        <sonar.maven.plugin.version>5.1.0.4751</sonar.maven.plugin.version>
+        <maven.surefire.version>3.5.4</maven.surefire.version>
+        <maven.failsafe.version>3.5.4</maven.failsafe.version>
+        <sonar.maven.plugin.version>5.2.0.4988</sonar.maven.plugin.version>
 
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.11.3</maven-javadoc-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
-        <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
+        <versions-maven-plugin.version>2.19.0</versions-maven-plugin.version>
 
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
