@@ -45,8 +45,8 @@ class AgUiParametersTest {
     @Test
     void shouldSetAndGetTools() {
         var tools = List.of(
-            new Tool("tool1", "First tool", Map.of()),
-            new Tool("tool2", "Second tool", Map.of())
+            new Tool("tool1", "First tool", new Tool.ToolParameters("object", Map.of(), List.of())),
+            new Tool("tool2", "Second tool", new Tool.ToolParameters("object", Map.of(), List.of()))
         );
         
         parameters.setTools(tools);
@@ -75,10 +75,15 @@ class AgUiParametersTest {
 
     @Test
     void shouldSetAndGetMessages() {
-        var messages = List.<BaseMessage>of(
-            new UserMessage("1", "Hello", "user"),
-            new UserMessage("2", "How are you?", "user")
-        );
+        UserMessage message1 = new UserMessage();
+        message1.setId("1");
+        message1.setContent("Hello");
+        message1.setName("user");
+        UserMessage message2 = new UserMessage();
+        message2.setId("2");
+        message2.setContent("How are you?");
+        message2.setName("user");
+        var messages = List.<BaseMessage>of(message1, message2);
         
         parameters.setMessages(messages);
         
@@ -88,7 +93,7 @@ class AgUiParametersTest {
 
     @Test
     void shouldSetAndGetState() {
-        var state = new State(Map.of("currentStep", "greeting"));
+        State state = new State();
         
         parameters.setState(state);
         
