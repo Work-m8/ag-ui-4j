@@ -34,7 +34,7 @@ public class ToolMessage extends BaseMessage {
      * @return "tool" - the fixed role for tool messages
      */
     public Role getRole() {
-        return Role.Tool;
+        return Role.tool;
     }
 
     /**

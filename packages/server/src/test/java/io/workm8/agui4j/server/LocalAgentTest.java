@@ -233,7 +233,7 @@ class LocalAgentTest {
         }
 
         public String getSystemMessage() {
-            return super.createSystemMessage(emptyList()).getContent();
+            return super.createSystemMessage(new State(), emptyList()).getContent();
         }
 
         public String getLatestUserMessageContent(List<BaseMessage> messages) throws AGUIException {

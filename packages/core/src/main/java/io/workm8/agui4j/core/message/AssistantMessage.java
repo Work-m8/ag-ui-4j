@@ -39,7 +39,7 @@ public class AssistantMessage extends BaseMessage {
      * @return "assistant" - the fixed role for assistant messages
      */
     public Role getRole() {
-        return Role.Assistant;
+        return Role.assistant;
     }
 
     /**

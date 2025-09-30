@@ -6,7 +6,6 @@ import io.workm8.agui4j.core.exception.AGUIException;
 import io.workm8.agui4j.core.message.Role;
 import io.workm8.agui4j.core.message.SystemMessage;
 import io.workm8.agui4j.core.state.State;
-import io.workm8.agui4j.server.EventFactory;
 import io.workm8.agui4j.server.LocalAgent;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
@@ -14,12 +13,8 @@ import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.model.tool.ToolCallingChatOptions;
-import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.tool.ToolCallback;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -129,6 +124,7 @@ public class SpringAIAgent extends LocalAgent {
         var messageId = UUID.randomUUID().toString();
         var threadId = input.threadId();
         var runId = input.runId();
+        var state = input.state();
 
         String content;
 
@@ -150,16 +146,16 @@ public class SpringAIAgent extends LocalAgent {
             subscriber
         );
 
-        final List<BaseEvent> deferredToolCallEvents = new ArrayList<>();
+        final List<BaseEvent> deferredEvents = new ArrayList<>();
 
         try {
-            getChatRequest(input, content, messageId, deferredToolCallEvents, this.createSystemMessage(input.context()), subscriber)
+            getChatRequest(input, content, messageId, deferredEvents, this.createSystemMessage(state, input.context()), subscriber)
                 .stream()
                 .chatResponse()
                 .subscribe(
-                    evt -> onEvent(subscriber, evt, messageId, deferredToolCallEvents),
+                    evt -> onEvent(subscriber, evt, messageId, deferredEvents),
                     err -> this.emitEvent(runErrorEvent(err.getMessage()), subscriber),
-                    () -> onComplete(input, subscriber, messageId, deferredToolCallEvents)
+                    () -> onComplete(input, subscriber, messageId, deferredEvents)
                 );
         } catch (AGUIException e) {
             this.emitEvent(runErrorEvent(e.getMessage()), subscriber);
@@ -208,13 +204,13 @@ public class SpringAIAgent extends LocalAgent {
      * @param input the original run input parameters
      * @param subscriber the event subscriber to notify
      * @param messageId the unique identifier for the current message
-     * @param deferredToolCallEvents list of tool call events to process after message completion
+     * @param deferredEvents list of tool call events to process after message completion
      */
-    private void onComplete(RunAgentInput input, AgentSubscriber subscriber, String messageId, List<BaseEvent> deferredToolCallEvents) {
+    private void onComplete(RunAgentInput input, AgentSubscriber subscriber, String messageId, List<BaseEvent> deferredEvents) {
 
         this.emitEvent(textMessageEndEvent(messageId), subscriber);
-        deferredToolCallEvents.forEach(deferredToolCallEvent ->
-            this.emitEvent(deferredToolCallEvent, subscriber)
+        deferredEvents.forEach(deferredEvent ->
+            this.emitEvent(deferredEvent, subscriber)
         );
         this.emitEvent(runFinishedEvent(input.threadId(), input.runId()), subscriber);
         subscriber.onRunFinalized(new AgentSubscriberParams(input.messages(), state, this, input));
@@ -282,7 +278,7 @@ public class SpringAIAgent extends LocalAgent {
                             deferredToolCallEvents.add(toolCallStartEvent(messageId, toolCallback.getToolDefinition().name(), toolCallId));
                             deferredToolCallEvents.add(toolCallArgsEvent(params.arguments(), toolCallId));
                             deferredToolCallEvents.add(toolCallEndEvent(toolCallId));
-                            deferredToolCallEvents.add(toolCallResultEvent(toolCallId, params.result(), messageId, Role.Tool));
+                            deferredToolCallEvents.add(toolCallResultEvent(toolCallId, params.result(), messageId, Role.tool));
                         }))
                         .collect(Collectors.toList())
                 );
@@ -310,6 +306,8 @@ public class SpringAIAgent extends LocalAgent {
                 throw new AGUIException("Could not add chat memory", e);
             }
         }
+
+        chatRequest = chatRequest.tools(new StateTool(this, deferredToolCallEvents));
 
         return chatRequest;
     }

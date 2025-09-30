@@ -126,6 +126,7 @@ public class AgUiService {
             .tools(agUiParameters.getTools())
             .context(agUiParameters.getContext())
             .forwardedProps(agUiParameters.getForwardedProps())
+            .state(agUiParameters.getState())
             .build();
 
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);

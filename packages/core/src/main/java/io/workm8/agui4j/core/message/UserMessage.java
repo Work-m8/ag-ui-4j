@@ -31,6 +31,6 @@ public class UserMessage extends BaseMessage {
      * @return "user" - the fixed role for user messages
      */
     public Role getRole() {
-        return Role.User;
+        return Role.user;
     }
 }

@@ -23,6 +23,7 @@
         <module>servers/spring</module>
         <module>clients/spring-client</module>
         <module>examples/spring-cli-client</module>
+        <module>examples/git-cli</module>
     </modules>
 
     <properties>

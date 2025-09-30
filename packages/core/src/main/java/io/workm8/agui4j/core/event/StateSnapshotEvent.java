@@ -1,5 +1,6 @@
 package io.workm8.agui4j.core.event;
 
+import io.workm8.agui4j.core.state.State;
 import io.workm8.agui4j.core.type.EventType;
 
 /**
@@ -24,6 +25,8 @@ import io.workm8.agui4j.core.type.EventType;
  */
 public class StateSnapshotEvent extends BaseEvent {
 
+    private State state;
+
     /**
      * Creates a new StateSnapshotEvent with type set to {@link EventType#STATE_SNAPSHOT}.
      * <p>
@@ -32,5 +35,13 @@ public class StateSnapshotEvent extends BaseEvent {
      */
     public StateSnapshotEvent() {
         super(EventType.STATE_SNAPSHOT);
+    }
+
+    public void setState(final State state) {
+        this.state = state;
+    }
+
+    public State getState() {
+        return state;
     }
 }

@@ -110,7 +110,9 @@ public abstract class LocalAgent implements Agent {
             Objects.isNull(parameters.getRunId())
                 ? UUID.randomUUID().toString()
                 : parameters.getRunId(),
-            this.state,
+            Objects.nonNull(parameters.getState())
+                ? parameters.getState()
+                : this.state,
             parameters.getMessages(),
             parameters.getTools(),
             parameters.getContext(),
@@ -185,7 +187,7 @@ public abstract class LocalAgent implements Agent {
      * @param context list of context objects to include in the system message
      * @return a new SystemMessage containing the formatted system prompt
      */
-    protected SystemMessage createSystemMessage(final List<Context> context) {
+    protected SystemMessage createSystemMessage(final State state, final List<Context> context) {
         var message = """
 %s
 
@@ -200,7 +202,7 @@ Context:
                     ? this.systemMessageProvider.apply(this)
                     : this.systemMessage
                 ),
-                this.state,
+                state,
                 String.join("\n",
                     context.stream().map(Context::toString)
                     .toList()
@@ -227,7 +229,7 @@ Context:
      */
     protected UserMessage getLatestUserMessage(List<BaseMessage> messages) throws AGUIException {
         return (UserMessage)messages.stream()
-                .filter(m -> m.getRole().equals(Role.User))
+                .filter(m -> m.getRole().equals(Role.user))
                 .reduce((a, b) -> b)
                 .orElseThrow(() -> new AGUIException("No User Message found."));
     }

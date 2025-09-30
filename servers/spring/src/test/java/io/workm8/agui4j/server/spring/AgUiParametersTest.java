@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("AgUiParameters")
@@ -45,8 +46,8 @@ class AgUiParametersTest {
     @Test
     void shouldSetAndGetTools() {
         var tools = List.of(
-            new Tool("tool1", "First tool", Map.of()),
-            new Tool("tool2", "Second tool", Map.of())
+            new Tool("tool1", "First tool", new Tool.ToolParameters("function", Map.of(), emptyList())),
+            new Tool("tool2", "Second tool", new Tool.ToolParameters("function", Map.of(), emptyList()))
         );
         
         parameters.setTools(tools);
@@ -75,9 +76,16 @@ class AgUiParametersTest {
 
     @Test
     void shouldSetAndGetMessages() {
+        var userMessage1 = new UserMessage();
+        userMessage1.setId("1");
+        userMessage1.setContent("Hello");
+
+        var userMessage2 = new UserMessage();
+        userMessage2.setId("2");
+        userMessage2.setContent("How are you?");
         var messages = List.<BaseMessage>of(
-            new UserMessage("1", "Hello", "user"),
-            new UserMessage("2", "How are you?", "user")
+            userMessage1,
+            userMessage2
         );
         
         parameters.setMessages(messages);
@@ -88,8 +96,9 @@ class AgUiParametersTest {
 
     @Test
     void shouldSetAndGetState() {
-        var state = new State(Map.of("currentStep", "greeting"));
-        
+        var state = new State();
+        state.set("currentStep", "greeting");
+
         parameters.setState(state);
         
         assertThat(parameters.getState()).isEqualTo(state);

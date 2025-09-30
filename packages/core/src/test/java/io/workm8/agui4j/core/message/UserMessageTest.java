@@ -12,6 +12,6 @@ class UserMessageTest {
     void shouldSetRole() {
         var message = new UserMessage();
 
-        assertThat(message.getRole()).isEqualTo(Role.User);
+        assertThat(message.getRole()).isEqualTo(Role.user);
     }
 }

@@ -30,7 +30,11 @@ public class State {
      * </p>
      */
     public State() {
-        this.stateMap = new HashMap<>();
+        this(new HashMap<>());
+    }
+
+    public State(final Map<String, Object> stateMap) {
+        this.stateMap = stateMap;
     }
 
     /**

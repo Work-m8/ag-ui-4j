@@ -16,7 +16,7 @@ class AssistantMessageTest {
     void shouldSetRole() {
         var message = new AssistantMessage();
 
-        assertThat(message.getRole()).isEqualTo(Role.Assistant);
+        assertThat(message.getRole()).isEqualTo(Role.assistant);
     }
 
     @Test

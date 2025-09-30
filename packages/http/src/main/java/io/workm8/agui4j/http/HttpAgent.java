@@ -261,9 +261,6 @@ public class HttpAgent extends AbstractAgent {
          * @throws IllegalArgumentException if any required parameter is missing or invalid
          */
         private void validate() {
-            if (agentId == null || agentId.trim().isEmpty()) {
-                throw new IllegalArgumentException("agentId is required");
-            }
             if (threadId == null || threadId.trim().isEmpty()) {
                 throw new IllegalArgumentException("threadId is required");
             }

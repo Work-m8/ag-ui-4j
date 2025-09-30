@@ -184,11 +184,11 @@ public class MessageFactory {
      */
     private BaseMessage createMessageByRole(String id, Role role) {
         BaseMessage message = switch (role) {
-            case Developer -> new DeveloperMessage();
-            case Assistant -> new AssistantMessage();
-            case User -> new UserMessage();
-            case Tool -> new ToolMessage();
-            case System -> new SystemMessage();
+            case developer -> new DeveloperMessage();
+            case assistant -> new AssistantMessage();
+            case user -> new UserMessage();
+            case tool -> new ToolMessage();
+            case system -> new SystemMessage();
         };
 
         message.setId(id);
