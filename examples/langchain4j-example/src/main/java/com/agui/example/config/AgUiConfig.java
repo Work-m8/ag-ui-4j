@@ -40,7 +40,7 @@ public class AgUiConfig {
             .build();
 
         var transport = new StdioMcpTransport.Builder()
-            .command(List.of("docker", "run", "--rm", "-i", "mcp/sequentialthinking"))
+            .command(List.of("docker", "run", "--rm", "-i", "docker.io/mcp/sequentialthinking"))
             .logEvents(true)
             .build();
 
