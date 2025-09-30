@@ -6,6 +6,6 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_AI_OPENAI_KEY={OPEN_AI_KEY}
+      - SPRING_AI_OPENAI_KEY={OPENAI_KEY}
 
     restart: unless-stopped

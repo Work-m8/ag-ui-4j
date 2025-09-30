@@ -172,11 +172,11 @@ Then create a pull request on GitHub with:
 
 ```java
 // Package structure example
-io.workm8.agui4j.core.*          // Core functionality
-io.workm8.agui4j.client.*        // Client libraries
-io.workm8.agui4j.http.*          // HTTP utilities
-io.workm8.agui4j.spring.*        // Spring integrations
-io.workm8.agui4j.util.*          // Utility classes
+com.ag-ui.agui.core.*          // Core functionality
+com.ag-ui.agui.client.*        // Client libraries
+com.ag-ui.agui.http.*          // HTTP utilities
+com.ag-ui.agui.spring.*        // Spring integrations
+com.ag-ui.agui.util.*          // Utility classes
 ```
 
 ### Error Handling
