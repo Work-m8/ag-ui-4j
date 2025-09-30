@@ -2,6 +2,7 @@ package io.workm8.agui4j.core.agent;
 
 import io.workm8.agui4j.core.event.*;
 import io.workm8.agui4j.core.message.BaseMessage;
+import io.workm8.agui4j.core.state.State;
 import io.workm8.agui4j.core.tool.ToolCall;
 
 /**
@@ -225,9 +226,9 @@ public interface AgentSubscriber {
      * This method is invoked whenever the agent's state is updated, providing
      * a way to track state evolution over time.
      *
-     * @param params the parameters and context for this agent run
+     * @param state the State for this agent run
      */
-    default void onStateChanged(AgentSubscriberParams params) { }
+    default void onStateChanged(State state) { }
 
     /**
      * Called when a new message is added to the conversation.

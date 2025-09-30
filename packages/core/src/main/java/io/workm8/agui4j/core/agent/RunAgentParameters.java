@@ -2,6 +2,7 @@ package io.workm8.agui4j.core.agent;
 
 import io.workm8.agui4j.core.context.Context;
 import io.workm8.agui4j.core.message.BaseMessage;
+import io.workm8.agui4j.core.state.State;
 import io.workm8.agui4j.core.tool.Tool;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class RunAgentParameters {
     private final List<Tool> tools;
     private final List<Context> context;
     private final Object forwardedProps;
+    private final State state;
 
     /**
      * Private constructor that accepts a builder to ensure immutability.
@@ -50,6 +52,7 @@ public class RunAgentParameters {
         this.tools = Objects.isNull(builder.tools) ? new ArrayList<>() : builder.tools;
         this.context = Objects.isNull(builder.context) ? new ArrayList<>() : builder.context;
         this.forwardedProps = builder.forwardedProps;
+        this.state = builder.state;
     }
 
     /**
@@ -97,6 +100,15 @@ public class RunAgentParameters {
     }
 
     /**
+     * Gets the state.
+     *
+     * @return the state
+     */
+    public State getState() {
+        return state;
+    }
+
+    /**
      * Gets the forwarded properties object containing arbitrary additional configuration.
      *
      * @return the forwarded properties object, or null if not specified
@@ -117,6 +129,7 @@ public class RunAgentParameters {
         private List<BaseMessage> messages;
         private List<Tool> tools;
         private List<Context> context;
+        private State state;
         private Object forwardedProps;
 
         /**
@@ -171,6 +184,17 @@ public class RunAgentParameters {
          */
         public Builder context(List<Context> context) {
             this.context = context;
+            return this;
+        }
+
+        /**
+         * Sets the state of the agent
+         *
+         * @param state the State of the agent
+         * @return this builder instance for method chaining
+         */
+        public Builder state(State state) {
+            this.state = state;
             return this;
         }
 

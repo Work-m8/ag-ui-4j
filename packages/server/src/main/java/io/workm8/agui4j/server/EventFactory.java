@@ -2,6 +2,7 @@ package io.workm8.agui4j.server;
 
 import io.workm8.agui4j.core.event.*;
 import io.workm8.agui4j.core.message.Role;
+import io.workm8.agui4j.core.state.State;
 
 /**
  * Utility factory class for creating commonly used event instances with proper configuration.
@@ -221,6 +222,13 @@ public class EventFactory {
         event.setMessageId(messageId);
         event.setRole(role);
         event.setContent(content);
+
+        return event;
+    }
+
+    public static StateSnapshotEvent stateSnapshotEvent(final State state) {
+        var event = new StateSnapshotEvent();
+        event.setState(state);
 
         return event;
     }

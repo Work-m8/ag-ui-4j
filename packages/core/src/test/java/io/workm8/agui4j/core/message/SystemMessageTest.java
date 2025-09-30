@@ -12,6 +12,6 @@ class SystemMessageTest {
     void shouldSetRole() {
         var message = new SystemMessage();
 
-        assertThat(message.getRole()).isEqualTo(Role.System);
+        assertThat(message.getRole()).isEqualTo(Role.system);
     }
 }

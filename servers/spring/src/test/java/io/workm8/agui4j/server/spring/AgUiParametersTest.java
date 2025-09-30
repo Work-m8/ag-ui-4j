@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("AgUiParameters")
@@ -75,15 +76,18 @@ class AgUiParametersTest {
 
     @Test
     void shouldSetAndGetMessages() {
-        UserMessage message1 = new UserMessage();
-        message1.setId("1");
-        message1.setContent("Hello");
-        message1.setName("user");
-        UserMessage message2 = new UserMessage();
-        message2.setId("2");
-        message2.setContent("How are you?");
-        message2.setName("user");
-        var messages = List.<BaseMessage>of(message1, message2);
+        var userMessage1 = new UserMessage();
+        userMessage1.setId("1");
+        userMessage1.setContent("Hello");
+
+        var userMessage2 = new UserMessage();
+        userMessage2.setId("2");
+        userMessage2.setContent("How are you?");
+        var messages = List.<BaseMessage>of(
+            userMessage1,
+            userMessage2
+        );
+
         
         parameters.setMessages(messages);
         
@@ -93,8 +97,8 @@ class AgUiParametersTest {
 
     @Test
     void shouldSetAndGetState() {
-        State state = new State();
-        
+        var state = new State();
+        state.set("currentStep", "greeting");
         parameters.setState(state);
         
         assertThat(parameters.getState()).isEqualTo(state);

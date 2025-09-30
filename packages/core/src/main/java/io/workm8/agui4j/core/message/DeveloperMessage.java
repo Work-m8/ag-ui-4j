@@ -30,6 +30,6 @@ public class DeveloperMessage extends BaseMessage {
      * @return "developer" - the fixed role for developer messages
      */
     public Role getRole() {
-        return Role.Developer;
+        return Role.developer;
     }
 }

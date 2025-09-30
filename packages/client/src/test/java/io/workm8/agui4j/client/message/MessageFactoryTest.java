@@ -21,13 +21,13 @@ class MessageFactoryTest {
     void shouldCreateUserMessage() throws AGUIException {
         var id = UUID.randomUUID().toString();
 
-        sut.createMessage(id, Role.User);
+        sut.createMessage(id, Role.user);
 
         var message = sut.getMessage(id);
 
         assertThat(message).isInstanceOf(UserMessage.class);
         assertThat(message.getId()).isEqualTo(id);
-        assertThat(message.getRole()).isEqualTo(Role.User);
+        assertThat(message.getRole()).isEqualTo(Role.user);
         assertThat(message.getName()).isEqualTo("User");
     }
 
@@ -35,13 +35,13 @@ class MessageFactoryTest {
     void shouldCreateSystemMessage() throws AGUIException {
         var id = UUID.randomUUID().toString();
 
-        sut.createMessage(id, Role.System);
+        sut.createMessage(id, Role.system);
 
         var message = sut.getMessage(id);
 
         assertThat(message).isInstanceOf(SystemMessage.class);
         assertThat(message.getId()).isEqualTo(id);
-        assertThat(message.getRole()).isEqualTo(Role.System);
+        assertThat(message.getRole()).isEqualTo(Role.system);
         assertThat(message.getName()).isEqualTo("System");
     }
 
@@ -49,13 +49,13 @@ class MessageFactoryTest {
     void shouldCreateAssistantMessage() throws AGUIException {
         var id = UUID.randomUUID().toString();
 
-        sut.createMessage(id, Role.Assistant);
+        sut.createMessage(id, Role.assistant);
 
         var message = sut.getMessage(id);
 
         assertThat(message).isInstanceOf(AssistantMessage.class);
         assertThat(message.getId()).isEqualTo(id);
-        assertThat(message.getRole()).isEqualTo(Role.Assistant);
+        assertThat(message.getRole()).isEqualTo(Role.assistant);
         assertThat(message.getName()).isEqualTo("Assistant");
     }
 
@@ -63,13 +63,13 @@ class MessageFactoryTest {
     void shouldCreateDeveloperMessage() throws AGUIException {
         var id = UUID.randomUUID().toString();
 
-        sut.createMessage(id, Role.Developer);
+        sut.createMessage(id, Role.developer);
 
         var message = sut.getMessage(id);
 
         assertThat(message).isInstanceOf(DeveloperMessage.class);
         assertThat(message.getId()).isEqualTo(id);
-        assertThat(message.getRole()).isEqualTo(Role.Developer);
+        assertThat(message.getRole()).isEqualTo(Role.developer);
         assertThat(message.getName()).isEqualTo("Developer");
     }
 
@@ -77,13 +77,13 @@ class MessageFactoryTest {
     void shouldCreateToolMessage() throws AGUIException {
         var id = UUID.randomUUID().toString();
 
-        sut.createMessage(id, Role.Tool);
+        sut.createMessage(id, Role.tool);
 
         var message = sut.getMessage(id);
 
         assertThat(message).isInstanceOf(ToolMessage.class);
         assertThat(message.getId()).isEqualTo(id);
-        assertThat(message.getRole()).isEqualTo(Role.Tool);
+        assertThat(message.getRole()).isEqualTo(Role.tool);
         assertThat(message.getName()).isEqualTo("Tool");
     }
 
@@ -98,7 +98,7 @@ class MessageFactoryTest {
     void shouldAddChunk() throws AGUIException {
         var id = UUID.randomUUID().toString();
 
-        sut.createMessage(id, Role.User);
+        sut.createMessage(id, Role.user);
 
         sut.addChunk(id, "Hi");
 
@@ -111,7 +111,7 @@ class MessageFactoryTest {
     void shouldAddMultipleChunks() throws AGUIException {
         var id = UUID.randomUUID().toString();
 
-        sut.createMessage(id, Role.User);
+        sut.createMessage(id, Role.user);
 
         sut.addChunk(id, "Hi,");
         sut.addChunk(id, " how are you?");
@@ -123,7 +123,7 @@ class MessageFactoryTest {
     @Test
     void shouldRemoveMessage() throws AGUIException {
         var id = UUID.randomUUID().toString();
-        sut.createMessage(id, Role.User);
+        sut.createMessage(id, Role.user);
 
         sut.getMessage(id);
 
@@ -137,7 +137,7 @@ class MessageFactoryTest {
     @Test
     void shouldAddToolCall() throws AGUIException {
         var id = UUID.randomUUID().toString();
-        sut.createMessage(id, Role.Assistant);
+        sut.createMessage(id, Role.assistant);
 
         var toolCall = new ToolCall(UUID.randomUUID().toString(), "tool", new FunctionCall("function", "params"));
 
@@ -151,7 +151,7 @@ class MessageFactoryTest {
     @Test
     void shouldThrowAGUIExceptionWhenAddingToolCallToOtherMessageType() throws AGUIException {
         var id = UUID.randomUUID().toString();
-        sut.createMessage(id, Role.User);
+        sut.createMessage(id, Role.user);
 
         var toolCall = new ToolCall(UUID.randomUUID().toString(), "tool", new FunctionCall("function", "params"));
 
@@ -163,7 +163,7 @@ class MessageFactoryTest {
     @Test
     void shouldSetError() throws AGUIException {
         var id = UUID.randomUUID().toString();
-        sut.createMessage(id, Role.Tool);
+        sut.createMessage(id, Role.tool);
 
         var error = "Error";
 
@@ -177,7 +177,7 @@ class MessageFactoryTest {
     @Test
     void shouldThrowAGUIExceptionOnSettingErrorToOtherMessageType() throws AGUIException {
         var id = UUID.randomUUID().toString();
-        sut.createMessage(id, Role.User);
+        sut.createMessage(id, Role.user);
 
         assertThatExceptionOfType(AGUIException.class)
             .isThrownBy(() -> sut.setError(id, "error"))
@@ -187,7 +187,7 @@ class MessageFactoryTest {
     @Test
     void shouldSetToolCallId() throws AGUIException {
         var id = UUID.randomUUID().toString();
-        sut.createMessage(id, Role.Tool);
+        sut.createMessage(id, Role.tool);
 
         var toolCallId = UUID.randomUUID().toString();
 
@@ -201,7 +201,7 @@ class MessageFactoryTest {
     @Test
     void shouldThrowAGUIExceptionOnSettingToolCallIdToMessageWithOtherRole() throws AGUIException {
         var id = UUID.randomUUID().toString();
-        sut.createMessage(id, Role.User);
+        sut.createMessage(id, Role.user);
 
         assertThatExceptionOfType(AGUIException.class)
             .isThrownBy(() -> sut.setToolCallId(id, "error"))

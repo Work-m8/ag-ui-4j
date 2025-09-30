@@ -73,12 +73,13 @@ public abstract class AbstractAgent implements Agent {
         State state,
         boolean debug
     ) {
-        this.agentId = agentId;
+        this.agentId = Optional.ofNullable(agentId).orElse(UUID.randomUUID().toString());
         this.description = Optional.ofNullable(description).orElse("");
         this.threadId = Optional.ofNullable(threadId).orElse(UUID.randomUUID().toString());
         this.messages = Optional.ofNullable(initialMessages).orElse(new ArrayList<>());
         this.state = Optional.ofNullable(state).orElse(new State());
         this.debug = debug;
+
         this.messageFactory = new MessageFactory();
     }
 
@@ -303,7 +304,7 @@ public abstract class AbstractAgent implements Agent {
      * @throws AGUIException if message creation fails
      */
     protected void handleTextMessageStart(TextMessageStartEvent event, AgentSubscriber subscriber) throws AGUIException {
-        messageFactory.createMessage(event.getMessageId(), Role.Assistant);
+        messageFactory.createMessage(event.getMessageId(), Role.assistant);
         subscriber.onTextMessageStartEvent(event);
     }
 
@@ -447,7 +448,7 @@ public abstract class AbstractAgent implements Agent {
 
         agentSubscribers.forEach(subscriber -> {
             try {
-                // TODO: Fire onStateChanged
+                subscriber.onStateChanged(state);
             } catch (Exception e) {
                 logError("Error in state changed subscriber", e);
             }
