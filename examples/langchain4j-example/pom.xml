@@ -33,22 +33,22 @@
             <version>${langchain.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.workm8.agui4j</groupId>
+            <groupId>com.ag-ui.agui</groupId>
             <artifactId>core</artifactId>
             <version>${ag-ui.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.workm8.agui4j</groupId>
+            <groupId>com.ag-ui.agui</groupId>
             <artifactId>langchain4j</artifactId>
             <version>${langchain.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.workm8.agui4j</groupId>
+            <groupId>com.ag-ui.agui</groupId>
             <artifactId>server</artifactId>
             <version>${ag-ui.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.workm8.agui4j</groupId>
+            <groupId>com.ag-ui.agui</groupId>
             <artifactId>spring</artifactId>
             <version>${ag-ui.version}</version>
         </dependency>
