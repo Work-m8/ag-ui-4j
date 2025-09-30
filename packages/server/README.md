@@ -5,7 +5,7 @@
 
 ---
 
-This package contains the Abstract Agent implementation [Local Agent](./src/main/java/io/workm8/agui/server/LocalAgent.java).
+This package contains the Abstract Agent implementation [Local Agent](./src/main/java/com/agui/server/LocalAgent.java).
 
 ### Dependency
 

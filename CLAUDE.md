@@ -41,7 +41,7 @@ AG-UI-4J is an Agent User Interaction Protocol for Java that provides a framewor
 ### Core Architecture Patterns
 
 #### Agent Pattern
-The `Agent` interface (packages/core/src/main/java/io/workm8/agui/core/agent/Agent.java:49) defines the contract:
+The `Agent` interface (packages/core/src/main/java/com/agui/core/agent/Agent.java:49) defines the contract:
 ```java
 CompletableFuture<Void> runAgent(RunAgentParameters parameters, AgentSubscriber subscriber);
 ```

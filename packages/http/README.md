@@ -5,7 +5,7 @@
 
 ---
 
-This package contains the BaseAgent implementation [Http Agent](./src/main/java/io/workm8/agui/http/HttpAgent.java).
+This package contains the BaseAgent implementation [Http Agent](./src/main/java/com/agui/http/HttpAgent.java).
 <br />
 The Http Agent needs a HttpClient (OkHttp or Spring Rest implementations).
 

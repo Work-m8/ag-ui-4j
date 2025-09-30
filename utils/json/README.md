@@ -4,7 +4,7 @@
 ![Maven](https://img.shields.io/badge/Maven-0.0.1-C71A36?logo=apachemaven&logoColor=white)
 ---
 
-This package contains an [ObjectMapperFactory](./src/main/java/io/workm8/agui/json/ObjectMapperFactory.java) that adds JSON mixins to Events, Messages and State.
+This package contains an [ObjectMapperFactory](./src/main/java/com/agui/json/ObjectMapperFactory.java) that adds JSON mixins to Events, Messages and State.
 This way, the Core package is not depending on Jackson.
 
 ### Dependency

@@ -5,7 +5,7 @@
 
 ---
 
-This package contains the [Abstract Agent](./src/main/java/io/workm8/agui/client/agent/AbstractAgent.java).
+This package contains the [Abstract Agent](./src/main/java/com/agui/client/agent/AbstractAgent.java).
 
 ### Dependency
 
