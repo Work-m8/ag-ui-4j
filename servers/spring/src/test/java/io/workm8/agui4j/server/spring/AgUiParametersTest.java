@@ -46,8 +46,8 @@ class AgUiParametersTest {
     @Test
     void shouldSetAndGetTools() {
         var tools = List.of(
-            new Tool("tool1", "First tool", new Tool.ToolParameters("function", Map.of(), emptyList())),
-            new Tool("tool2", "Second tool", new Tool.ToolParameters("function", Map.of(), emptyList()))
+            new Tool("tool1", "First tool", new Tool.ToolParameters("object", Map.of(), List.of())),
+            new Tool("tool2", "Second tool", new Tool.ToolParameters("object", Map.of(), List.of()))
         );
         
         parameters.setTools(tools);
@@ -87,6 +87,7 @@ class AgUiParametersTest {
             userMessage1,
             userMessage2
         );
+
         
         parameters.setMessages(messages);
         
@@ -98,7 +99,6 @@ class AgUiParametersTest {
     void shouldSetAndGetState() {
         var state = new State();
         state.set("currentStep", "greeting");
-
         parameters.setState(state);
         
         assertThat(parameters.getState()).isEqualTo(state);
