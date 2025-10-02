@@ -172,11 +172,11 @@ Then create a pull request on GitHub with:
 
 ```java
 // Package structure example
-com.ag-ui.agui.core.*          // Core functionality
-com.ag-ui.agui.client.*        // Client libraries
-com.ag-ui.agui.http.*          // HTTP utilities
-com.ag-ui.agui.spring.*        // Spring integrations
-com.ag-ui.agui.util.*          // Utility classes
+com.ag-ui.core.*          // Core functionality
+com.ag-ui.client.*        // Client libraries
+com.ag-ui.http.*          // HTTP utilities
+com.ag-ui.spring.*        // Spring integrations
+com.ag-ui.util.*          // Utility classes
 ```
 
 ### Error Handling

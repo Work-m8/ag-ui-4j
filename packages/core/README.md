@@ -11,7 +11,7 @@ This package contains the [Events](./src/main/java/com/agui/core/event), [Messag
 
 ```xml
 <dependency>
-    <groupId>com.ag-ui.agui</groupId>
+    <groupId>com.ag-ui</groupId>
     <artifactId>core</artifactId>
     <version>0.0.1</version>
 </dependency>
