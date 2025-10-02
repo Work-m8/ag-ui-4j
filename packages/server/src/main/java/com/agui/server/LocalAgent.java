@@ -98,6 +98,15 @@ public abstract class LocalAgent implements Agent {
     /**
      * {@inheritDoc}
      *
+     * Returns an empty list
+     */
+    public List<BaseMessage> getMessages() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * Executes the agent asynchronously with the provided parameters and notifies
      * the subscriber of events during execution.
      */
