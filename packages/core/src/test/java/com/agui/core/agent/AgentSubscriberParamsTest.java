@@ -23,6 +23,10 @@ class AgentSubscriberParamsTest {
             public CompletableFuture<Void> runAgent(RunAgentParameters parameters, AgentSubscriber subscriber) {
                 return null;
             }
+            @Override
+            public List<BaseMessage> getMessages() {
+                return messages;
+            }
         };
         var input = new RunAgentInput("", "", state, emptyList(), emptyList(), emptyList(), null);
 

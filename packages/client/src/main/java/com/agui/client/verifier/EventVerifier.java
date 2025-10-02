@@ -36,7 +36,7 @@ public class EventVerifier {
     private boolean runFinished;
     private boolean runError;
     private boolean firstEventReceived;
-    private Map<String, Boolean> activeSteps;
+    private final Map<String, Boolean> activeSteps;
     private boolean activeThinkingStep;
     private boolean activeThinkingStepMessage;
 

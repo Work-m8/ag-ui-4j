@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.ag-ui.agui.server.spring.AgUiAutoConfiguration
+com.agui.server.spring.AgUiAutoConfiguration
