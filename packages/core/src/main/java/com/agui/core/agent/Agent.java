@@ -1,5 +1,8 @@
 package com.agui.core.agent;
 
+import com.agui.core.message.BaseMessage;
+
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -47,5 +50,7 @@ public interface Agent {
      * @throws IllegalStateException if the agent is not in a valid state for execution
      */
     CompletableFuture<Void> runAgent(RunAgentParameters parameters, AgentSubscriber subscriber);
+
+    List<BaseMessage> getMessages();
 
 }

@@ -6,10 +6,13 @@ import com.agui.core.agent.AgentSubscriber;
 import com.agui.core.agent.RunAgentParameters;
 import com.agui.core.event.BaseEvent;
 import com.agui.core.event.RawEvent;
+import com.agui.core.message.BaseMessage;
 import com.agui.core.stream.EventStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -83,6 +86,11 @@ class AgentStreamerTest {
         public CompletableFuture<Void> runAgent(RunAgentParameters parameters, AgentSubscriber subscriber) {
             this.subscriber = subscriber;
             return CompletableFuture.runAsync(() -> { });
+        }
+
+        @Override
+        public List<BaseMessage> getMessages() {
+            return Collections.emptyList();
         }
     }
 }
