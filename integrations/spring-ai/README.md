@@ -39,7 +39,7 @@ var agent = SpringAIAgent.builder()
 
 ```xml
 <dependency>
-    <groupId>com.ag-ui.agui</groupId>
+    <groupId>com.ag-ui</groupId>
     <artifactId>spring-ai</artifactId>
     <version>1.0.1</version>
 </dependency>

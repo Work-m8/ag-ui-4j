@@ -27,7 +27,7 @@ public ResponseEntity<SseEmitter> streamData(@PathVariable("agentId") final Stri
 
 ```xml
 <dependency>
-    <groupId>com.ag-ui.agui</groupId>
+    <groupId>com.ag-ui</groupId>
     <artifactId>spring</artifactId>
     <version>0.0.1</version>
 </dependency>
