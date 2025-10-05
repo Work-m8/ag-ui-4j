@@ -13,8 +13,8 @@
     <artifactId>spring-client</artifactId>
     <version>${spring.version}</version>
 
-    <name>AG-UI-4J Spring Client</name>
-    <description>AG-UI-4J Spring Client</description>
+    <name>AG-UI Spring Client</name>
+    <description>AG-UI Spring Client</description>
 
     <properties>
         <spring.version>6.2.7</spring.version>

@@ -1,5 +1,6 @@
 package com.agui.core.message;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -111,5 +112,53 @@ public abstract class BaseMessage {
      */
     public String getName() {
         return this.name;
+    }
+
+
+    /**
+     * Compares this message to another object for equality.
+     * <p>
+     * Two messages are considered equal if they have the same role, id, and content.
+     * The name field is not considered in equality comparison.
+     * </p>
+     *
+     * @param obj the object to compare with
+     * @return true if the messages are equal, false otherwise
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        BaseMessage that = (BaseMessage) obj;
+
+        if (!getRole().equals(that.getRole())) {
+            return false;
+        }
+        if (!Objects.equals(id, that.id)) {
+            return false;
+        }
+        return Objects.equals(content, that.content);
+    }
+
+    /**
+     * Returns a hash code value for this message.
+     * <p>
+     * The hash code is computed based on role, id, and content to be consistent
+     * with the equals method.
+     * </p>
+     *
+     * @return a hash code value for this message
+     */
+    @Override
+    public int hashCode() {
+        int result = getRole().hashCode();
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        return result;
     }
 }

@@ -13,8 +13,8 @@
     <artifactId>spring-ai</artifactId>
     <version>${spring-ai.version}</version>
 
-    <name>AG-UI-4J Spring AI</name>
-    <description>AG-UI-4J Spring AI Integration</description>
+    <name>AG-UI Spring AI</name>
+    <description>AG-UI Spring AI Integration</description>
 
     <properties>
         <spring-ai.version>1.0.1</spring-ai.version>

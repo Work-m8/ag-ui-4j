@@ -73,7 +73,7 @@ public abstract class AbstractAgent implements Agent {
         State state,
         boolean debug
     ) {
-        this.agentId = Optional.ofNullable(agentId).orElse(UUID.randomUUID().toString());
+        this.agentId = agentId;
         this.description = Optional.ofNullable(description).orElse("");
         this.threadId = Optional.ofNullable(threadId).orElse(UUID.randomUUID().toString());
         this.messages = Optional.ofNullable(initialMessages).orElse(new ArrayList<>());
@@ -434,6 +434,11 @@ public abstract class AbstractAgent implements Agent {
                 logError("Error in messages changed subscriber", e);
             }
         });
+    }
+
+    @Override
+    public List<BaseMessage> getMessages() {
+        return this.messages;
     }
 
     /**
