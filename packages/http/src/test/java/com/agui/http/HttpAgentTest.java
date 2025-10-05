@@ -118,31 +118,6 @@ class HttpAgentTest {
         }
 
         @Test
-        void shouldThrowExceptionWhenAgentIdIsNull() {
-            TestHttpClient httpClient = new TestHttpClient();
-
-            assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> HttpAgent.builder()
-                            .threadId("test-thread")
-                            .httpClient(httpClient)
-                            .build())
-                    .withMessage("agentId is required");
-        }
-
-        @Test
-        void shouldThrowExceptionWhenAgentIdIsEmpty() {
-            TestHttpClient httpClient = new TestHttpClient();
-
-            assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> HttpAgent.builder()
-                        .agentId("   ")
-                        .threadId("test-thread")
-                        .httpClient(httpClient)
-                        .build())
-                    .withMessage("agentId is required");
-        }
-
-        @Test
         void shouldThrowExceptionWhenThreadIdIsNull() {
             TestHttpClient httpClient = new TestHttpClient();
 

@@ -13,8 +13,8 @@
     <artifactId>ok-http</artifactId>
     <version>${okhttp.version}</version>
 
-    <name>AG-UI-4J Ok-http</name>
-    <description>AG-UI-4J Ok-http Client</description>
+    <name>AG-UI Ok-http</name>
+    <description>AG-UI Ok-http Client</description>
 
     <properties>
         <okhttp.version>4.12.0</okhttp.version>

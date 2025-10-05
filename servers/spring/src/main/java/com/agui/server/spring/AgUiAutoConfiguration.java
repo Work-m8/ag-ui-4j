@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 
 /**
- * Spring Boot auto-configuration for AG-UI-4J server components.
+ * Spring Boot auto-configuration for ag-ui server components.
  * <p>
- * This auto-configuration automatically registers AG-UI-4J server beans when the
+ * This auto-configuration automatically registers ag-ui server beans when the
  * corresponding classes are on the classpath. It provides sensible defaults while
  * allowing users to override any bean by providing their own implementation.
  * <p>
@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Bean;
  * application context.
  * <p>
  * This auto-configuration is automatically discovered by Spring Boot when the
- * ag-ui-4j-spring module is on the classpath and will be applied unless explicitly
+ * ag-ui-spring module is on the classpath and will be applied unless explicitly
  * excluded.
  * <p>
  * Example exclusion:
@@ -66,7 +66,7 @@ public class AgUiAutoConfiguration {
      * Server-Sent Events. It requires both an AgentStreamer and ObjectMapper
      * to function properly.
      * <p>
-     * The ObjectMapper is automatically configured with AG-UI-4J mixins for
+     * The ObjectMapper is automatically configured with ag-ui mixins for
      * proper event serialization within the service constructor.
      *
      * @param agentStreamer the AgentStreamer for converting agent execution to streams

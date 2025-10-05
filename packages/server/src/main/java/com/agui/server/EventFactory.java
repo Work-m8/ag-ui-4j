@@ -8,7 +8,7 @@ import com.agui.core.state.State;
  * Utility factory class for creating commonly used event instances with proper configuration.
  * <p>
  * EventFactory provides static factory methods for creating various types of events used
- * throughout the ag-ui-4j framework. This centralized approach ensures consistent event
+ * throughout the ag-ui framework. This centralized approach ensures consistent event
  * creation with proper parameter mapping and reduces boilerplate code when constructing
  * events in agent implementations.
  * <p>

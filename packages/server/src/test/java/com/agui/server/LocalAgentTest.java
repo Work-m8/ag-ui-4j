@@ -224,7 +224,12 @@ class LocalAgentTest {
         RunAgentInput input;
 
         public TestAgent(String agentId, State state, Function<LocalAgent, String> systemMessageProvider, String systemMessage) throws AGUIException {
-            super(agentId, state, systemMessageProvider, systemMessage);
+            super(agentId, state, systemMessageProvider, systemMessage, new ArrayList<>());
+        }
+
+        @Override
+        public List<BaseMessage> getMessages() {
+            return List.of();
         }
 
         @Override

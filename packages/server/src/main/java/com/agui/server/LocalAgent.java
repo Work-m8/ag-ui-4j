@@ -50,6 +50,8 @@ public abstract class LocalAgent implements Agent {
      */
     protected Function<LocalAgent, String> systemMessageProvider;
 
+    protected List<BaseMessage> messages;
+
     /**
      * Constructs a new LocalAgent with the specified configuration.
      *
@@ -63,7 +65,8 @@ public abstract class LocalAgent implements Agent {
         final String agentId,
         final State state,
         final Function<LocalAgent, String> systemMessageProvider,
-        final String systemMessage
+        final String systemMessage,
+        final List<BaseMessage> messages
     ) throws AGUIException {
         this.agentId = agentId;
 
@@ -75,6 +78,8 @@ public abstract class LocalAgent implements Agent {
 
         this.systemMessage = systemMessage;
         this.systemMessageProvider = systemMessageProvider;
+
+        this.messages = messages;
     }
 
     /**
@@ -98,10 +103,10 @@ public abstract class LocalAgent implements Agent {
     /**
      * {@inheritDoc}
      *
-     * Returns an empty list
+     * Returns the messages of the agent
      */
     public List<BaseMessage> getMessages() {
-        return Collections.emptyList();
+        return this.messages;
     }
 
     /**

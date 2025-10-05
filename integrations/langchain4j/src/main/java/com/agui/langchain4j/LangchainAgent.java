@@ -93,7 +93,8 @@ public class LangchainAgent extends LocalAgent {
             builder.agentId,
             builder.state,
             builder.systemMessageProvider,
-            builder.systemMessage
+            builder.systemMessage,
+            new ArrayList<>()
         );
 
         this.streamingChatModel = builder.streamingChatModel;
