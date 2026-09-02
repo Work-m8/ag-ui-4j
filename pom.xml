@@ -24,6 +24,8 @@
         <module>clients/spring-client</module>
         <module>examples/spring-cli-client</module>
         <module>examples/git-cli</module>
+        <module>integrations/adk-java</module>
+        <module>examples/adk-java-example</module>
     </modules>
 
     <properties>
